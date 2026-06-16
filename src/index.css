@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  --color-primary: #00E5FF; /* Turquoise / Aqua */
+  --color-secondary: #00B4D8; /* Sky Blue */
+  --color-accent: #FFD60A; /* Yellow */
+  --color-base: #FFFFFF; /* White */
+  --color-black: #0A0A0A; /* Black */
+  --color-white: #FFFFFF; /* True White mapping */
+
+  /* Neo-brutalist border styles */
+  --border-width-brutal: 4px;
+  --radius-brutal: 12px;
+
+  /* Shadow offsets for neo-brutalism */
+  --shadow-brutal: 6px 6px 0px 0px rgba(10, 10, 10, 1);
+  --shadow-brutal-hover: 2px 2px 0px 0px rgba(10, 10, 10, 1);
+}
+
+@layer base {
+  :root {
+    --primary: #00E5FF;
+    --secondary: #00B4D8;
+    --accent: #FFD60A;
+    --base: #FFFFFF;
+    --black: #0A0A0A;
+    --white: #FFFFFF;
+  }
+
+  :root.dark {
+    /* Base background becomes dark */
+    --color-base: #111111;
+    --base: #111111;
+    
+    /* Black (borders, text) becomes off-white */
+    --color-black: #F5F5F5;
+    --black: #F5F5F5;
+    
+    /* White (card backgrounds, badges) becomes dark grey */
+    --color-white: #1A1A1A;
+    --white: #1A1A1A;
+
+    /* Shadow flips to light so it pops on dark background */
+    --shadow-brutal: 6px 6px 0px 0px rgba(245, 245, 245, 1);
+    --shadow-brutal-hover: 2px 2px 0px 0px rgba(245, 245, 245, 1);
+  }
+
+  body {
+    @apply font-body bg-base text-black transition-colors duration-300;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold text-black transition-colors duration-300;
+  }
+
+  /* Custom selection color */
+  ::selection {
+    @apply bg-accent text-black;
+  }
+}
+
+@layer utilities {
+  .brutal-border {
+    border-width: var(--border-width-brutal, 4px);
+    border-color: var(--color-black, #0A0A0A);
+    border-radius: var(--radius-brutal, 12px);
+  }
+
+  .brutal-shadow {
+    box-shadow: var(--shadow-brutal);
+  }
+
+  .brutal-shadow-hover:hover {
+    box-shadow: var(--shadow-brutal-hover);
+    transform: translate(4px, 4px);
+  }
+
+  .brutal-shadow-hover {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .brutal-btn {
+    @apply font-heading font-bold px-6 py-3 cursor-pointer active:translate-y-2 active:translate-x-2 active:shadow-none bg-primary text-black;
+    border-width: var(--border-width-brutal, 4px);
+    border-color: var(--color-black, #0A0A0A);
+    border-radius: var(--radius-brutal, 12px);
+    box-shadow: var(--shadow-brutal);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .brutal-btn:hover {
+    box-shadow: var(--shadow-brutal-hover);
+    transform: translate(4px, 4px);
+  }
+
+  .brutal-card {
+    @apply p-6;
+    border-width: var(--border-width-brutal, 4px);
+    border-color: var(--color-black, #0A0A0A);
+    border-radius: var(--radius-brutal, 12px);
+    box-shadow: var(--shadow-brutal);
+  }
+
+  .brutal-badge {
+    @apply font-body font-bold px-3 py-1 bg-accent text-black text-sm inline-block;
+    border-width: 2px;
+    border-color: var(--color-black, #0A0A0A);
+    border-radius: 9999px;
+  }
+}
+
