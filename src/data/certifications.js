@@ -1,10 +1,14 @@
+import certJnp from '../assets/certificates/certificate-jnp.pdf';
+import certGns from '../assets/certificates/certificate-gns.pdf';
+import certJcs from '../assets/certificates/certificate-jcs.pdf';
+
 export const certificationsData = [
   {
     id: "62033 2512 2 0001024 2025",
     title: "Junior Programmer",
     issuer: "BNSP",
     date: "July 2025",
-    pdf: "/src/assets/certificates/certificate-jnp.pdf",
+    pdf: certJnp,
     color: "bg-white"
   },
   {
@@ -12,7 +16,7 @@ export const certificationsData = [
     title: "Google Network Security",
     issuer: "Google",
     date: "June 2026",
-    pdf: "/src/assets/certificates/certificate-gns.pdf",
+    pdf: certGns,
     color: "bg-white"
   },
   {
@@ -20,7 +24,7 @@ export const certificationsData = [
     title: "Junior Cyber Security",
     issuer: "BNSP",
     date: "January 2025",
-    pdf: "/src/assets/certificates/certificate-jcs.pdf",
+    pdf: certJcs,
     color: "bg-white"
   }
 ];
