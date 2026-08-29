@@ -61,7 +61,7 @@ export const Navbar = () => {
     { name: 'About', href: '#about', id: 'about' },
     { name: 'Expertise', href: '#expertise', id: 'expertise' },
     { name: 'Projects', href: '#projects', id: 'projects' },
-    { name: 'Creative', href: '#creative-corner', id: 'creative-corner' },
+
     { name: 'Contact', href: '#contact', id: 'contact' },
   ];
 
@@ -81,7 +81,7 @@ export const Navbar = () => {
             {/* Logo */}
             <div className="flex-shrink-0 cursor-pointer" onClick={(e) => smoothScrollTo(e, '#')}>
               <span className="font-heading font-black text-2xl tracking-tighter hover:text-primary transition-colors">
-                RH
+                RAZH
               </span>
             </div>
 
@@ -123,6 +123,7 @@ export const Navbar = () => {
               <button 
                 className="lg:hidden w-10 h-10 flex items-center justify-center rounded-md border-2 border-black bg-white brutal-shadow-hover"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
               >
                 {isMobileMenuOpen ? <FaTimes className="text-black" /> : <FaBars className="text-black" />}
               </button>

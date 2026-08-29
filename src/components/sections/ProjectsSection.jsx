@@ -136,7 +136,7 @@ export const ProjectsSection = () => {
                         </div>
                         <img 
                           src={imgSrc} 
-                          alt={`${project.title} Screenshot ${idx + 1}`} 
+                          alt={`${project.title} project interface preview ${idx + 1}`} 
                           loading="lazy"
                           className="w-full h-full object-cover object-top group-hover/img:scale-105 transition-transform duration-500" 
                         />
@@ -158,7 +158,7 @@ export const ProjectsSection = () => {
                           </div>
                           <img 
                             src={imgSrc} 
-                            alt={`${project.title} Screenshot ${idx + 1}`} 
+                            alt={`${project.title} project interface preview ${idx + 1}`} 
                             loading="lazy"
                             className="w-full h-full object-cover object-top" 
                           />

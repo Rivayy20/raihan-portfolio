@@ -3,14 +3,13 @@ import { FaLinkedin, FaGithub, FaInstagram } from 'react-icons/fa';
 import { smoothScrollTo } from '../../utils/scrollTo';
 
 export const Footer = () => {
-  const currentYear = new Date().getFullYear();
+
 
   const navLinks = [
     { name: 'Home', href: '#', id: 'home' },
     { name: 'About', href: '#about', id: 'about' },
     { name: 'Expertise', href: '#expertise', id: 'expertise' },
     { name: 'Projects', href: '#projects', id: 'projects' },
-    { name: 'Creative', href: '#creative-corner', id: 'creative-corner' },
     { name: 'Contact', href: '#contact', id: 'contact' }
   ];
 
@@ -33,7 +32,7 @@ export const Footer = () => {
           {/* Column 1: Brand Identity */}
           <div className="flex flex-col items-center md:items-start gap-4 flex-1">
             <span className="font-heading font-black text-5xl tracking-tighter uppercase text-primary drop-shadow-[3px_3px_0px_var(--color-black)]">
-              RH.
+              RAZH.
             </span>
             <p className="font-bold text-lg md:text-xl max-w-xs leading-snug">
               Building Digital Experiences with Logic and Creativity.
@@ -92,18 +91,8 @@ export const Footer = () => {
         {/* Bottom Area: Copyright & Tech Badges */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="font-bold text-sm text-center md:text-left">
-            © {currentYear} Raihan Azka Hidayat. <br className="md:hidden" />
-            All Rights Reserved.
+            © 2026 All rights reserved.
           </p>
-          
-          <div className="flex flex-wrap justify-center gap-3">
-            <span className="bg-white px-3 py-1 brutal-border text-xs sm:text-sm font-bold shadow-[2px_2px_0px_0px_var(--color-black)]">
-              Built with React + Vite
-            </span>
-            <span className="bg-[#FFD60A] px-3 py-1 brutal-border text-xs sm:text-sm font-bold shadow-[2px_2px_0px_0px_var(--color-black)]">
-              Designed in Neo-Brutalist Style
-            </span>
-          </div>
         </div>
 
       </div>

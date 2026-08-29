@@ -74,7 +74,7 @@ export const HeroSection = () => {
             <div className="absolute inset-0 bg-secondary brutal-border brutal-shadow overflow-hidden group pt-6 px-3 sm:pt-10 sm:px-6 md:pt-12 md:px-8 flex items-end justify-center">
               <img 
                 src={profileImg} 
-                alt="Profile" 
+                alt="Raihan Azka Hidayat - Information Systems Student & Developer Profile" 
                 className="w-full h-[96%] sm:h-[98%] object-cover object-top grayscale-0 lg:grayscale lg:group-hover:grayscale-0 transition-all duration-500 origin-bottom scale-100 group-hover:scale-105" 
               />
             </div>

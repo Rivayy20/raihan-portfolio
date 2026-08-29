@@ -108,7 +108,7 @@ export const ContactSection = () => {
           {/* Avatar and Availability Badge */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6 lg:mb-8">
             <div className="w-20 h-20 rounded-full border-4 border-black brutal-shadow overflow-hidden bg-secondary shrink-0">
-              <img src={profileImg} alt="Profile" className="w-full h-full object-cover" />
+              <img src={profileImg} alt="Raihan Azka Hidayat - Contact Profile" className="w-full h-full object-cover" />
             </div>
             
             <div className="flex flex-col gap-2">

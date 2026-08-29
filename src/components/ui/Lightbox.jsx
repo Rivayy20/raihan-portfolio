@@ -70,7 +70,7 @@ export const Lightbox = ({ lightboxData, setLightboxData }) => {
           <div className="relative w-full flex-grow bg-white brutal-border overflow-hidden flex items-center justify-center min-h-[40vh] md:min-h-[60vh] max-h-[70vh]">
             <img 
               src={project.images[activeIndex]} 
-              alt={`${project.title} Screenshot ${activeIndex + 1}`} 
+              alt={`${project.title} detailed project view ${activeIndex + 1}`} 
               className="w-full h-full object-contain"
             />
             
