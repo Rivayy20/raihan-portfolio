@@ -123,7 +123,7 @@ export const ContactSection = () => {
                   <span className="font-heading font-bold text-xs">⚡ Usually Replies Within 24 Hours</span>
                 </div>
                 <div className="bg-white border-2 border-black rounded-full px-3 py-1 shadow-[2px_2px_0px_0px_var(--color-black)] w-fit">
-                  <span className="font-heading font-bold text-xs">📍 Indonesia</span>
+                  <span className="font-heading font-bold text-xs">📍 Bandung, Indonesia</span>
                 </div>
               </div>
             </div>

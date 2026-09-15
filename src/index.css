@@ -45,6 +45,13 @@
     --color-white: #1A1A1A;
     --white: #1A1A1A;
 
+    /* Dark Mode Adjustments for vibrant colors to reduce glare */
+    --color-accent: #D4AF37; /* Muted Mustard Gold */
+    --accent: #D4AF37;
+    
+    --color-primary: #0891B2; /* Muted Cyan / Deep Teal (Tailwind cyan-600) */
+    --primary: #0891B2;
+
     /* Shadow flips to light so it pops on dark background */
     --shadow-brutal: 6px 6px 0px 0px rgba(245, 245, 245, 1);
     --shadow-brutal-hover: 2px 2px 0px 0px rgba(245, 245, 245, 1);

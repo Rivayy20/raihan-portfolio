@@ -9,7 +9,7 @@ import { certificationsData } from '../../data/certifications';
 const EducationCard = ({ isExpanded, onToggle }) => {
   return (
     <Card 
-      className={`bg-[#FFD60A] dark:bg-[#B8860B] flex flex-col justify-start cursor-pointer transition-all duration-300 ${isExpanded ? 'shadow-[6px_6px_0px_0px_var(--color-black)] -translate-y-1' : 'hover:-translate-y-2'}`}
+      className={`bg-[#FDE047] dark:bg-[#B8860B] flex flex-col justify-start cursor-pointer transition-all duration-300 ${isExpanded ? 'shadow-[6px_6px_0px_0px_var(--color-black)] -translate-y-1' : 'hover:-translate-y-2'}`}
       onClick={onToggle}
     >
       <div className="flex justify-between items-start mb-4">
@@ -61,7 +61,7 @@ const EducationCard = ({ isExpanded, onToggle }) => {
 const ExperienceCard = ({ isExpanded, onToggle }) => {
   return (
     <Card 
-      className={`bg-[#00B4D8] dark:bg-[#00008B] flex flex-col justify-start cursor-pointer transition-all duration-300 ${isExpanded ? 'shadow-[6px_6px_0px_0px_var(--color-black)] -translate-y-1' : 'hover:-translate-y-2'}`}
+      className={`bg-[#67E8F9] dark:bg-[#00008B] flex flex-col justify-start cursor-pointer transition-all duration-300 ${isExpanded ? 'shadow-[6px_6px_0px_0px_var(--color-black)] -translate-y-1' : 'hover:-translate-y-2'}`}
       onClick={onToggle}
     >
       <div className="flex justify-between items-start mb-4">
@@ -172,15 +172,12 @@ export const AboutSection = () => {
               <span className="w-8 h-8 bg-accent brutal-border flex items-center justify-center rounded-full text-lg">!</span>
               The Narrative
             </h3>
-            <div className="space-y-4 text-lg font-medium text-gray-800 dark:text-gray-300 transition-colors duration-300">
+            <div className="space-y-4 text-lg font-medium text-left text-gray-800 dark:text-gray-300 transition-colors duration-300">
               <p>
-                My journey into technology started with a simple curiosity about how games are made. That curiosity quickly evolved into a passion for software engineering, game development, and creating seamless digital experiences.
+                An undergraduate Information Systems student at Telkom University with a background in Software Engineering and experience as a Game Developer Intern. Possesses knowledge and hands-on experience in game development using Unity and Blender, as well as web development, software development, database management, and technologies such as React, Laravel, PHP, and MySQL, developed through academic learning and professional experience.
               </p>
               <p>
-                As an Information Systems student, I've learned to bridge the gap between technical execution and business value. I don't just write code; I design systems that solve real problems while maintaining an engaging user experience.
-              </p>
-              <p>
-                Whether I'm developing a web application, crafting a 3D game environment, or optimizing a backend database, my goal is always the same: <span className="font-bold text-black bg-secondary/30 px-1">Build something that matters.</span>
+                Skilled in application development, programming, database management, and the use of various software development tools. Demonstrates strong analytical thinking, problem-solving, attention to detail, communication, and learning abilities. Interested in continuously developing expertise and contributing to the fields of information technology, software development, game development, web development, database management, and related areas.
               </p>
             </div>
           </Card>

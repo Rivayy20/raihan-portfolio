@@ -1,7 +1,7 @@
 export const skillsData = [
   {
     category: "Web Development",
-    color: "bg-primary dark:bg-[#008B8B]",
+    color: "bg-[#5EEAD4] dark:bg-[#008B8B]",
     primary: [
       { name: "React", icon: "FaReact", projects: ["Mecca Swim", "Portfolio Website"] },
       { name: "Next.js", icon: "TbBrandNextjs", projects: ["Mecca Swim Dashboard"] },
@@ -17,7 +17,7 @@ export const skillsData = [
   },
   {
     category: "Game Development & 3D",
-    color: "bg-white dark:bg-[#483D8B]",
+    color: "bg-[#D8B4FE] dark:bg-[#483D8B]",
     primary: [
       { name: "Unity", icon: "FaUnity", projects: ["Internship Project", "Personal Game Prototype"] },
       { name: "C#", icon: "TbBrandCSharp", projects: ["Unity Scripts", "Game Mechanics"] }
@@ -28,7 +28,7 @@ export const skillsData = [
   },
   {
     category: "Data & Backend",
-    color: "bg-white dark:bg-[#B8860B]",
+    color: "bg-[#FDE047] dark:bg-[#B8860B]",
     accent: "yellow",
     primary: [
       { name: "MySQL", icon: "SiMysql", projects: ["Relational Databases", "Academic Systems"] },
@@ -43,7 +43,7 @@ export const skillsData = [
   },
   {
     category: "Currently Exploring",
-    color: "bg-gray-100 dark:bg-[#00008B]",
+    color: "bg-[#93C5FD] dark:bg-[#00008B]",
     exploring: [
       { name: "Cyber Security", icon: "MdSecurity" },
       { name: "Network Architecture", icon: "FaNetworkWired" },
