@@ -30,6 +30,16 @@
     --base: #FFFFFF;
     --black: #0A0A0A;
     --white: #FFFFFF;
+
+    /* Fixed navbar bottom edge (86px mobile) plus a gap; used as scroll-margin-top */
+    --navbar-scroll-offset: 6.5rem;
+  }
+
+  /* Desktop navbar is taller (98px) because of the Hire Me button */
+  @media (min-width: 64rem) {
+    :root {
+      --navbar-scroll-offset: 7.5rem;
+    }
   }
 
   :root.dark {
@@ -111,6 +121,10 @@
     border-color: var(--color-black, #0A0A0A);
     border-radius: var(--radius-brutal, 12px);
     box-shadow: var(--shadow-brutal);
+  }
+
+  .experience-details-panel {
+    scroll-margin-top: var(--navbar-scroll-offset);
   }
 
   .brutal-badge {
