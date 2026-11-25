@@ -37,8 +37,8 @@ const FLOATING_SLOTS = [
 const heroSchema = z.object({
   badge_text: z.string().trim().min(1, 'Teks badge Hero wajib diisi.'),
   subheadline: z.string().trim().min(1, 'Subheadline wajib diisi.'),
-  lanyard_name: z.string().trim().min(1, 'Nama pada Lanyard ID Badge wajib diisi.'),
-  lanyard_role: z.string().trim().min(1, 'Role pada Lanyard ID Badge wajib diisi.'),
+  lanyard_name: z.string().trim().min(1, 'Nama pada caption portrait wajib diisi.'),
+  lanyard_role: z.string().trim().min(1, 'Role pada caption portrait wajib diisi.'),
   primary_cta_text: z.string().trim().min(1, 'Teks CTA utama wajib diisi.'),
   primary_cta_href: z
     .string()
@@ -129,7 +129,7 @@ function HeroForm({ rawProfile }) {
   // Floating labels helpers (max 4, unique slot)
   const addFloatingLabel = () => {
     if (form.floating_labels.length >= 4) {
-      toast.warning('Maksimal 4 floating labels agar layout Lanyard tetap rapi.');
+      toast.warning('Maksimal 4 floating labels agar layout Hero Portrait tetap rapi.');
       return;
     }
     const usedSlots = new Set(form.floating_labels.map((item) => item.slot));
@@ -254,7 +254,7 @@ function HeroForm({ rawProfile }) {
       {/* Headline & Copy */}
       <SectionCard
         title="Badge, Headline & Subheadline"
-        description="Bangun headline berstruktur dengan highlight gelombang SVG tanpa menginjeksikan HTML mentah."
+        description="Bangun headline Editorial dengan animasi Sunset Gradient serta subheadline Typewriter tanpa HTML mentah."
       >
         <div className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -277,17 +277,17 @@ function HeroForm({ rawProfile }) {
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <span className="text-sm font-semibold text-slate-800 dark:text-zinc-200">
+                <span className="text-sm font-semibold text-ink">
                   Headline Segments
                 </span>
-                <p className="text-xs text-slate-500 dark:text-zinc-400">
-                  Pecah kalimat headline menjadi beberapa segmen untuk memberi highlight warna/garis gelombang.
+                <p className="text-xs text-muted">
+                  Pecah kalimat headline menjadi beberapa segmen untuk memberi efek gradien Sunset atau soft pill highlight.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={addSegment}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
               >
                 <FaPlus className="text-[10px]" /> Segmen
               </button>
@@ -297,7 +297,7 @@ function HeroForm({ rawProfile }) {
               {form.headline_segments.map((seg, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/60 flex flex-col sm:flex-row sm:items-center gap-2.5"
+                  className="p-3 rounded-xl border border-border-subtle bg-surface-subtle/60 flex flex-col sm:flex-row sm:items-center gap-2.5"
                 >
                   <OrderControls
                     index={idx}
@@ -310,23 +310,23 @@ function HeroForm({ rawProfile }) {
                     value={seg.text}
                     onChange={(e) => updateSegment(idx, { text: e.target.value })}
                     placeholder="Teks segmen (spasi dipertahankan)..."
-                    className="flex-1 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm"
+                    className="flex-1 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                   />
                   <select
                     value={seg.highlight || 'none'}
                     onChange={(e) => updateSegment(idx, { highlight: e.target.value })}
-                    className="px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold"
+                    className="px-3 py-2 rounded-xl border border-border-subtle bg-surface text-xs font-semibold text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
                   >
                     <option value="none">Normal Text</option>
-                    <option value="secondary_wave">Sky Blue + Yellow Wave</option>
-                    <option value="primary_wave">Cyan + Blue Wave</option>
-                    <option value="accent_bg">Accent Background</option>
+                    <option value="secondary_wave">Sunset Gradient (Coral · Peach)</option>
+                    <option value="primary_wave">Sunset Gradient (Rose · Violet)</option>
+                    <option value="accent_bg">Soft Peach Pill Highlight</option>
                   </select>
                   <button
                     type="button"
                     disabled={form.headline_segments.length <= 1}
                     onClick={() => removeSegment(idx)}
-                    className="p-2 rounded-lg text-slate-400 hover:text-red-500 disabled:opacity-30 cursor-pointer self-end sm:self-auto"
+                    className="p-2 rounded-lg text-muted hover:text-red-500 disabled:opacity-30 cursor-pointer self-end sm:self-auto transition-colors"
                     aria-label="Hapus segmen"
                   >
                     <FaTrash className="text-xs" />
@@ -336,22 +336,20 @@ function HeroForm({ rawProfile }) {
             </div>
 
             {/* Live Preview */}
-            <div className="p-4 rounded-xl bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+            <div className="p-4 rounded-xl bg-canvas border border-border-subtle">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-1.5">
                 Preview Headline
               </p>
-              <p className="font-heading text-xl sm:text-2xl font-black leading-snug">
+              <p className="font-heading text-xl sm:text-2xl font-bold leading-snug text-ink">
                 {form.headline_segments.map((seg, idx) => (
                   <span
                     key={idx}
                     className={
-                      seg.highlight === 'secondary_wave'
-                        ? 'text-[#00B4D8] underline decoration-[#FFD60A] decoration-4 underline-offset-4'
-                        : seg.highlight === 'primary_wave'
-                          ? 'text-[#0096B4] dark:text-[#00E5FF] underline decoration-[#00B4D8] decoration-4 underline-offset-4'
-                          : seg.highlight === 'accent_bg'
-                            ? 'bg-[#FFD60A] text-black px-1.5 rounded'
-                            : ''
+                      seg.highlight === 'secondary_wave' || seg.highlight === 'primary_wave'
+                        ? 'hero-gradient-text-animated'
+                        : seg.highlight === 'accent_bg'
+                          ? 'bg-accent/30 text-ink px-2 py-0.5 rounded-lg'
+                          : ''
                     }
                   >
                     {seg.text}
@@ -362,61 +360,65 @@ function HeroForm({ rawProfile }) {
           </div>
 
           <TextAreaField
-            label="Subheadline"
+            label="Subheadline (Typewriter Copy)"
             rows={3}
             value={form.subheadline}
             onChange={(e) => updateField('subheadline', e.target.value)}
             error={errors.subheadline}
+            helperText="Ditampilkan dengan animasi ketik (Typewriter) secara berurutan di Hero Section."
             required
           />
         </div>
       </SectionCard>
 
-      {/* Lanyard & Profile Photo */}
+      {/* Circular Portrait Stage & Caption */}
       <SectionCard
-        title="Interactive Lanyard & Foto Profil"
-        description="Atur foto portrait dan label pada kartu lanyard interaktif."
+        title="Profile Portrait Stage & Editorial Caption"
+        description="Atur foto profil lingkaran berbingkai conic-gradient, animasi tilt 3D, serta nama dan role di bawah portrait."
       >
         <div className="space-y-4">
           <ToggleField
-            label="Tampilkan Interactive Lanyard"
+            label="Tampilkan Profile Portrait Stage"
+            description="Menampilkan kolom foto portrait beserta floating status & role card di Hero Section."
             checked={form.show_lanyard}
             onChange={(val) => updateField('show_lanyard', val)}
           />
 
           <MediaField
-            label="Foto Portrait Lanyard"
+            label="Foto Profil Portrait"
             value={form.profile_image_id}
             onChange={(id) => updateField('profile_image_id', id)}
             accept="image"
             defaultCategory="profile"
-            helperText="Rekomendasi portrait rasio 4:5 (format WebP)."
+            helperText="Rekomendasi rasio 1:1 atau 4:5 (format WebP) untuk frame lingkaran portrait."
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <TextField
-              label="Lanyard Header"
-              value={form.lanyard_header}
-              onChange={(e) => updateField('lanyard_header', e.target.value)}
-            />
-            <TextField
-              label="Lanyard Status Text"
-              value={form.lanyard_status}
-              onChange={(e) => updateField('lanyard_status', e.target.value)}
-            />
-            <TextField
-              label="Lanyard Name"
+              label="Nama Portrait Caption"
               value={form.lanyard_name}
               onChange={(e) => updateField('lanyard_name', e.target.value)}
               error={errors.lanyard_name}
               required
             />
             <TextField
-              label="Lanyard Role Badge"
+              label="Role / Subjudul Portrait"
               value={form.lanyard_role}
               onChange={(e) => updateField('lanyard_role', e.target.value)}
               error={errors.lanyard_role}
               required
+            />
+            <TextField
+              label="Label Header (Metadata Opsional)"
+              value={form.lanyard_header}
+              onChange={(e) => updateField('lanyard_header', e.target.value)}
+              helperText="Disimpan untuk kompatibilitas profil; portrait minimalis menampilkan Foto, Nama, dan Role."
+            />
+            <TextField
+              label="Status Badge Text (Metadata Opsional)"
+              value={form.lanyard_status}
+              onChange={(e) => updateField('lanyard_status', e.target.value)}
+              helperText="Catatan status internal; status aktif publik disinkronkan dari Contact availability."
             />
           </div>
         </div>
@@ -424,14 +426,14 @@ function HeroForm({ rawProfile }) {
 
       {/* Floating Labels */}
       <SectionCard
-        title="Floating Labels (Maks. 4 Slot)"
-        description="Tambahkan hingga 4 badge mengambang pada posisi sudut tetap di sekitar Lanyard."
+        title="Floating Card & Caption Tags (Maks. 4 Slot)"
+        description="Slot pertama tampil pada floating card di samping kanan portrait; slot tambahan tampil sebagai tag rapi di bawah caption."
         actions={
           <button
             type="button"
             disabled={form.floating_labels.length >= 4}
             onClick={addFloatingLabel}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold disabled:opacity-40 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold disabled:opacity-40 cursor-pointer transition-colors"
           >
             <FaPlus className="text-[10px]" /> Floating Label
           </button>
@@ -439,13 +441,13 @@ function HeroForm({ rawProfile }) {
       >
         <div className="space-y-4">
           <ToggleField
-            label="Aktifkan Floating Labels"
+            label="Aktifkan Floating Labels & Caption Tags"
             checked={form.show_floating_labels}
             onChange={(val) => updateField('show_floating_labels', val)}
           />
 
           {form.floating_labels.length === 0 ? (
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="text-xs text-muted">
               Belum ada floating labels ditambahkan.
             </p>
           ) : (
@@ -453,19 +455,19 @@ function HeroForm({ rawProfile }) {
               {form.floating_labels.map((label, idx) => (
                 <div
                   key={label.id || idx}
-                  className="p-3 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/60 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center"
+                  className="p-3 rounded-xl border border-border-subtle bg-surface-subtle/60 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center"
                 >
                   <input
                     type="text"
                     value={label.text}
                     onChange={(e) => updateFloatingLabel(idx, { text: e.target.value })}
-                    placeholder="Teks label..."
-                    className="sm:col-span-4 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm"
+                    placeholder="Teks label (mis. Web Developer)..."
+                    className="sm:col-span-4 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                   <select
                     value={label.slot}
                     onChange={(e) => updateFloatingLabel(idx, { slot: e.target.value })}
-                    className="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold"
+                    className="sm:col-span-3 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-xs font-semibold text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
                   >
                     {FLOATING_SLOTS.map((s) => (
                       <option key={s.value} value={s.value}>
@@ -478,27 +480,28 @@ function HeroForm({ rawProfile }) {
                     onChange={(e) =>
                       updateFloatingLabel(idx, { color_preset: e.target.value })
                     }
-                    className="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold"
+                    className="sm:col-span-3 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-xs font-semibold text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
                   >
-                    <option value="accent">Accent (Yellow)</option>
-                    <option value="primary">Primary (Cyan)</option>
-                    <option value="white">White</option>
+                    <option value="accent">Sunset Peach (Accent)</option>
+                    <option value="primary">Sunset Coral (Primary)</option>
+                    <option value="white">Editorial Surface (Neutral)</option>
                   </select>
                   <div className="sm:col-span-2 flex items-center justify-end gap-2">
-                    <label className="inline-flex items-center gap-1.5 text-xs font-medium cursor-pointer">
+                    <label className="inline-flex items-center gap-1.5 text-xs font-medium text-ink cursor-pointer">
                       <input
                         type="checkbox"
                         checked={label.is_visible !== false}
                         onChange={(e) =>
                           updateFloatingLabel(idx, { is_visible: e.target.checked })
                         }
+                        className="accent-primary"
                       />
                       Aktif
                     </label>
                     <button
                       type="button"
                       onClick={() => removeFloatingLabel(idx)}
-                      className="p-2 rounded-lg text-slate-400 hover:text-red-500 cursor-pointer"
+                      className="p-2 rounded-lg text-muted hover:text-red-500 cursor-pointer transition-colors"
                     >
                       <FaTrash className="text-xs" />
                     </button>
@@ -557,7 +560,7 @@ function HeroForm({ rawProfile }) {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-border-subtle">
           <ToggleField
             label="Tampilkan CTA Utama"
             checked={form.show_primary_cta}
@@ -570,6 +573,7 @@ function HeroForm({ rawProfile }) {
           />
           <ToggleField
             label="Tampilkan Scroll Indicator"
+            description="Indikator mouse-scroll interaktif menuju About Section."
             checked={form.show_scroll_indicator}
             onChange={(val) => updateField('show_scroll_indicator', val)}
           />
@@ -601,7 +605,7 @@ export function HeroManagementPage() {
     <div className="space-y-6">
       <PageHeader
         title="Hero & CV Management"
-        description="Kelola headline, badge, subheadline, Interactive Lanyard, floating labels, dan dokumen CV."
+        description="Kelola badge intro, headline gradient, typewriter subheadline, foto profil portrait, floating card, dan dokumen CV."
       />
 
       {profileQuery.isLoading ? (

@@ -1,19 +1,22 @@
-import { createElement, useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { createElement, useEffect, useMemo, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Section } from '../ui/Section';
 import { Card } from '../ui/Card';
 import { getSkillIconComponent } from '../../constants/iconRegistry';
 import { getSkillCategoryColor } from '../../constants/colorPresets';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { EDITORIAL_EASE } from '../../utils/motionVariants';
+
+const MARQUEE_DURATIONS = [28, 24, 32, 26];
 
 const SkillBadge = ({
   skill,
   type,
-  isActive,
-  onActivate,
-  onDeactivate,
-  onClick,
-  accent,
+  isSelected = false,
+  isDuplicate = false,
+  onHoverStart,
+  onHoverEnd,
+  onSelect,
 }) => {
   const iconComponent =
     skill.iconType !== 'none' && skill.iconType !== 'media' && skill.icon
@@ -22,114 +25,267 @@ const SkillBadge = ({
 
   const isExploring = type === 'exploring';
   const isPrimary = type === 'primary';
-  const hasProjects = Array.isArray(skill.projects) && skill.projects.length > 0;
+
+  const pillStyleClass = isPrimary
+    ? 'bg-surface-subtle text-ink border-border-strong/60 hover:border-primary/70'
+    : isExploring
+      ? 'bg-lavender/10 text-ink border-lavender/35 hover:border-lavender/75'
+      : 'bg-surface/75 text-ink/85 border-border-subtle hover:border-primary/65 hover:text-ink';
 
   return (
-    <div
-      className="relative"
-      onMouseEnter={onActivate}
-      onMouseLeave={onDeactivate}
+    <button
+      type="button"
+      tabIndex={isDuplicate ? -1 : 0}
+      aria-hidden={isDuplicate ? true : undefined}
+      onMouseEnter={() => onHoverStart(skill)}
+      onMouseLeave={onHoverEnd}
+      onFocus={() => {
+        if (!isDuplicate) onHoverStart(skill);
+      }}
+      onBlur={onHoverEnd}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelect(skill);
+      }}
+      className={`shrink-0 flex items-center gap-2 rounded-full border px-3.5 py-2 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 hover:shadow-sm cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${pillStyleClass} ${
+        isSelected ? 'border-primary/80 shadow-sm' : ''
+      }`}
     >
-      <motion.button
-        type="button"
-        whileHover={{ scale: 1.05, y: -4 }}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick();
-        }}
-        className={`relative flex items-center gap-2 brutal-border px-3 py-1.5 md:px-4 md:py-2 transition-all duration-300 cursor-pointer shadow-[4px_4px_0px_0px_var(--color-black)] hover:shadow-[6px_6px_0px_0px_var(--color-black)] ${
-          isPrimary
-            ? 'bg-black text-white'
-            : `bg-white text-black ${
-                accent === 'yellow' ? 'hover:bg-[#FFD60A]' : 'hover:bg-primary'
-              }`
+      {skill.iconType === 'media' && skill.iconUrl ? (
+        <img
+          src={skill.iconUrl}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="w-4 h-4 object-contain shrink-0"
+        />
+      ) : (
+        iconComponent &&
+        createElement(iconComponent, {
+          'aria-hidden': true,
+          className: `shrink-0 ${isPrimary ? 'text-base text-primary' : 'text-sm text-muted'}`,
+        })
+      )}
+
+      <span
+        className={`font-body whitespace-nowrap ${
+          isPrimary ? 'text-sm font-medium' : 'text-xs font-medium'
         }`}
       >
-        {skill.iconType === 'media' && skill.iconUrl ? (
-          <img
-            src={skill.iconUrl}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="w-5 h-5 object-contain shrink-0"
-          />
-        ) : (
-          iconComponent &&
-          createElement(iconComponent, { className: 'text-lg md:text-xl' })
-        )}
+        {skill.name}
+      </span>
+
+      {isExploring && (
         <span
-          className={`font-bold whitespace-nowrap ${
-            isPrimary ? 'text-sm md:text-base' : 'text-xs md:text-sm'
-          }`}
-        >
-          {skill.name}
-        </span>
+          className="h-1.5 w-1.5 rounded-full bg-lavender shrink-0"
+          title="Currently Exploring"
+        />
+      )}
+    </button>
+  );
+};
 
-        {isExploring && (
-          <span className="absolute -top-3 -right-3 bg-accent text-black text-[9px] font-black px-1.5 py-0.5 brutal-border rotate-[15deg]">
-            LEARNING
+const CategoryMarqueeCard = ({
+  category,
+  idx,
+  reduceMotion,
+  selectedSkillKey,
+  onSelectSkill,
+}) => {
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+
+  const categoryTint = getSkillCategoryColor(category.colorPreset);
+
+  const skills = useMemo(() => {
+    const idPrefix = category.id || category.slug || idx;
+    return [
+      ...(category.primary || []).map((skill, i) => ({
+        ...skill,
+        tier: 'primary',
+        keyBase: skill.id || `${idPrefix}-p-${skill.name}-${i}`,
+      })),
+      ...(category.supporting || []).map((skill, i) => ({
+        ...skill,
+        tier: 'supporting',
+        keyBase: skill.id || `${idPrefix}-s-${skill.name}-${i}`,
+      })),
+      ...(category.exploring || []).map((skill, i) => ({
+        ...skill,
+        tier: 'exploring',
+        keyBase: skill.id || `${idPrefix}-e-${skill.name}-${i}`,
+      })),
+    ];
+  }, [category, idx]);
+
+  const repeatCount = useMemo(
+    () => (skills.length > 0 ? Math.max(1, Math.ceil(10 / skills.length)) : 1),
+    [skills.length]
+  );
+
+  const selectedInCategory = useMemo(
+    () => skills.find((s) => s.keyBase === selectedSkillKey) || null,
+    [skills, selectedSkillKey]
+  );
+
+  const inspectedSkill = hoveredSkill || selectedInCategory;
+  const isPaused = Boolean(hoveredSkill || selectedInCategory);
+  const directionClass =
+    idx % 2 === 0 ? 'skills-marquee-left' : 'skills-marquee-right';
+  const durationSeconds = MARQUEE_DURATIONS[idx % MARQUEE_DURATIONS.length];
+
+  const tierSummary = useMemo(() => {
+    const parts = [];
+    if ((category.primary || []).length > 0) parts.push('Primary Stack');
+    if ((category.supporting || []).length > 0) parts.push('Supporting');
+    if ((category.exploring || []).length > 0) {
+      parts.push(category.learningLabel || 'Exploring');
+    }
+    return parts.join(' · ');
+  }, [category]);
+
+  const itemVariants = {
+    hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 14 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: reduceMotion ? 0.2 : 0.65,
+        delay: reduceMotion ? 0 : idx * 0.08,
+        ease: EDITORIAL_EASE,
+      },
+    },
+  };
+
+  return (
+    <motion.div
+      initial={reduceMotion ? false : 'hidden'}
+      whileInView="visible"
+      viewport={{ once: true, margin: '-60px' }}
+      variants={itemVariants}
+      className="h-full min-w-0"
+    >
+      <Card
+        className={`h-full min-w-0 flex flex-col justify-between gap-5 p-6 sm:p-7 hover:border-border-strong ${categoryTint}`}
+      >
+        <div className="pb-4 border-b border-border-subtle flex items-center justify-between gap-3">
+          <h3 className="font-heading text-xl font-medium text-ink truncate">
+            {category.category}
+          </h3>
+          <span className="font-body text-xs text-muted shrink-0">
+            {skills.length} skills
           </span>
-        )}
-      </motion.button>
+        </div>
 
-      {/* Tooltip */}
-      <AnimatePresence>
-        {isActive && hasProjects && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-4 w-48 sm:w-56 bg-white brutal-border p-3 shadow-[4px_4px_0px_0px_var(--color-black)] pointer-events-none"
+        {/* Seamless Infinite Marquee (or wrapped static grid when reduced motion is enabled) */}
+        {reduceMotion ? (
+          <div className="flex flex-wrap gap-2 py-1">
+            {skills.map((skill) => (
+              <SkillBadge
+                key={skill.keyBase}
+                skill={skill}
+                type={skill.tier}
+                isSelected={selectedSkillKey === skill.keyBase}
+                onHoverStart={setHoveredSkill}
+                onHoverEnd={() => setHoveredSkill(null)}
+                onSelect={onSelectSkill}
+              />
+            ))}
+          </div>
+        ) : (
+          <div
+            data-paused={isPaused ? 'true' : 'false'}
+            className="skills-marquee skills-marquee-mask relative w-full overflow-hidden py-2.5"
           >
-            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-b-4 border-r-4 border-black rotate-45" />
-            <p className="text-xs font-bold opacity-70 mb-2 uppercase tracking-wider text-black relative z-10">
-              Used In:
-            </p>
-            <ul className="space-y-1 relative z-10">
-              {skill.projects.map((project, idx) => (
-                <li
-                  key={idx}
-                  className="text-sm font-bold flex items-start gap-2 text-black leading-tight"
+            <div
+              className={`skills-marquee-track ${directionClass}`}
+              style={{ '--marquee-duration': `${durationSeconds}s` }}
+            >
+              {[0, 1].map((copyIdx) => (
+                <div
+                  key={copyIdx}
+                  aria-hidden={copyIdx === 1 ? true : undefined}
+                  className="flex items-center shrink-0"
                 >
-                  <span className="text-primary mt-0.5">▶</span> {project}
-                </li>
+                  {Array.from({ length: repeatCount }).map((_, repeatIdx) => {
+                    const isCanonicalPass = copyIdx === 0 && repeatIdx === 0;
+                    return (
+                      <div
+                        key={repeatIdx}
+                        aria-hidden={!isCanonicalPass ? true : undefined}
+                        className="flex items-center gap-2.5 pr-2.5 shrink-0"
+                      >
+                        {skills.map((skill) => (
+                          <SkillBadge
+                            key={`${copyIdx}-${repeatIdx}-${skill.keyBase}`}
+                            skill={skill}
+                            type={skill.tier}
+                            isSelected={selectedSkillKey === skill.keyBase}
+                            isDuplicate={!isCanonicalPass}
+                            onHoverStart={setHoveredSkill}
+                            onHoverEnd={() => setHoveredSkill(null)}
+                            onSelect={onSelectSkill}
+                          />
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
               ))}
-            </ul>
-          </motion.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
-    </div>
+
+        {/* Quiet Applied-In Detail Bar (stays clean without overflow clipping) */}
+        <div className="pt-3 border-t border-border-subtle min-h-7 flex items-center justify-between gap-3">
+          {inspectedSkill ? (
+            <p className="font-body text-xs text-muted truncate">
+              <span className="font-medium text-ink">{inspectedSkill.name}</span>
+              {Array.isArray(inspectedSkill.projects) &&
+              inspectedSkill.projects.length > 0 ? (
+                <span>
+                  {' '}
+                  · Applied in{' '}
+                  <span className="text-ink/85">
+                    {inspectedSkill.projects.join(', ')}
+                  </span>
+                </span>
+              ) : (
+                <span> · Core stack & ongoing learning</span>
+              )}
+            </p>
+          ) : (
+            <p className="font-body text-[11px] uppercase tracking-[0.16em] text-muted/80 truncate">
+              {tierSummary}
+            </p>
+          )}
+        </div>
+      </Card>
+    </motion.div>
   );
 };
 
 export const SkillsSection = ({ sectionConfig }) => {
   const { data } = usePortfolioData();
   const { expertise } = data;
-  const [activeTooltip, setActiveTooltip] = useState(null);
+  const [selectedSkillKey, setSelectedSkillKey] = useState(null);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    const handleClickOutside = () => setActiveTooltip(null);
+    const handleClickOutside = () => setSelectedSkillKey(null);
     window.addEventListener('click', handleClickOutside);
     return () => window.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4 } },
+  const handleSelectSkill = (skill) => {
+    setSelectedSkillKey((prev) =>
+      prev === skill.keyBase ? null : skill.keyBase
+    );
   };
 
   return (
     <Section
       id="expertise"
+      eyebrow="02 / Expertise"
       title={sectionConfig?.title || 'Core Expertise'}
       subtitle={
         sectionConfig?.subtitle ||
@@ -137,148 +293,17 @@ export const SkillsSection = ({ sectionConfig }) => {
       }
       alignment={sectionConfig?.contentAlignment || 'left'}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-        {expertise.map((category, idx) => {
-          const categoryBg = getSkillCategoryColor(category.colorPreset);
-          const primaryList = category.primary || [];
-          const supportingList = category.supporting || [];
-          const exploringList = category.exploring || [];
-
-          return (
-            <motion.div
-              key={category.id || category.slug || idx}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-50px' }}
-              variants={containerVariants}
-              className="h-full"
-            >
-              <Card
-                className={`h-full flex flex-col ${categoryBg} ${
-                  categoryBg === 'bg-white' ? '' : 'text-black'
-                }`}
-              >
-                <h3
-                  className={`text-2xl font-black mb-6 border-b-4 pb-2 inline-block self-start ${
-                    category.accent === 'yellow' ? 'border-[#FFD60A]' : 'border-black'
-                  }`}
-                >
-                  {category.category}
-                </h3>
-
-                {/* Primary Stack */}
-                {primaryList.length > 0 && (
-                  <div className="mb-8">
-                    <h4 className="text-xs font-bold opacity-70 mb-3 uppercase tracking-wider flex items-center gap-2">
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          category.accent === 'yellow' ? 'bg-[#FFD60A]' : 'bg-black'
-                        }`}
-                      />{' '}
-                      Primary Stack
-                    </h4>
-                    <div className="flex flex-wrap gap-3 md:gap-4">
-                      {primaryList.map((skill, skillIdx) => {
-                        const tooltipKey = skill.id || `${category.id}-p-${skill.name}-${skillIdx}`;
-                        return (
-                          <motion.div key={tooltipKey} variants={itemVariants}>
-                            <SkillBadge
-                              skill={skill}
-                              type="primary"
-                              isActive={activeTooltip === tooltipKey}
-                              onActivate={() => setActiveTooltip(tooltipKey)}
-                              onDeactivate={() => setActiveTooltip(null)}
-                              onClick={() =>
-                                setActiveTooltip(
-                                  activeTooltip === tooltipKey ? null : tooltipKey
-                                )
-                              }
-                              accent={category.accent}
-                            />
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Supporting Stack */}
-                {supportingList.length > 0 && (
-                  <div className={exploringList.length > 0 ? 'mb-8' : 'mt-auto'}>
-                    <h4 className="text-xs font-bold opacity-70 mb-3 uppercase tracking-wider flex items-center gap-2">
-                      <span
-                        className={`w-2 h-2 bg-white border-2 rounded-full ${
-                          category.accent === 'yellow'
-                            ? 'border-[#FFD60A]'
-                            : 'border-black'
-                        }`}
-                      />{' '}
-                      Supporting
-                    </h4>
-                    <div className="flex flex-wrap gap-2 md:gap-3">
-                      {supportingList.map((skill, skillIdx) => {
-                        const tooltipKey = skill.id || `${category.id}-s-${skill.name}-${skillIdx}`;
-                        return (
-                          <motion.div key={tooltipKey} variants={itemVariants}>
-                            <SkillBadge
-                              skill={skill}
-                              type="supporting"
-                              isActive={activeTooltip === tooltipKey}
-                              onActivate={() => setActiveTooltip(tooltipKey)}
-                              onDeactivate={() => setActiveTooltip(null)}
-                              onClick={() =>
-                                setActiveTooltip(
-                                  activeTooltip === tooltipKey ? null : tooltipKey
-                                )
-                              }
-                              accent={category.accent}
-                            />
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Learning / Exploring */}
-                {exploringList.length > 0 && (
-                  <div className="mt-2">
-                    <h4 className="text-xs font-bold opacity-70 mb-3 uppercase tracking-wider flex items-center gap-2">
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          category.accent === 'yellow' ? 'bg-[#FFD60A]' : 'bg-black'
-                        }`}
-                      />{' '}
-                      {category.learningLabel || 'Currently Exploring'}
-                    </h4>
-                    <div className="flex flex-wrap gap-4">
-                      {exploringList.map((skill, skillIdx) => {
-                        const tooltipKey = skill.id || `${category.id}-l-${skill.name}-${skillIdx}`;
-                        return (
-                          <motion.div key={tooltipKey} variants={itemVariants}>
-                            <SkillBadge
-                              skill={skill}
-                              type="exploring"
-                              isActive={activeTooltip === tooltipKey}
-                              onActivate={() => setActiveTooltip(tooltipKey)}
-                              onDeactivate={() => setActiveTooltip(null)}
-                              onClick={() =>
-                                setActiveTooltip(
-                                  activeTooltip === tooltipKey ? null : tooltipKey
-                                )
-                              }
-                              accent={category.accent}
-                            />
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </Card>
-            </motion.div>
-          );
-        })}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-7 items-stretch">
+        {(expertise || []).map((category, idx) => (
+          <CategoryMarqueeCard
+            key={category.id || category.slug || idx}
+            category={category}
+            idx={idx}
+            reduceMotion={reduceMotion}
+            selectedSkillKey={selectedSkillKey}
+            onSelectSkill={handleSelectSkill}
+          />
+        ))}
       </div>
     </Section>
   );

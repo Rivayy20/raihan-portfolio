@@ -1,16 +1,33 @@
-export const Input = ({ label, type = 'text', as = 'input', className = '', ...props }) => {
-  const baseClasses = "w-full bg-white text-black p-4 border-4 border-black outline-none focus:bg-[#f4f3ec] dark:focus:bg-[#2A2A2A] transition-colors brutal-shadow focus:translate-y-[4px] focus:translate-x-[4px] focus:shadow-none font-medium";
-  
+import { useId } from 'react';
+
+export const Input = ({
+  id,
+  label,
+  type = 'text',
+  as = 'input',
+  className = '',
+  ...props
+}) => {
+  const generatedId = useId();
+  const inputId = id || generatedId;
   const Component = as;
+
+  const baseClasses = `w-full rounded-xl bg-canvas/75 dark:bg-canvas/65 text-ink px-4 py-3.5 text-sm border border-border-subtle hover:border-border-strong/80 placeholder:text-muted/65 outline-none transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/18 focus:bg-surface disabled:opacity-60 ${
+    as === 'textarea' ? 'resize-y' : ''
+  }`;
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
-        <label className="font-heading font-bold text-lg">
+        <label
+          htmlFor={inputId}
+          className="font-body text-xs font-medium uppercase tracking-[0.14em] text-muted"
+        >
           {label}
         </label>
       )}
-      <Component 
+      <Component
+        id={inputId}
         type={as === 'input' ? type : undefined}
         className={baseClasses}
         {...props}

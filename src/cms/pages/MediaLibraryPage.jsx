@@ -53,7 +53,7 @@ function ListThumb({ asset }) {
   }
 
   return (
-    <div className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 overflow-hidden shrink-0">
+    <div className="w-11 h-11 rounded-xl bg-surface-subtle border border-border-subtle overflow-hidden shrink-0">
       {url && (
         <img
           src={url}
@@ -213,10 +213,10 @@ export function MediaLibraryPage() {
         <div className="flex items-center gap-3 min-w-0">
           <ListThumb asset={row} />
           <div className="min-w-0">
-            <p className="font-semibold text-slate-900 dark:text-zinc-100 truncate max-w-[260px]">
+            <p className="font-semibold text-ink truncate max-w-65">
               {row.original_name}
             </p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 truncate max-w-[260px]">
+            <p className="text-xs text-muted truncate max-w-65">
               {row.alt_text || row.storage_path}
             </p>
           </div>
@@ -227,7 +227,7 @@ export function MediaLibraryPage() {
       key: 'category',
       label: 'Kategori',
       render: (row) => (
-        <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-zinc-800 text-xs font-semibold">
+        <span className="px-2.5 py-1 rounded-lg bg-surface-subtle text-xs font-semibold text-ink">
           {getMediaCategoryMeta(row.category)?.label || row.category}
         </span>
       ),
@@ -251,8 +251,8 @@ export function MediaLibraryPage() {
       label: 'Ukuran',
       render: (row) => (
         <div className="text-xs">
-          <p className="font-semibold">{formatFileSize(row.size_bytes)}</p>
-          <p className="text-slate-500 dark:text-zinc-400">
+          <p className="font-semibold text-ink">{formatFileSize(row.size_bytes)}</p>
+          <p className="text-muted">
             {row.width && row.height ? `${row.width}×${row.height}` : row.file_ext.toUpperCase()}
           </p>
         </div>
@@ -268,7 +268,7 @@ export function MediaLibraryPage() {
             type="button"
             onClick={() => setDetailAsset(row)}
             title="Detail & Preview"
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaEye className="text-xs" />
           </button>
@@ -276,7 +276,7 @@ export function MediaLibraryPage() {
             type="button"
             onClick={() => handleCopyUrl(row)}
             title="Salin URL"
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaCopy className="text-xs" />
           </button>
@@ -284,7 +284,7 @@ export function MediaLibraryPage() {
             type="button"
             onClick={() => handleRequestDelete(row)}
             title="Hapus Aset"
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
           >
             <FaTrash className="text-xs" />
           </button>
@@ -299,7 +299,7 @@ export function MediaLibraryPage() {
         title="Media Library"
         description="Kelola gambar dan dokumen PDF yang tersimpan pada Supabase Storage secara terpusat."
         badge={
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-300">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-subtle border border-border-subtle text-xs font-semibold text-ink">
             {assets.length} Aset
           </span>
         }
@@ -308,21 +308,21 @@ export function MediaLibraryPage() {
             <button
               type="button"
               onClick={handleRefresh}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
             >
               <FaSyncAlt className={mediaQuery.isFetching ? 'animate-spin' : ''} /> Refresh
             </button>
             <button
               type="button"
               onClick={() => setIsMigrateConfirmOpen(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
             >
-              <FaMagic className="text-[#00B4D8]" /> Migrasi Aset Lokal
+              <FaMagic className="text-primary" /> Migrasi Aset Lokal
             </button>
             <button
               type="button"
               onClick={() => setShowUploadPanel((prev) => !prev)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold transition-colors cursor-pointer"
             >
               <FaCloudUploadAlt />
               {showUploadPanel ? 'Tutup Upload Panel' : 'Upload Media'}
@@ -341,23 +341,23 @@ export function MediaLibraryPage() {
       )}
 
       {/* Filter & Search Toolbar */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <div className="bg-surface border border-border-subtle rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div className="flex flex-col sm:flex-row flex-1 gap-3">
           <div className="relative flex-1 sm:max-w-xs">
-            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none" />
+            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted/70 text-xs pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari nama file atau alt text..."
-              className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B4D8]"
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch('')}
                 aria-label="Hapus pencarian"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-ink p-1 cursor-pointer transition-colors"
               >
                 <FaTimes className="text-xs" />
               </button>
@@ -368,7 +368,7 @@ export function MediaLibraryPage() {
             aria-label="Filter kategori"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+            className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
           >
             <option value="all">Semua Kategori</option>
             {MEDIA_CATEGORIES.map((c) => (
@@ -382,7 +382,7 @@ export function MediaLibraryPage() {
             aria-label="Filter tipe file"
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+            className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
           >
             <option value="all">Semua Tipe</option>
             <option value="image">Images (JPG/PNG/WebP)</option>
@@ -393,7 +393,7 @@ export function MediaLibraryPage() {
             aria-label="Filter visibilitas"
             value={visibilityFilter}
             onChange={(e) => setVisibilityFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+            className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
           >
             <option value="all">Semua Visibilitas</option>
             <option value="public">Public Only</option>
@@ -402,15 +402,15 @@ export function MediaLibraryPage() {
         </div>
 
         {/* View Switcher */}
-        <div className="flex items-center gap-1 self-end lg:self-auto bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl shrink-0">
+        <div className="flex items-center gap-1 self-end lg:self-auto bg-surface-subtle border border-border-subtle p-1 rounded-xl shrink-0">
           <button
             type="button"
             onClick={() => setViewMode('grid')}
             aria-label="Tampilan Grid"
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
               viewMode === 'grid'
-                ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-zinc-100 shadow-xs'
-                : 'text-slate-500 dark:text-zinc-400'
+                ? 'bg-surface text-ink shadow-xs'
+                : 'text-muted hover:text-ink'
             }`}
           >
             <FaThLarge /> Grid
@@ -421,8 +421,8 @@ export function MediaLibraryPage() {
             aria-label="Tampilan List"
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
               viewMode === 'list'
-                ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-zinc-100 shadow-xs'
-                : 'text-slate-500 dark:text-zinc-400'
+                ? 'bg-surface text-ink shadow-xs'
+                : 'text-muted hover:text-ink'
             }`}
           >
             <FaList /> List
@@ -444,7 +444,7 @@ export function MediaLibraryPage() {
             <button
               type="button"
               onClick={() => setShowUploadPanel(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
             >
               <FaCloudUploadAlt /> Upload Media Pertama
             </button>
@@ -455,7 +455,7 @@ export function MediaLibraryPage() {
           {Array.from({ length: 8 }).map((_, idx) => (
             <div
               key={idx}
-              className="h-60 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 animate-pulse"
+              className="h-60 rounded-2xl bg-surface border border-border-subtle animate-pulse"
             />
           ))}
         </div>
@@ -474,7 +474,7 @@ export function MediaLibraryPage() {
             <button
               type="button"
               onClick={() => setShowUploadPanel(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
             >
               <FaCloudUploadAlt /> Upload Media Sekarang
             </button>

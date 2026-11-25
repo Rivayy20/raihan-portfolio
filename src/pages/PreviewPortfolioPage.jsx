@@ -38,17 +38,17 @@ function PreviewBanner({
   return (
     <div
       ref={bannerRef}
-      className="sticky top-0 z-[60] bg-zinc-950 text-white border-b border-zinc-800 px-3 sm:px-4 py-2"
+      className="sticky top-0 z-60 bg-[#171719] text-[#F6F3EE] border-b border-white/10 px-3 sm:px-4 py-2 font-body"
     >
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2.5 text-xs sm:text-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex items-center p-0.5 rounded-lg bg-zinc-900 border border-zinc-800">
+          <div className="inline-flex items-center p-0.5 rounded-full bg-white/5 border border-white/10">
             <button
               type="button"
               onClick={() => onModeChange('draft')}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
                 previewMode === 'draft'
-                  ? 'bg-[#00E5FF] text-black'
+                  ? 'bg-primary text-white shadow-xs'
                   : 'text-zinc-300 hover:text-white'
               }`}
             >
@@ -57,9 +57,9 @@ function PreviewBanner({
             <button
               type="button"
               onClick={() => onModeChange('published')}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
                 previewMode === 'published'
-                  ? 'bg-emerald-400 text-black'
+                  ? 'bg-emerald-500 text-white shadow-xs'
                   : 'text-zinc-300 hover:text-white'
               }`}
             >
@@ -68,9 +68,9 @@ function PreviewBanner({
           </div>
 
           <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
               pendingDraftCount > 0
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                ? 'bg-accent/15 text-accent border border-accent/35'
                 : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
             }`}
           >
@@ -91,7 +91,7 @@ function PreviewBanner({
             type="button"
             onClick={onRefresh}
             disabled={isFetching}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
           >
             <FaSyncAlt className={isFetching ? 'animate-spin text-[11px]' : 'text-[11px]'} />
             <span className="hidden sm:inline">Refresh</span>
@@ -99,7 +99,7 @@ function PreviewBanner({
 
           <Link
             to="/admin"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/15 text-xs font-semibold transition-colors"
           >
             <FaArrowLeft className="text-[11px]" /> Kembali ke CMS
           </Link>
@@ -107,7 +107,7 @@ function PreviewBanner({
           <button
             type="button"
             onClick={handleLogout}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-300 text-xs font-semibold transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/15 hover:bg-red-500/25 text-red-300 text-xs font-semibold transition-colors cursor-pointer"
           >
             <FaSignOutAlt className="text-[11px]" /> Logout
           </button>
@@ -175,16 +175,16 @@ function PreviewShell() {
       {previewQuery.isLoading ? (
         <AdminLoadingScreen message="Memuat pratinjau konten draft & live..." />
       ) : previewQuery.error ? (
-        <div className="min-h-[70vh] flex items-center justify-center p-6 bg-slate-50 dark:bg-zinc-950">
-          <div className="max-w-md w-full bg-white dark:bg-zinc-900 border border-red-200 dark:border-red-900 rounded-2xl p-6 text-center space-y-4 shadow-sm">
+        <div className="min-h-[70vh] flex items-center justify-center p-6 bg-canvas text-ink font-body">
+          <div className="max-w-md w-full bg-surface border border-red-200 dark:border-red-900 rounded-2xl p-6 text-center space-y-4 shadow-sm">
             <div className="w-12 h-12 mx-auto rounded-2xl bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center text-xl">
               <FaExclamationTriangle />
             </div>
             <div>
-              <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-zinc-100">
+              <h2 className="font-heading text-lg font-bold text-ink">
                 Gagal Memuat Preview Mode
               </h2>
-              <p className="text-sm text-slate-600 dark:text-zinc-400 mt-1">
+              <p className="text-sm text-muted mt-1">
                 {previewQuery.error.message ||
                   'Terjadi kesalahan saat membaca data CMS dari Supabase.'}
               </p>
@@ -192,7 +192,7 @@ function PreviewShell() {
             <button
               type="button"
               onClick={() => previewQuery.refetch()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-sm font-semibold cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary hover:bg-[#f25858] text-white text-sm font-semibold cursor-pointer transition-colors"
             >
               <FaSyncAlt /> Coba Lagi
             </button>

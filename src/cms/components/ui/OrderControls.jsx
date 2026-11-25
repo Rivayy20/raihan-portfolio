@@ -21,7 +21,7 @@ export function OrderControls({
         }}
         title="Pindah ke atas"
         aria-label="Pindah ke atas"
-        className="w-7 h-7 rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 flex items-center justify-center text-slate-600 dark:text-zinc-300 hover:border-[#00B4D8] hover:text-[#0096B4] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+        className="w-7 h-7 rounded-lg border border-border-subtle bg-surface flex items-center justify-center text-muted hover:border-primary hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
       >
         <FaArrowUp className="text-[10px]" />
       </button>
@@ -34,7 +34,7 @@ export function OrderControls({
         }}
         title="Pindah ke bawah"
         aria-label="Pindah ke bawah"
-        className="w-7 h-7 rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 flex items-center justify-center text-slate-600 dark:text-zinc-300 hover:border-[#00B4D8] hover:text-[#0096B4] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+        className="w-7 h-7 rounded-lg border border-border-subtle bg-surface flex items-center justify-center text-muted hover:border-primary hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
       >
         <FaArrowDown className="text-[10px]" />
       </button>

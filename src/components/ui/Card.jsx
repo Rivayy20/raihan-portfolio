@@ -1,10 +1,6 @@
-export const Card = ({ children, className = '', ...props }) => {
-  const hasBg = className.includes('bg-');
+export const Card = ({ ref, children, className = '', ...props }) => {
   return (
-    <div 
-      className={`brutal-card ${hasBg ? '' : 'bg-white'} ${className}`}
-      {...props}
-    >
+    <div ref={ref} className={`editorial-card p-6 ${className}`} {...props}>
       {children}
     </div>
   );

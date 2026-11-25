@@ -37,11 +37,11 @@ import { PageHeader } from '../components/ui/PageHeader';
 import { StatusBadge } from '../components/ui/StatusBadge';
 
 const CERT_SWATCHES = [
-  { key: 'white', label: 'White' },
-  { key: 'primary', label: 'Primary (Cyan)' },
-  { key: 'accent', label: 'Accent (Yellow)' },
-  { key: 'teal', label: 'Teal' },
-  { key: 'yellow', label: 'Soft Yellow' },
+  { key: 'white', label: 'Editorial Surface' },
+  { key: 'primary', label: 'Coral Tint' },
+  { key: 'accent', label: 'Peach Tint' },
+  { key: 'teal', label: 'Rose Tint' },
+  { key: 'yellow', label: 'Sunset Orange Tint' },
 ];
 
 const certificationSchema = z.object({
@@ -218,7 +218,7 @@ function CertificationForm({ item, totalCount, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 text-xs font-semibold cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           <FaTimes /> Tutup
         </button>
@@ -299,7 +299,7 @@ function CertificationForm({ item, totalCount, onClose }) {
           <button
             type="button"
             onClick={() => setIsTestViewerOpen(true)}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:border-[#00B4D8] text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:border-primary text-xs font-semibold text-ink cursor-pointer transition-colors"
           >
             <FaFilePdf className="text-red-500" /> Test PDF di Certificate Viewer Modal
           </button>
@@ -307,7 +307,7 @@ function CertificationForm({ item, totalCount, onClose }) {
       </div>
 
       <div className="mt-4 space-y-2">
-        <span className="block text-sm font-semibold text-slate-800 dark:text-zinc-200">
+        <span className="block text-sm font-semibold text-ink">
           Warna Kartu Sertifikasi
         </span>
         <div className="flex flex-wrap gap-2">
@@ -318,14 +318,14 @@ function CertificationForm({ item, totalCount, onClose }) {
                 key={sw.key}
                 type="button"
                 onClick={() => updateField('color_preset', sw.key)}
-                className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold cursor-pointer ${
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold text-ink cursor-pointer transition-all ${
                   active
-                    ? 'border-[#00B4D8] ring-2 ring-[#00B4D8]/30'
-                    : 'border-slate-200 dark:border-zinc-700'
+                    ? 'border-primary ring-2 ring-primary/30 bg-primary/8'
+                    : 'border-border-subtle bg-surface hover:border-border-strong'
                 }`}
               >
                 <span
-                  className={`w-4 h-4 rounded-md border border-black/30 ${
+                  className={`w-4 h-4 rounded-md border border-border-strong ${
                     CERTIFICATION_CARD_COLORS[sw.key] || ''
                   }`}
                 />
@@ -336,7 +336,7 @@ function CertificationForm({ item, totalCount, onClose }) {
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
+      <div className="mt-4 pt-4 border-t border-border-subtle">
         <ToggleField
           label="Visible di Website"
           checked={form.is_visible}
@@ -459,8 +459,8 @@ export function CertificationsManagementPage() {
         const eff = resolveEffectiveRecord(row);
         return (
           <div>
-            <p className="font-semibold text-slate-900 dark:text-zinc-100">{eff.title}</p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="font-semibold text-ink">{eff.title}</p>
+            <p className="text-xs text-muted">
               {eff.issuer} · {eff.issue_date_label}
             </p>
           </div>
@@ -477,7 +477,7 @@ export function CertificationsManagementPage() {
             <FaFilePdf className="text-red-500" /> Terlampir
           </span>
         ) : (
-          <span className="text-xs text-slate-400">Belum dilampirkan</span>
+          <span className="text-xs text-muted">Belum dilampirkan</span>
         );
       },
     },
@@ -510,14 +510,14 @@ export function CertificationsManagementPage() {
               setIsCreating(false);
               setEditingItem(row);
             }}
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaEdit className="text-xs" />
           </button>
           <button
             type="button"
             onClick={() => setDeleteTarget(row)}
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
           >
             <FaTrash className="text-xs" />
           </button>
@@ -530,7 +530,7 @@ export function CertificationsManagementPage() {
     <div className="space-y-6">
       <PageHeader
         title="Certifications Management"
-        description="Kelola sertifikat profesional, status verifikasi, dan dokumen PDF sertifikat."
+        description="Kelola kartu sertifikasi Bento expandable, status verifikasi, dan dokumen PDF sertifikat."
         actions={
           <button
             type="button"
@@ -538,7 +538,7 @@ export function CertificationsManagementPage() {
               setEditingItem(null);
               setIsCreating(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
           >
             <FaPlus /> Tambah Sertifikasi
           </button>
@@ -567,7 +567,7 @@ export function CertificationsManagementPage() {
           <select
             value={verFilter}
             onChange={(e) => setVerFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+            className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
           >
             <option value="all">Semua Verifikasi</option>
             <option value="verified">Verified</option>

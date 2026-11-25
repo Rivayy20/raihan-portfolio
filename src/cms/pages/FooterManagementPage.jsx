@@ -176,7 +176,7 @@ function FooterForm({ rawFooter }) {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-zinc-800">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5 pt-4 border-t border-border-subtle">
           <ToggleField
             label="Tampilkan Availability Badge"
             description="Mengambil teks dari Contact Settings."
@@ -201,30 +201,30 @@ function FooterForm({ rawFooter }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link
           to="/admin/navbar"
-          className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 hover:border-[#00B4D8] flex items-center justify-between gap-3 transition-colors"
+          className="p-4 rounded-2xl bg-surface border border-border-subtle hover:border-primary/60 flex items-center justify-between gap-3 transition-colors"
         >
           <div>
-            <p className="font-heading font-bold text-sm">Kelola Quick Links</p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="font-heading font-bold text-sm text-ink">Kelola Quick Links</p>
+            <p className="text-xs text-muted">
               Ubah daftar menu yang muncul di Footer melalui Navbar Management
             </p>
           </div>
-          <FaExternalLinkAlt className="text-xs text-[#00B4D8] shrink-0" />
+          <FaExternalLinkAlt className="text-xs text-primary shrink-0" />
         </Link>
 
         <Link
           to="/admin/contact"
-          className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 hover:border-[#00B4D8] flex items-center justify-between gap-3 transition-colors"
+          className="p-4 rounded-2xl bg-surface border border-border-subtle hover:border-primary/60 flex items-center justify-between gap-3 transition-colors"
         >
           <div>
-            <p className="font-heading font-bold text-sm">
+            <p className="font-heading font-bold text-sm text-ink">
               Kelola Availability &amp; Social Links
             </p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="text-xs text-muted">
               Diambil terpusat dari modul Contact &amp; Social Links
             </p>
           </div>
-          <FaExternalLinkAlt className="text-xs text-[#00B4D8] shrink-0" />
+          <FaExternalLinkAlt className="text-xs text-primary shrink-0" />
         </Link>
       </div>
 

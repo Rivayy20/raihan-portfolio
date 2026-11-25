@@ -38,14 +38,14 @@ import { PageHeader } from '../components/ui/PageHeader';
 import { StatusBadge } from '../components/ui/StatusBadge';
 
 const CATEGORY_SWATCHES = [
-  { key: 'teal', label: 'Teal' },
-  { key: 'purple', label: 'Purple' },
-  { key: 'yellow', label: 'Yellow' },
-  { key: 'blue', label: 'Blue' },
-  { key: 'cyan', label: 'Cyan' },
-  { key: 'coral', label: 'Coral' },
-  { key: 'mint', label: 'Mint' },
-  { key: 'white', label: 'White' },
+  { key: 'teal', label: 'Coral Glow' },
+  { key: 'purple', label: 'Twilight Lavender' },
+  { key: 'yellow', label: 'Sunset Peach' },
+  { key: 'blue', label: 'Rose Violet' },
+  { key: 'cyan', label: 'Sunset Orange' },
+  { key: 'coral', label: 'Coral Soft' },
+  { key: 'mint', label: 'Lavender Peach' },
+  { key: 'white', label: 'Editorial Surface' },
 ];
 
 const categorySchema = z.object({
@@ -74,8 +74,8 @@ function SkillThumb({ iconType, iconKey, iconMediaId }) {
   if (iconType === 'preset') {
     const iconComp = getSkillIconComponent(iconKey);
     return (
-      <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 flex items-center justify-center text-base shrink-0">
-        {iconComp ? createElement(iconComp) : <span className="text-[10px] text-slate-400">?</span>}
+      <div className="w-8 h-8 rounded-lg bg-surface-subtle border border-border-subtle flex items-center justify-center text-base text-ink shrink-0">
+        {iconComp ? createElement(iconComp) : <span className="text-[10px] text-muted">?</span>}
       </div>
     );
   }
@@ -85,13 +85,13 @@ function SkillThumb({ iconType, iconKey, iconMediaId }) {
       <img
         src={url}
         alt="Skill icon"
-        className="w-8 h-8 rounded-lg object-contain bg-white border border-slate-200 dark:border-zinc-700 p-0.5 shrink-0"
+        className="w-8 h-8 rounded-lg object-contain bg-surface border border-border-subtle p-0.5 shrink-0"
       />
     );
   }
 
   return (
-    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 flex items-center justify-center text-[10px] text-slate-400 shrink-0">
+    <div className="w-8 h-8 rounded-lg bg-surface-subtle border border-border-subtle flex items-center justify-center text-[10px] text-muted shrink-0">
       —
     </div>
   );
@@ -250,7 +250,7 @@ function CategoryForm({ item, totalCount, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 text-xs font-semibold cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           <FaTimes /> Tutup
         </button>
@@ -278,9 +278,9 @@ function CategoryForm({ item, totalCount, onClose }) {
           value={form.accent_preset}
           onChange={(e) => updateField('accent_preset', e.target.value)}
           options={[
-            { value: 'default', label: 'Default (Black Border & Cyan Hover)' },
-            { value: 'yellow', label: 'Yellow Accent' },
-            { value: 'primary', label: 'Primary Cyan Accent' },
+            { value: 'default', label: 'Default (Editorial Border & Coral Hover)' },
+            { value: 'yellow', label: 'Sunset Peach Accent' },
+            { value: 'primary', label: 'Sunset Coral Accent' },
           ]}
         />
         <TextField
@@ -294,8 +294,8 @@ function CategoryForm({ item, totalCount, onClose }) {
       </div>
 
       <div className="mt-4 space-y-2">
-        <span className="block text-sm font-semibold text-slate-800 dark:text-zinc-200">
-          Warna Kartu Kategori (Color Preset)
+        <span className="block text-sm font-semibold text-ink">
+          Warna Kartu Marquee (Color Preset)
         </span>
         <div className="flex flex-wrap gap-2">
           {CATEGORY_SWATCHES.map((swatch) => {
@@ -305,14 +305,14 @@ function CategoryForm({ item, totalCount, onClose }) {
                 key={swatch.key}
                 type="button"
                 onClick={() => updateField('color_preset', swatch.key)}
-                className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold text-ink cursor-pointer transition-all ${
                   active
-                    ? 'border-[#00B4D8] ring-2 ring-[#00B4D8]/30'
-                    : 'border-slate-200 dark:border-zinc-700'
+                    ? 'border-primary ring-2 ring-primary/30 bg-primary/8'
+                    : 'border-border-subtle bg-surface hover:border-border-strong'
                 }`}
               >
                 <span
-                  className={`w-4 h-4 rounded-md border border-black/30 ${
+                  className={`w-4 h-4 rounded-md border border-border-strong ${
                     SKILL_CATEGORY_COLORS[swatch.key] || ''
                   }`}
                 />
@@ -323,7 +323,7 @@ function CategoryForm({ item, totalCount, onClose }) {
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
+      <div className="mt-4 pt-4 border-t border-border-subtle">
         <ToggleField
           label="Tampilkan Kategori di Portfolio"
           checked={form.is_visible}
@@ -511,7 +511,7 @@ function SkillForm({ item, categories, skillsInCategoryCount, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 text-xs font-semibold cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           <FaTimes /> Tutup
         </button>
@@ -546,7 +546,7 @@ function SkillForm({ item, categories, skillsInCategoryCount, onClose }) {
           options={[
             { value: 'primary', label: 'Primary Stack' },
             { value: 'supporting', label: 'Supporting' },
-            { value: 'learning', label: 'Learning (Badge Miring)' },
+            { value: 'learning', label: 'Learning (Currently Exploring)' },
           ]}
         />
       </div>
@@ -573,19 +573,19 @@ function SkillForm({ item, categories, skillsInCategoryCount, onClose }) {
       </div>
 
       {form.icon_type === 'preset' && (
-        <div className="mt-4 p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/60 space-y-3">
+        <div className="mt-4 p-4 rounded-xl border border-border-subtle bg-surface-subtle/60 space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted">
               Pilih Ikon Teknologi ({filteredIcons.length})
             </span>
             <div className="relative w-full sm:w-60">
-              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs" />
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted/70 text-xs" />
               <input
                 type="text"
                 value={iconSearch}
                 onChange={(e) => setIconSearch(e.target.value)}
                 placeholder="Cari ikon (mis. react, python)..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs"
+                className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-border-subtle bg-surface text-xs text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           </div>
@@ -601,8 +601,8 @@ function SkillForm({ item, categories, skillsInCategoryCount, onClose }) {
                   onClick={() => updateField('icon_key', entry.key)}
                   className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-1 text-center transition-all cursor-pointer ${
                     selected
-                      ? 'border-[#00B4D8] bg-[#00E5FF]/15 text-[#0096B4] dark:text-[#00E5FF] ring-1 ring-[#00B4D8]'
-                      : 'border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-slate-300'
+                      ? 'border-primary bg-primary/12 text-primary ring-1 ring-primary'
+                      : 'border-border-subtle bg-surface text-ink hover:border-border-strong'
                   }`}
                 >
                   <Icon className="text-lg" />
@@ -812,13 +812,13 @@ export function ExpertiseManagementPage() {
         return (
           <div className="flex items-center gap-3">
             <span
-              className={`w-6 h-6 rounded-lg border border-black/30 shrink-0 ${
+              className={`w-6 h-6 rounded-lg border border-border-strong shrink-0 ${
                 SKILL_CATEGORY_COLORS[eff.color_preset] || ''
               }`}
             />
             <div>
-              <p className="font-semibold text-slate-900 dark:text-zinc-100">{eff.name}</p>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">
+              <p className="font-semibold text-ink">{eff.name}</p>
+              <p className="text-xs text-muted">
                 {countSkillsInCategory(row.id)} skill · /{eff.slug}
               </p>
             </div>
@@ -855,14 +855,14 @@ export function ExpertiseManagementPage() {
               setIsCreatingCategory(false);
               setEditingCategory(row);
             }}
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaEdit className="text-xs" />
           </button>
           <button
             type="button"
             onClick={() => setDeleteCategoryTarget(row)}
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
           >
             <FaTrash className="text-xs" />
           </button>
@@ -903,8 +903,8 @@ export function ExpertiseManagementPage() {
               iconMediaId={eff.icon_media_id}
             />
             <div>
-              <p className="font-semibold text-slate-900 dark:text-zinc-100">{eff.name}</p>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">
+              <p className="font-semibold text-ink">{eff.name}</p>
+              <p className="text-xs text-muted">
                 {categoryNameMap.get(eff.category_id) || 'Tanpa Kategori'}
               </p>
             </div>
@@ -924,7 +924,7 @@ export function ExpertiseManagementPage() {
               ? 'Learning'
               : 'Supporting';
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-zinc-800">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-subtle text-ink">
             {label}
           </span>
         );
@@ -959,14 +959,14 @@ export function ExpertiseManagementPage() {
               setIsCreatingSkill(false);
               setEditingSkill(row);
             }}
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaEdit className="text-xs" />
           </button>
           <button
             type="button"
             onClick={() => setDeleteSkillTarget(row)}
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
           >
             <FaTrash className="text-xs" />
           </button>
@@ -979,7 +979,7 @@ export function ExpertiseManagementPage() {
     <div className="space-y-6">
       <PageHeader
         title="Expertise & Skills Management"
-        description="Kelola kategori keahlian, warna kartu, badge teknologi, ikon, serta level Primary, Supporting, dan Learning."
+        description="Kelola kategori keahlian, warna gradient kartu marquee, badge teknologi, ikon, serta level Primary, Supporting, dan Learning."
         actions={
           <div className="flex flex-wrap gap-2">
             <button
@@ -989,7 +989,7 @@ export function ExpertiseManagementPage() {
                 setEditingCategory(null);
                 setIsCreatingCategory(true);
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
             >
               <FaPlus /> Kategori Baru
             </button>
@@ -1001,7 +1001,7 @@ export function ExpertiseManagementPage() {
                 setEditingSkill(null);
                 setIsCreatingSkill(true);
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold disabled:opacity-50 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold disabled:opacity-50 cursor-pointer transition-colors"
             >
               <FaPlus /> Skill Baru
             </button>
@@ -1010,14 +1010,14 @@ export function ExpertiseManagementPage() {
       />
 
       {/* Tabs */}
-      <div className="inline-flex bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-1 rounded-xl">
+      <div className="inline-flex bg-surface-subtle border border-border-subtle p-1 rounded-xl">
         <button
           type="button"
           onClick={() => setActiveTab('skills')}
           className={`px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'skills'
-              ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 shadow-xs'
-              : 'text-slate-500 dark:text-zinc-400'
+              ? 'bg-surface text-ink shadow-xs'
+              : 'text-muted hover:text-ink'
           }`}
         >
           Daftar Skills ({skills.length})
@@ -1027,8 +1027,8 @@ export function ExpertiseManagementPage() {
           onClick={() => setActiveTab('categories')}
           className={`px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'categories'
-              ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 shadow-xs'
-              : 'text-slate-500 dark:text-zinc-400'
+              ? 'bg-surface text-ink shadow-xs'
+              : 'text-muted hover:text-ink'
           }`}
         >
           Kategori Skill ({categories.length})
@@ -1089,7 +1089,7 @@ export function ExpertiseManagementPage() {
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+                  className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
                 >
                   <option value="all">Semua Kategori</option>
                   {categories.map((cat) => (
@@ -1101,7 +1101,7 @@ export function ExpertiseManagementPage() {
                 <select
                   value={tierFilter}
                   onChange={(e) => setTierFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+                  className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
                 >
                   <option value="all">Semua Level</option>
                   <option value="primary">Primary Stack</option>

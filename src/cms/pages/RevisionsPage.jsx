@@ -138,14 +138,14 @@ export function RevisionsPage() {
         return (
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-semibold text-slate-900 dark:text-zinc-100 truncate">
+              <span className="font-semibold text-ink truncate">
                 {meta?.label || row.entity_table}
               </span>
-              <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400">
+              <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-surface-subtle text-muted">
                 {row.entity_table}
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 truncate mt-0.5">
+            <p className="text-xs text-muted truncate mt-0.5">
               {title}
             </p>
           </div>
@@ -167,7 +167,7 @@ export function RevisionsPage() {
       key: 'summary_note',
       label: 'Catatan',
       render: (row) => (
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-300 max-w-md line-clamp-2">
+        <p className="text-xs sm:text-sm text-muted max-w-md line-clamp-2">
           {row.summary_note || 'Perubahan tersimpan'}
         </p>
       ),
@@ -176,7 +176,7 @@ export function RevisionsPage() {
       key: 'created_at',
       label: 'Waktu',
       render: (row) => (
-        <span className="text-xs text-slate-500 dark:text-zinc-400 whitespace-nowrap">
+        <span className="text-xs text-muted whitespace-nowrap">
           {formatDateTime(row.created_at)}
         </span>
       ),
@@ -192,7 +192,7 @@ export function RevisionsPage() {
             <button
               type="button"
               onClick={() => setInspectTarget(row)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-700 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border-subtle bg-surface text-xs font-semibold text-ink hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               <FaCode className="text-[11px]" /> Snapshot
             </button>
@@ -200,7 +200,7 @@ export function RevisionsPage() {
               <button
                 type="button"
                 onClick={() => setRestoreTarget(row)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#00B4D8]/10 hover:bg-[#00B4D8]/20 text-[#0086A8] dark:text-[#00E5FF] text-xs font-semibold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary/12 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors cursor-pointer"
               >
                 <FaUndo className="text-[11px]" /> Restore Draft
               </button>
@@ -220,29 +220,29 @@ export function RevisionsPage() {
       <div className="p-4 space-y-3">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="font-semibold text-sm text-slate-900 dark:text-zinc-100 truncate">
+            <p className="font-semibold text-sm text-ink truncate">
               {meta?.label || row.entity_table}
             </p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 truncate">
+            <p className="text-xs text-muted truncate">
               {resolveSnapshotPreviewTitle(row)}
             </p>
           </div>
           <StatusBadge status={cfg.status} label={cfg.label} />
         </div>
 
-        <p className="text-xs text-slate-600 dark:text-zinc-300">
+        <p className="text-xs text-muted">
           {row.summary_note || 'Perubahan tersimpan'}
         </p>
 
         <div className="flex items-center justify-between gap-2 pt-1">
-          <span className="text-[11px] text-slate-400 dark:text-zinc-500">
+          <span className="text-[11px] text-muted">
             {formatDateTime(row.created_at)}
           </span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setInspectTarget(row)}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-700 text-xs font-semibold text-slate-700 dark:text-zinc-200 cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border-subtle bg-surface text-xs font-semibold text-ink cursor-pointer"
             >
               <FaCode /> Snapshot
             </button>
@@ -250,7 +250,7 @@ export function RevisionsPage() {
               <button
                 type="button"
                 onClick={() => setRestoreTarget(row)}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#00B4D8] text-white text-xs font-semibold cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
               >
                 <FaUndo /> Restore
               </button>
@@ -267,7 +267,7 @@ export function RevisionsPage() {
         title="Revision History"
         description="Log perubahan seluruh modul konten. Pulihkan snapshot revisi mana pun ke mode Draft tanpa menimpa website live sampai Anda mempublikasikannya."
         badge={
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-xs font-semibold text-slate-600 dark:text-zinc-300">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-subtle border border-border-subtle text-xs font-semibold text-ink">
             <FaHistory className="text-[10px]" />
             {filteredRevisions.length} Revisi
           </span>
@@ -276,7 +276,7 @@ export function RevisionsPage() {
           <div className="flex items-center gap-2.5">
             <Link
               to="/preview"
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 transition-colors"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink transition-colors"
             >
               <FaEye /> Preview Mode
             </Link>
@@ -284,7 +284,7 @@ export function RevisionsPage() {
               type="button"
               onClick={() => revisionsQuery.refetch()}
               disabled={revisionsQuery.isFetching}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 hover:bg-slate-50 dark:hover:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 transition-colors cursor-pointer disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface border border-border-subtle hover:bg-surface-subtle text-xs font-semibold text-ink transition-colors cursor-pointer disabled:opacity-60"
             >
               <FaSyncAlt
                 className={revisionsQuery.isFetching ? 'animate-spin' : ''}
@@ -313,7 +313,7 @@ export function RevisionsPage() {
               value={entityTableFilter}
               onChange={(e) => setEntityTableFilter(e.target.value)}
               aria-label="Filter modul konten"
-              className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 text-xs sm:text-sm text-slate-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#00B4D8]"
+              className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-xs sm:text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               <option value="all">Semua Modul</option>
               {Object.entries(REVISION_TABLE_META).map(([tableKey, meta]) => (
@@ -327,7 +327,7 @@ export function RevisionsPage() {
               value={actionFilter}
               onChange={(e) => setActionFilter(e.target.value)}
               aria-label="Filter jenis aksi"
-              className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 text-xs sm:text-sm text-slate-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#00B4D8]"
+              className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-xs sm:text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               <option value="all">Semua Aksi</option>
               <option value="publish">Published</option>
@@ -342,19 +342,19 @@ export function RevisionsPage() {
       {/* Snapshot Inspector Modal */}
       {inspectTarget && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+          className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
           onClick={() => setInspectTarget(null)}
         >
           <div
-            className="w-full max-w-3xl max-h-[90vh] flex flex-col bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden"
+            className="w-full max-w-3xl max-h-[90vh] flex flex-col bg-surface border border-border-subtle rounded-2xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-5 py-4 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between gap-4">
+            <div className="px-5 py-4 border-b border-border-subtle flex items-center justify-between gap-4">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-zinc-100">
+                  <h2 className="font-heading text-lg font-bold text-ink">
                     Snapshot Revisi:{' '}
                     {REVISION_TABLE_META[inspectTarget.entity_table]?.label ||
                       inspectTarget.entity_table}
@@ -367,7 +367,7 @@ export function RevisionsPage() {
                     }
                   />
                 </div>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1">
+                <p className="text-xs text-muted mt-1">
                   ID Entitas:{' '}
                   <code className="font-mono">{inspectTarget.entity_id}</code> ·{' '}
                   {formatDateTime(inspectTarget.created_at)}
@@ -378,7 +378,7 @@ export function RevisionsPage() {
                 type="button"
                 onClick={() => setInspectTarget(null)}
                 aria-label="Tutup snapshot"
-                className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-500 cursor-pointer"
+                className="p-2 rounded-xl hover:bg-surface-subtle text-muted hover:text-ink cursor-pointer transition-colors"
               >
                 <FaTimes />
               </button>
@@ -386,22 +386,22 @@ export function RevisionsPage() {
 
             <div className="p-5 overflow-y-auto flex-1 space-y-4">
               {inspectTarget.summary_note && (
-                <div className="px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300">
+                <div className="px-3.5 py-2.5 rounded-xl bg-surface-subtle/60 border border-border-subtle text-xs text-ink">
                   <span className="font-semibold">Catatan:</span>{' '}
                   {inspectTarget.summary_note}
                 </div>
               )}
 
-              <pre className="p-4 rounded-xl bg-slate-950 text-slate-100 text-xs font-mono overflow-x-auto leading-relaxed">
+              <pre className="p-4 rounded-xl bg-[#171719] text-[#F6F3EE] text-xs font-mono overflow-x-auto leading-relaxed">
                 {JSON.stringify(inspectTarget.snapshot, null, 2)}
               </pre>
             </div>
 
-            <div className="px-5 py-3.5 border-t border-slate-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 bg-slate-50/70 dark:bg-zinc-950/60">
+            <div className="px-5 py-3.5 border-t border-border-subtle flex flex-wrap items-center justify-between gap-3 bg-surface-subtle/50">
               {REVISION_TABLE_META[inspectTarget.entity_table]?.route ? (
                 <Link
                   to={REVISION_TABLE_META[inspectTarget.entity_table].route}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
                 >
                   Buka Editor Modul <FaExternalLinkAlt className="text-[10px]" />
                 </Link>
@@ -413,7 +413,7 @@ export function RevisionsPage() {
                 <button
                   type="button"
                   onClick={() => setInspectTarget(null)}
-                  className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl border border-border-subtle bg-surface text-xs font-semibold text-ink hover:bg-surface-subtle cursor-pointer transition-colors"
                 >
                   Tutup
                 </button>
@@ -421,7 +421,7 @@ export function RevisionsPage() {
                   <button
                     type="button"
                     onClick={() => setRestoreTarget(inspectTarget)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
                   >
                     <FaUndo /> Restore sebagai Draft
                   </button>

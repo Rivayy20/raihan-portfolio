@@ -11,23 +11,23 @@ import { ToastContext } from './ToastContext';
 const TOAST_STYLES = {
   success: {
     container:
-      'bg-white dark:bg-zinc-900 border-emerald-200 dark:border-emerald-800 text-slate-900 dark:text-zinc-100',
+      'bg-surface border-emerald-200 dark:border-emerald-800 text-ink',
     icon: <FaCheckCircle className="text-emerald-500 text-base shrink-0 mt-0.5" />,
   },
   error: {
     container:
-      'bg-white dark:bg-zinc-900 border-red-200 dark:border-red-900 text-slate-900 dark:text-zinc-100',
+      'bg-surface border-red-200 dark:border-red-900 text-ink',
     icon: <FaExclamationCircle className="text-red-500 text-base shrink-0 mt-0.5" />,
   },
   warning: {
     container:
-      'bg-white dark:bg-zinc-900 border-amber-200 dark:border-amber-800 text-slate-900 dark:text-zinc-100',
+      'bg-surface border-amber-200 dark:border-amber-800 text-ink',
     icon: <FaExclamationTriangle className="text-amber-500 text-base shrink-0 mt-0.5" />,
   },
   info: {
     container:
-      'bg-white dark:bg-zinc-900 border-cyan-200 dark:border-cyan-900 text-slate-900 dark:text-zinc-100',
-    icon: <FaInfoCircle className="text-[#00B4D8] text-base shrink-0 mt-0.5" />,
+      'bg-surface border-primary/30 text-ink',
+    icon: <FaInfoCircle className="text-primary text-base shrink-0 mt-0.5" />,
   },
 };
 
@@ -99,7 +99,7 @@ export function ToastProvider({ children }) {
       <div
         aria-live="polite"
         aria-atomic="false"
-        className="fixed bottom-4 right-4 z-[80] max-w-sm w-[calc(100%-2rem)] flex flex-col gap-2.5 pointer-events-none"
+        className="fixed bottom-4 right-4 z-80 max-w-sm w-[calc(100%-2rem)] flex flex-col gap-2.5 pointer-events-none"
       >
         {toasts.map((item) => {
           const style = TOAST_STYLES[item.type] || TOAST_STYLES.info;
@@ -111,14 +111,14 @@ export function ToastProvider({ children }) {
             >
               {style.icon}
               <div className="min-w-0 flex-1 text-sm">
-                {item.title && <p className="font-bold leading-snug">{item.title}</p>}
-                <p className="text-slate-600 dark:text-zinc-300 leading-snug">{item.message}</p>
+                {item.title && <p className="font-bold leading-snug text-ink">{item.title}</p>}
+                <p className="text-muted leading-snug">{item.message}</p>
               </div>
               <button
                 type="button"
                 onClick={() => dismissToast(item.id)}
                 aria-label="Tutup notifikasi"
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 p-0.5 shrink-0 cursor-pointer"
+                className="text-muted hover:text-ink p-0.5 shrink-0 cursor-pointer transition-colors"
               >
                 <FaTimes className="text-xs" />
               </button>

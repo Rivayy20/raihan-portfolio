@@ -127,7 +127,7 @@ export function MediaUploadZone({
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 space-y-4">
+    <div className="bg-surface border border-border-subtle rounded-2xl p-5 space-y-4">
       <div className={`grid grid-cols-1 ${compact ? 'sm:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
         <SelectField
           label="Kategori Media"
@@ -146,7 +146,7 @@ export function MediaUploadZone({
         />
 
         <div className="flex items-end">
-          <div className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950">
+          <div className="w-full px-3.5 py-2 rounded-xl border border-border-subtle bg-surface-subtle/60">
             <ToggleField
               label={isPublic ? 'Bucket Publik' : 'Private Draft'}
               description={
@@ -178,8 +178,8 @@ export function MediaUploadZone({
           compact ? 'p-6' : 'p-8'
         } ${
           isDragging
-            ? 'border-[#00B4D8] bg-[#00E5FF]/10'
-            : 'border-slate-300 dark:border-zinc-700 hover:border-[#00B4D8] bg-slate-50/70 dark:bg-zinc-950/60'
+            ? 'border-primary bg-primary/10'
+            : 'border-border-strong hover:border-primary bg-surface-subtle/40'
         }`}
       >
         <input
@@ -194,27 +194,27 @@ export function MediaUploadZone({
         />
 
         <div className="flex flex-col items-center gap-2.5">
-          <div className="w-12 h-12 rounded-2xl bg-[#00E5FF]/15 text-[#0096B4] dark:text-[#00E5FF] flex items-center justify-center text-xl">
+          <div className="w-12 h-12 rounded-2xl bg-primary/12 text-primary flex items-center justify-center text-xl">
             <FaCloudUploadAlt />
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-900 dark:text-zinc-100">
+            <p className="text-sm font-semibold text-ink">
               Drag &amp; drop file ke sini, atau{' '}
               <label
                 htmlFor={inputId}
-                className="text-[#0096B4] dark:text-[#00E5FF] hover:underline cursor-pointer"
+                className="text-primary hover:underline cursor-pointer"
               >
                 pilih dari perangkat
               </label>
             </p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 flex items-center justify-center gap-1.5">
+            <p className="text-xs text-muted mt-1 flex items-center justify-center gap-1.5">
               {selectedMeta?.kind === 'pdf' ? (
                 <>
                   <FaFilePdf className="text-red-500" /> Khusus PDF · Maksimal 10 MB
                 </>
               ) : (
                 <>
-                  <FaImage className="text-[#00B4D8]" /> JPG, JPEG, PNG, WebP · Maksimal 5 MB
+                  <FaImage className="text-primary" /> JPG, JPEG, PNG, WebP · Maksimal 5 MB
                 </>
               )}
             </p>
@@ -228,14 +228,14 @@ export function MediaUploadZone({
           {queue.map((item) => (
             <li
               key={item.id}
-              className="p-3 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 space-y-1.5"
+              className="p-3 rounded-xl border border-border-subtle bg-surface-subtle/50 space-y-1.5"
             >
               <div className="flex items-center justify-between gap-3 text-xs">
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-slate-800 dark:text-zinc-200 truncate">
+                  <p className="font-semibold text-ink truncate">
                     {item.name}
                   </p>
-                  <p className="text-slate-500 dark:text-zinc-400">
+                  <p className="text-muted">
                     {formatFileSize(item.size)}
                   </p>
                 </div>
@@ -251,17 +251,17 @@ export function MediaUploadZone({
                   </span>
                 )}
                 {(item.status === 'uploading' || item.status === 'pending') && (
-                  <span className="font-semibold text-[#0096B4] dark:text-[#00E5FF] shrink-0">
+                  <span className="font-semibold text-primary shrink-0">
                     {item.progress}%
                   </span>
                 )}
               </div>
 
               {(item.status === 'uploading' || item.status === 'done') && (
-                <div className="w-full h-1.5 bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-surface-subtle rounded-full overflow-hidden">
                   <div
                     className={`h-full transition-all duration-200 ${
-                      item.status === 'done' ? 'bg-emerald-500' : 'bg-[#00B4D8]'
+                      item.status === 'done' ? 'bg-emerald-500' : 'bg-primary'
                     }`}
                     style={{ width: `${item.progress}%` }}
                   />

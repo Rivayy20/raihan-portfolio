@@ -1,6 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, useReducedMotion } from 'framer-motion';
 import { RootLayout } from '../components/layout/RootLayout';
 import { ScrollProgress } from '../components/ui/ScrollProgress';
+import { IntroLoadingScreen } from '../components/ui/IntroLoadingScreen';
 import { HeroSection } from '../components/sections/HeroSection';
 import { AboutSection } from '../components/sections/AboutSection';
 import { SkillsSection } from '../components/sections/SkillsSection';
@@ -91,57 +93,50 @@ function PublicLoadingSkeleton() {
 
   return (
     <div
-      className="min-h-screen bg-base text-black overflow-x-hidden"
+      className="min-h-screen bg-canvas text-ink overflow-x-hidden"
       aria-busy="true"
       aria-label="Loading portfolio"
     >
-      {/* Top Navbar Skeleton */}
-      <div className="fixed top-0 left-0 right-0 z-50 py-6">
-        <div className="max-w-7xl mx-auto px-4 md:px-12">
-          <div className="bg-white border-[3px] border-black brutal-shadow rounded-xl flex items-center justify-between px-4 md:px-6 py-3 animate-pulse">
-            <div className="h-7 w-20 bg-gray-200 rounded" />
-            <div className="hidden lg:flex items-center gap-8">
-              <div className="h-5 w-14 bg-gray-200 rounded" />
-              <div className="h-5 w-14 bg-gray-200 rounded" />
-              <div className="h-5 w-20 bg-gray-200 rounded" />
-              <div className="h-5 w-18 bg-gray-200 rounded" />
-              <div className="h-5 w-16 bg-gray-200 rounded" />
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-black" />
-              <div className="hidden lg:block h-9 w-24 bg-accent border-2 border-black" />
-            </div>
+      {/* Top Minimalist Navbar Skeleton */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-16 md:h-20 border-b border-border-subtle editorial-glass">
+        <div className="max-w-6xl xl:max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 h-full flex items-center justify-between animate-pulse">
+          <div className="h-5 w-16 bg-surface-subtle rounded" />
+          <div className="hidden lg:flex items-center gap-8">
+            <div className="h-4 w-12 bg-surface-subtle rounded" />
+            <div className="h-4 w-12 bg-surface-subtle rounded" />
+            <div className="h-4 w-16 bg-surface-subtle rounded" />
+            <div className="h-4 w-14 bg-surface-subtle rounded" />
+            <div className="h-4 w-14 bg-surface-subtle rounded" />
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-surface-subtle" />
+            <div className="hidden lg:block h-9 w-24 rounded-full bg-surface-subtle" />
           </div>
         </div>
       </div>
 
-      {/* Hero Section Skeleton */}
-      <main className="w-full max-w-7xl mx-auto px-6 md:px-12 py-12">
-        <section className="min-h-[85vh] flex flex-col justify-center pt-24 pb-20 md:pt-32">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 md:gap-12 items-center animate-pulse">
-            <div className="flex flex-col gap-5 w-full order-2 lg:order-1">
-              <div className="h-9 w-64 bg-primary/60 border-2 border-black" />
+      {/* Editorial Asymmetric Hero Skeleton */}
+      <main className="w-full max-w-6xl xl:max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+        <section className="min-h-[calc(100vh-4rem)] flex flex-col justify-center pt-28 pb-16 md:pt-32">
+          <div className="flex flex-col lg:grid lg:grid-cols-12 gap-10 lg:gap-12 items-center animate-pulse">
+            <div className="lg:col-span-7 flex flex-col gap-5 w-full">
+              <div className="h-4 w-52 bg-surface-subtle rounded-full" />
               <div className="space-y-3">
-                <div className="h-12 md:h-16 w-full bg-gray-200 dark:bg-zinc-800 rounded" />
-                <div className="h-12 md:h-16 w-4/5 bg-gray-200 dark:bg-zinc-800 rounded" />
+                <div className="h-12 md:h-16 w-full bg-surface-subtle rounded-xl" />
+                <div className="h-12 md:h-16 w-4/5 bg-surface-subtle rounded-xl" />
               </div>
               <div className="space-y-2 max-w-xl">
-                <div className="h-5 w-full bg-gray-200 dark:bg-zinc-800 rounded" />
-                <div className="h-5 w-3/4 bg-gray-200 dark:bg-zinc-800 rounded" />
+                <div className="h-4 w-full bg-surface-subtle rounded" />
+                <div className="h-4 w-3/4 bg-surface-subtle rounded" />
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <div className="h-14 w-full sm:w-48 bg-accent border-2 border-black" />
-                <div className="h-14 w-full sm:w-36 bg-white border-2 border-black" />
+              <div className="flex flex-wrap gap-3 pt-2">
+                <div className="h-12 w-44 rounded-full bg-surface-subtle" />
+                <div className="h-12 w-32 rounded-full bg-surface-subtle" />
               </div>
             </div>
 
-            <div className="w-full flex items-center justify-center order-1 lg:order-2">
-              <div className="w-[220px] sm:w-[260px] h-[340px] bg-white brutal-border p-4 shadow-[6px_6px_0px_0px_var(--color-black)] flex flex-col gap-3">
-                <div className="h-6 w-28 mx-auto bg-gray-200 rounded" />
-                <div className="w-full aspect-[4/5] bg-gray-200 border-2 border-black" />
-                <div className="h-5 w-36 bg-gray-200 rounded" />
-                <div className="h-7 w-full bg-primary/50 border-2 border-black" />
-              </div>
+            <div className="lg:col-span-5 w-full flex items-center justify-center lg:justify-end">
+              <div className="w-full max-w-70 sm:max-w-85 lg:max-w-100 aspect-square rounded-full bg-surface-subtle border border-border-subtle" />
             </div>
           </div>
         </section>
@@ -150,8 +145,140 @@ function PublicLoadingSkeleton() {
   );
 }
 
+// Module-scoped flag resets on full reload, stays true across SPA navigation
+let hasShownIntroThisPageLoad = false;
+
 export function PublicPortfolioPage() {
   const { data, isLoading } = usePublicPortfolio();
+  const reduceMotion = useReducedMotion();
+  const [introPhase, setIntroPhase] = useState(() =>
+    hasShownIntroThisPageLoad ? 'done' : 'loading'
+  );
+  const [minElapsed, setMinElapsed] = useState(() => hasShownIntroThisPageLoad);
+  const [fontsReady, setFontsReady] = useState(() => hasShownIntroThisPageLoad);
+  const [heroImageReady, setHeroImageReady] = useState(
+    () => hasShownIntroThisPageLoad
+  );
+
+  const profileImageUrl = data?.hero?.profileImageUrl;
+  const showPortrait = data?.hero?.showLanyard !== false;
+  const dataReady = !isLoading && Boolean(data);
+
+  useEffect(() => {
+    if (introPhase !== 'loading') return undefined;
+
+    let cancelled = false;
+    const minDurationMs = reduceMotion ? 350 : 1750;
+    const maxDurationMs = reduceMotion ? 900 : 4200;
+
+    const minTimer = window.setTimeout(() => {
+      if (!cancelled) setMinElapsed(true);
+    }, minDurationMs);
+
+    const maxTimer = window.setTimeout(() => {
+      if (!cancelled) {
+        hasShownIntroThisPageLoad = true;
+        setIntroPhase('exiting');
+      }
+    }, maxDurationMs);
+
+    let fontFallbackTimer = null;
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready
+        .then(() => {
+          if (!cancelled) setFontsReady(true);
+        })
+        .catch(() => {
+          if (!cancelled) setFontsReady(true);
+        });
+    } else {
+      fontFallbackTimer = window.setTimeout(() => {
+        if (!cancelled) setFontsReady(true);
+      }, 0);
+    }
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(minTimer);
+      window.clearTimeout(maxTimer);
+      if (fontFallbackTimer !== null) window.clearTimeout(fontFallbackTimer);
+    };
+  }, [introPhase, reduceMotion]);
+
+  useEffect(() => {
+    if (introPhase !== 'loading' || !dataReady) return undefined;
+
+    let cancelled = false;
+    if (!showPortrait || !profileImageUrl) {
+      const immediateTimer = window.setTimeout(() => {
+        if (!cancelled) setHeroImageReady(true);
+      }, 0);
+      return () => {
+        cancelled = true;
+        window.clearTimeout(immediateTimer);
+      };
+    }
+
+    const img = new window.Image();
+    const markReady = () => {
+      if (!cancelled) setHeroImageReady(true);
+    };
+    img.onload = markReady;
+    img.onerror = markReady;
+    img.src = profileImageUrl;
+
+    let completeTimer = null;
+    if (img.complete) {
+      completeTimer = window.setTimeout(markReady, 0);
+    }
+
+    return () => {
+      cancelled = true;
+      img.onload = null;
+      img.onerror = null;
+      if (completeTimer !== null) window.clearTimeout(completeTimer);
+    };
+  }, [introPhase, dataReady, showPortrait, profileImageUrl]);
+
+  useEffect(() => {
+    if (
+      introPhase !== 'loading' ||
+      !minElapsed ||
+      !dataReady ||
+      !fontsReady ||
+      !heroImageReady
+    ) {
+      return undefined;
+    }
+
+    const exitTimer = window.setTimeout(() => {
+      hasShownIntroThisPageLoad = true;
+      setIntroPhase('exiting');
+    }, 0);
+
+    return () => window.clearTimeout(exitTimer);
+  }, [introPhase, minElapsed, dataReady, fontsReady, heroImageReady]);
+
+  useEffect(() => {
+    if (introPhase !== 'exiting') return undefined;
+
+    const doneTimer = window.setTimeout(
+      () => setIntroPhase('done'),
+      reduceMotion ? 320 : 900
+    );
+    return () => window.clearTimeout(doneTimer);
+  }, [introPhase, reduceMotion]);
+
+  useEffect(() => {
+    if (introPhase !== 'loading') return undefined;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [introPhase]);
+
+  const introReady = introPhase === 'done';
 
   const contextValue = useMemo(() => {
     if (!data) return null;
@@ -160,17 +287,29 @@ export function PublicPortfolioPage() {
       isPreview: false,
       previewMode: 'published',
       previewOffsetTop: 0,
+      introReady,
     };
-  }, [data]);
-
-  if (isLoading || !contextValue) {
-    return <PublicLoadingSkeleton />;
-  }
+  }, [data, introReady]);
 
   return (
-    <PortfolioDataContext.Provider value={contextValue}>
-      <SeoHead />
-      <PortfolioPresentation />
-    </PortfolioDataContext.Provider>
+    <>
+      {isLoading || !contextValue ? (
+        introPhase === 'loading' ? null : <PublicLoadingSkeleton />
+      ) : (
+        <PortfolioDataContext.Provider value={contextValue}>
+          <SeoHead />
+          <PortfolioPresentation />
+        </PortfolioDataContext.Provider>
+      )}
+
+      <AnimatePresence onExitComplete={() => setIntroPhase('done')}>
+        {introPhase === 'loading' && (
+          <IntroLoadingScreen
+            key="intro-loading-screen"
+            brandName={data?.settings?.brandName || 'RAZH'}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 }

@@ -4,134 +4,410 @@
 
 @theme {
   --font-heading: 'Space Grotesk', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
-  --color-primary: #00E5FF; /* Turquoise / Aqua */
-  --color-secondary: #00B4D8; /* Sky Blue */
-  --color-accent: #FFD60A; /* Yellow */
-  --color-base: #FFFFFF; /* White */
-  --color-black: #0A0A0A; /* Black */
-  --color-white: #FFFFFF; /* True White mapping */
+  /* Editorial Modern Minimalist + GTA VI Sunset Palette */
+  --color-canvas: #F8F5F0;
+  --color-surface: #FFFFFF;
+  --color-surface-subtle: #F0EBE3;
+  --color-ink: #171719;
+  --color-muted: #5F5D69;
+  --color-border-subtle: rgba(23, 23, 25, 0.1);
+  --color-border-strong: rgba(23, 23, 25, 0.22);
 
-  /* Neo-brutalist border styles */
-  --border-width-brutal: 4px;
-  --radius-brutal: 12px;
+  --color-primary: #FF6B6B;
+  --color-secondary: #F48FB1;
+  --color-accent: #FFB38A;
+  --color-sunset-orange: #FF9B71;
+  --color-lavender: #A78BFA;
+  --color-deep-violet: #49345F;
 
-  /* Shadow offsets for neo-brutalism */
-  --shadow-brutal: 6px 6px 0px 0px rgba(10, 10, 10, 1);
-  --shadow-brutal-hover: 2px 2px 0px 0px rgba(10, 10, 10, 1);
+  /* Compatibility aliases preserved for existing CMS & utility surfaces */
+  --color-black: #171719;
+  --color-white: #FFFFFF;
 }
 
 @layer base {
   :root {
-    --primary: #00E5FF;
-    --secondary: #00B4D8;
-    --accent: #FFD60A;
-    --base: #FFFFFF;
-    --black: #0A0A0A;
-    --white: #FFFFFF;
+    --color-canvas: #F8F5F0;
+    --color-surface: #FFFFFF;
+    --color-surface-subtle: #F0EBE3;
+    --color-ink: #171719;
+    --color-muted: #5F5D69;
+    --color-border-subtle: rgba(23, 23, 25, 0.1);
+    --color-border-strong: rgba(23, 23, 25, 0.22);
+    --color-primary: #FF6B6B;
+    --color-secondary: #F48FB1;
+    --color-accent: #FFB38A;
+    --color-sunset-orange: #FF9B71;
+    --color-lavender: #A78BFA;
+    --color-deep-violet: #49345F;
+    --color-black: #171719;
+    --color-white: #FFFFFF;
 
-    /* Fixed navbar bottom edge (86px mobile) plus a gap; used as scroll-margin-top */
-    --navbar-scroll-offset: 6.5rem;
+    --shadow-editorial: 0 1px 2px rgba(23, 23, 25, 0.03), 0 16px 38px -22px rgba(73, 52, 95, 0.14);
+    --shadow-editorial-hover: 0 8px 24px -10px rgba(73, 52, 95, 0.16), 0 2px 6px rgba(23, 23, 25, 0.04);
+    --navbar-scroll-offset: 5.5rem;
   }
 
-  /* Desktop navbar is taller (98px) because of the Hire Me button */
   @media (min-width: 64rem) {
     :root {
-      --navbar-scroll-offset: 7.5rem;
+      --navbar-scroll-offset: 6.25rem;
     }
   }
 
   :root.dark {
-    /* Base background becomes dark */
-    --color-base: #111111;
-    --base: #111111;
-    
-    /* Black (borders, text) becomes off-white */
-    --color-black: #F5F5F5;
-    --black: #F5F5F5;
-    
-    /* White (card backgrounds, badges) becomes dark grey */
-    --color-white: #1A1A1A;
-    --white: #1A1A1A;
+    --color-canvas: #171719;
+    --color-surface: #1E1E22;
+    --color-surface-subtle: #26252D;
+    --color-ink: #F6F3EE;
+    --color-muted: #A1A1AA;
+    --color-border-subtle: rgba(255, 255, 255, 0.09);
+    --color-border-strong: rgba(255, 255, 255, 0.19);
+    --color-primary: #FF7B7B;
+    --color-secondary: #F48FB1;
+    --color-accent: #FFB38A;
+    --color-sunset-orange: #FF9B71;
+    --color-lavender: #A78BFA;
+    --color-deep-violet: #49345F;
+    --color-black: #F6F3EE;
+    --color-white: #1E1E22;
 
-    /* Dark Mode Adjustments for vibrant colors to reduce glare */
-    --color-accent: #D4AF37; /* Muted Mustard Gold */
-    --accent: #D4AF37;
-    
-    --color-primary: #0891B2; /* Muted Cyan / Deep Teal (Tailwind cyan-600) */
-    --primary: #0891B2;
-
-    /* Shadow flips to light so it pops on dark background */
-    --shadow-brutal: 6px 6px 0px 0px rgba(245, 245, 245, 1);
-    --shadow-brutal-hover: 2px 2px 0px 0px rgba(245, 245, 245, 1);
+    --shadow-editorial: 0 1px 2px rgba(0, 0, 0, 0.35), 0 18px 40px -22px rgba(0, 0, 0, 0.65);
+    --shadow-editorial-hover: 0 12px 30px -12px rgba(73, 52, 95, 0.45), 0 4px 10px rgba(0, 0, 0, 0.45);
   }
 
   body {
-    @apply font-body bg-base text-black transition-colors duration-300;
+    @apply font-body bg-canvas text-ink antialiased transition-colors duration-300;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading font-bold text-black transition-colors duration-300;
+    @apply font-heading text-ink transition-colors duration-300;
   }
 
-  /* Custom selection color */
   ::selection {
-    @apply bg-accent text-black;
+    background-color: rgba(255, 107, 107, 0.22);
+    color: var(--color-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer utilities {
-  .brutal-border {
-    border-width: var(--border-width-brutal, 4px);
-    border-color: var(--color-black, #0A0A0A);
-    border-radius: var(--radius-brutal, 12px);
+  .editorial-glass {
+    background-color: rgba(248, 245, 240, 0.82);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
   }
 
-  .brutal-shadow {
-    box-shadow: var(--shadow-brutal);
+  :root.dark .editorial-glass {
+    background-color: rgba(23, 23, 25, 0.80);
   }
 
-  .brutal-shadow-hover:hover {
-    box-shadow: var(--shadow-brutal-hover);
-    transform: translate(4px, 4px);
+  .editorial-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-editorial);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
   }
 
-  .brutal-shadow-hover {
-    transition: all 0.2s ease-in-out;
+  .sunset-text-accent {
+    background-image: linear-gradient(125deg, #D94E4E 0%, #EB6B40 55%, #B04E7C 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
-  .brutal-btn {
-    @apply font-heading font-bold px-6 py-3 cursor-pointer active:translate-y-2 active:translate-x-2 active:shadow-none bg-primary text-black;
-    border-width: var(--border-width-brutal, 4px);
-    border-color: var(--color-black, #0A0A0A);
-    border-radius: var(--radius-brutal, 12px);
-    box-shadow: var(--shadow-brutal);
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .brutal-btn:hover {
-    box-shadow: var(--shadow-brutal-hover);
-    transform: translate(4px, 4px);
+  :root.dark .sunset-text-accent {
+    background-image: linear-gradient(
+      125deg,
+      var(--color-primary) 0%,
+      var(--color-accent) 55%,
+      var(--color-secondary) 100%
+    );
   }
 
-  .brutal-card {
-    @apply p-6;
-    border-width: var(--border-width-brutal, 4px);
-    border-color: var(--color-black, #0A0A0A);
-    border-radius: var(--radius-brutal, 12px);
-    box-shadow: var(--shadow-brutal);
+  .sunset-gradient-line {
+    background: linear-gradient(
+      90deg,
+      var(--color-primary) 0%,
+      var(--color-secondary) 50%,
+      var(--color-lavender) 100%
+    );
+  }
+
+  .hero-gradient-text-animated {
+    background-image: linear-gradient(
+      120deg,
+      #D94E4E 0%,
+      #EB6B40 28%,
+      #D9538F 58%,
+      #D94E4E 100%
+    );
+    background-size: 240% 240%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: hero-gradient-shift 7s ease-in-out infinite;
+  }
+
+  :root.dark .hero-gradient-text-animated {
+    background-image: linear-gradient(
+      120deg,
+      #FF7B7B 0%,
+      #FFB38A 30%,
+      #F48FB1 60%,
+      #FF7B7B 100%
+    );
+  }
+
+  .hero-conic-border {
+    background: conic-gradient(
+      from 0deg,
+      #FF6B6B,
+      #F48FB1,
+      #A78BFA,
+      #FFB38A,
+      #FF6B6B
+    );
+    animation: hero-spin-slow 12s linear infinite;
+  }
+
+  .hero-grain-overlay {
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  :root.dark .hero-grain-overlay {
+    opacity: 0.045;
+  }
+
+  .hero-dot-pattern {
+    background-image: radial-gradient(rgba(23, 23, 25, 0.14) 1px, transparent 1px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 65% 45%, #000 15%, transparent 80%);
+    mask-image: radial-gradient(ellipse 75% 65% at 65% 45%, #000 15%, transparent 80%);
+  }
+
+  :root.dark .hero-dot-pattern {
+    background-image: radial-gradient(rgba(246, 243, 238, 0.14) 1px, transparent 1px);
+  }
+
+  .hero-float-card-a {
+    animation: hero-float-y 6s ease-in-out infinite;
+  }
+
+  .hero-float-card-b {
+    animation: hero-float-alt 7.4s ease-in-out 0.8s infinite;
+  }
+
+  .hero-float-particle-1 {
+    animation: hero-float-drift 6.5s ease-in-out infinite;
+  }
+
+  .hero-float-particle-2 {
+    animation: hero-float-alt 8s ease-in-out 1.2s infinite;
+  }
+
+  .hero-float-particle-3 {
+    animation: hero-float-y 7.2s ease-in-out 0.6s infinite;
+  }
+
+  .hero-scroll-runner {
+    animation: hero-scroll-drop 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .hero-mouse-dot {
+    animation: hero-mouse-scroll 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .intro-loading-bar {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      #FF6B6B 35%,
+      #F48FB1 65%,
+      #A78BFA 85%,
+      transparent 100%
+    );
+    animation: intro-bar-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .hero-cursor-blink {
+    animation: hero-cursor-blink 0.85s steps(1, end) infinite;
+  }
+
+  @keyframes hero-gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes hero-spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes hero-float-y {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -7px, 0);
+    }
+  }
+
+  @keyframes hero-float-alt {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(4px, -6px, 0);
+    }
+  }
+
+  @keyframes hero-float-drift {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(-5px, -8px, 0);
+    }
+  }
+
+  @keyframes hero-scroll-drop {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(260%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes intro-bar-sweep {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(260%);
+    }
+  }
+
+  @keyframes hero-cursor-blink {
+    0%, 49% {
+      opacity: 1;
+    }
+    50%, 100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes hero-mouse-scroll {
+    0% {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    70% {
+      transform: translateY(10px);
+      opacity: 0.9;
+    }
+    100% {
+      transform: translateY(12px);
+      opacity: 0;
+    }
+  }
+
+  .skills-marquee-mask {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 8%,
+      #000 92%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 8%,
+      #000 92%,
+      transparent 100%
+    );
+  }
+
+  .skills-marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .skills-marquee-left {
+    animation: skills-marquee-left var(--marquee-duration, 28s) linear infinite;
+  }
+
+  .skills-marquee-right {
+    animation: skills-marquee-right var(--marquee-duration, 26s) linear infinite;
+  }
+
+  .skills-marquee:hover .skills-marquee-track,
+  .skills-marquee:focus-within .skills-marquee-track,
+  .skills-marquee[data-paused='true'] .skills-marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes skills-marquee-left {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes skills-marquee-right {
+    0% {
+      transform: translate3d(-50%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
   }
 
   .experience-details-panel {
     scroll-margin-top: var(--navbar-scroll-offset);
   }
 
-  .brutal-badge {
-    @apply font-body font-bold px-3 py-1 bg-accent text-black text-sm inline-block;
-    border-width: 2px;
-    border-color: var(--color-black, #0A0A0A);
-    border-radius: 9999px;
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
-

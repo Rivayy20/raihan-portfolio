@@ -13,15 +13,13 @@ const STATUS_CONFIG = {
   },
   edited: {
     label: 'Edited (Unpublished)',
-    dot: 'bg-[#00B4D8]',
-    badge:
-      'bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-950/50 dark:text-cyan-300 dark:border-cyan-900',
+    dot: 'bg-primary',
+    badge: 'bg-primary/12 text-primary border-primary/25',
   },
   archived: {
     label: 'Archived',
-    dot: 'bg-slate-400',
-    badge:
-      'bg-slate-100 text-slate-600 border-slate-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700',
+    dot: 'bg-muted/60',
+    badge: 'bg-surface-subtle text-muted border-border-subtle',
   },
   visible: {
     label: 'Visible',
@@ -31,9 +29,8 @@ const STATUS_CONFIG = {
   },
   hidden: {
     label: 'Hidden',
-    dot: 'bg-slate-400',
-    badge:
-      'bg-slate-100 text-slate-600 border-slate-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700',
+    dot: 'bg-muted/60',
+    badge: 'bg-surface-subtle text-muted border-border-subtle',
   },
 };
 

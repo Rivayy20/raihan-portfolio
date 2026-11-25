@@ -16,7 +16,7 @@ export function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 flex">
+    <div className="min-h-screen bg-canvas text-ink flex font-body">
       <AdminSidebar
         isMobileOpen={isMobileNavOpen}
         onCloseMobile={() => setIsMobileNavOpen(false)}

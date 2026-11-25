@@ -76,8 +76,8 @@ function DetailBlockCard({ block, index, total, onChange, onRemove, onMove }) {
     updateBlock({ items: items.filter((_, idx) => idx !== i) });
 
   return (
-    <div className="border border-slate-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-5 bg-slate-50/50 dark:bg-zinc-950/50 space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-zinc-800">
+    <div className="border border-border-subtle rounded-2xl p-4 sm:p-5 bg-surface-subtle/40 space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border-subtle">
         <div className="flex items-center gap-2.5">
           <OrderControls
             index={index}
@@ -85,17 +85,18 @@ function DetailBlockCard({ block, index, total, onChange, onRemove, onMove }) {
             onMoveUp={() => onMove(index, index - 1)}
             onMoveDown={() => onMove(index, index + 1)}
           />
-          <span className="font-heading font-bold text-sm text-slate-900 dark:text-zinc-100">
+          <span className="font-heading font-bold text-sm text-ink">
             Detail Section #{index + 1}
           </span>
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="inline-flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+          <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink cursor-pointer">
             <input
               type="checkbox"
               checked={block.is_visible !== false}
               onChange={(e) => updateBlock({ is_visible: e.target.checked })}
+              className="accent-primary"
             />
             Visible
           </label>
@@ -135,13 +136,13 @@ function DetailBlockCard({ block, index, total, onChange, onRemove, onMove }) {
       {/* Facts Builder */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted">
             Key-Value Facts ({facts.length})
           </span>
           <button
             type="button"
             onClick={addFact}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline cursor-pointer"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
           >
             <FaPlus className="text-[10px]" /> Fact
           </button>
@@ -153,19 +154,19 @@ function DetailBlockCard({ block, index, total, onChange, onRemove, onMove }) {
               value={fact.label || ''}
               onChange={(e) => updateFact(fIdx, { label: e.target.value })}
               placeholder="Label (mis. Division)"
-              className="sm:col-span-4 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs"
+              className="sm:col-span-4 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-xs text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
             <input
               type="text"
               value={fact.value || ''}
               onChange={(e) => updateFact(fIdx, { value: e.target.value })}
               placeholder="Value (mis. Applied Tools)"
-              className="sm:col-span-7 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs"
+              className="sm:col-span-7 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-xs text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
             <button
               type="button"
               onClick={() => removeFact(fIdx)}
-              className="sm:col-span-1 p-2 text-slate-400 hover:text-red-500 cursor-pointer justify-self-end"
+              className="sm:col-span-1 p-2 text-muted hover:text-red-500 cursor-pointer justify-self-end transition-colors"
             >
               <FaTrash className="text-xs" />
             </button>
@@ -176,21 +177,21 @@ function DetailBlockCard({ block, index, total, onChange, onRemove, onMove }) {
       {/* Bullet Items Builder */}
       <div className="space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted">
             Bullet Items ({items.length})
           </span>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => addItem(false)}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
             >
               <FaPlus className="text-[10px]" /> Plain Bullet
             </button>
             <button
               type="button"
               onClick={() => addItem(true)}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
             >
               <FaPlus className="text-[10px]" /> Labeled Bullet
             </button>
@@ -210,7 +211,7 @@ function DetailBlockCard({ block, index, total, onChange, onRemove, onMove }) {
                       updateItem(iIdx, { ...it, label: e.target.value })
                     }
                     placeholder="Label tebal (mis. IT Governance)"
-                    className="sm:col-span-4 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs"
+                    className="sm:col-span-4 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-xs text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                   <input
                     type="text"
@@ -219,7 +220,7 @@ function DetailBlockCard({ block, index, total, onChange, onRemove, onMove }) {
                       updateItem(iIdx, { ...it, text: e.target.value })
                     }
                     placeholder="Teks penjelasan..."
-                    className="sm:col-span-7 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs"
+                    className="sm:col-span-7 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-xs text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                 </>
               ) : (
@@ -228,13 +229,13 @@ function DetailBlockCard({ block, index, total, onChange, onRemove, onMove }) {
                   value={String(it || '')}
                   onChange={(e) => updateItem(iIdx, e.target.value)}
                   placeholder="Isi poin bullet..."
-                  className="sm:col-span-11 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs"
+                  className="sm:col-span-11 px-3 py-2 rounded-xl border border-border-subtle bg-surface text-xs text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
                 />
               )}
               <button
                 type="button"
                 onClick={() => removeItem(iIdx)}
-                className="sm:col-span-1 p-2 text-slate-400 hover:text-red-500 cursor-pointer justify-self-end"
+                className="sm:col-span-1 p-2 text-muted hover:text-red-500 cursor-pointer justify-self-end transition-colors"
               >
                 <FaTrash className="text-xs" />
               </button>
@@ -478,7 +479,7 @@ function ExperienceEditor({ item, totalCount, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold cursor-pointer"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           <FaArrowLeft className="text-[11px]" /> Kembali ke Daftar Experience
         </button>
@@ -570,7 +571,7 @@ function ExperienceEditor({ item, totalCount, onClose }) {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-4 border-t border-border-subtle">
           <ToggleField
             label="Current Status (Masih Aktif)"
             description="Menampilkan badge 'Current' dan mengosongkan tanggal selesai."
@@ -627,14 +628,14 @@ function ExperienceEditor({ item, totalCount, onClose }) {
           <button
             type="button"
             onClick={addDetailSection}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
           >
             <FaPlus className="text-[10px]" /> Detail Section
           </button>
         }
       >
         {detailSections.length === 0 ? (
-          <p className="text-sm text-slate-500 dark:text-zinc-400">
+          <p className="text-sm text-muted">
             Belum ada detail section. Klik tombol "+ Detail Section" untuk menambahkan.
           </p>
         ) : (
@@ -771,16 +772,16 @@ export function ExperienceManagementPage() {
         return (
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="font-semibold text-slate-900 dark:text-zinc-100">
+              <p className="font-semibold text-ink">
                 {eff.organization}
               </p>
               {eff.is_current && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFD60A] text-black">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/15 text-primary border border-primary/25">
                   Current
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+            <p className="text-xs text-muted mt-0.5">
               {eff.job_title} · {eff.duration_label || eff.period_label || '—'}
             </p>
           </div>
@@ -793,7 +794,7 @@ export function ExperienceManagementPage() {
       render: (row) => {
         const eff = resolveEffectiveExperience(row);
         return (
-          <span className="text-xs font-semibold text-slate-600 dark:text-zinc-300">
+          <span className="text-xs font-semibold text-muted">
             {eff.detail_sections.length} blok detail
           </span>
         );
@@ -828,7 +829,7 @@ export function ExperienceManagementPage() {
               setIsCreating(false);
               setEditingItem(row);
             }}
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
             title="Edit"
           >
             <FaEdit className="text-xs" />
@@ -836,7 +837,7 @@ export function ExperienceManagementPage() {
           <button
             type="button"
             onClick={() => setDeleteTarget(row)}
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
             title="Hapus"
           >
             <FaTrash className="text-xs" />
@@ -850,7 +851,7 @@ export function ExperienceManagementPage() {
     <div className="space-y-6">
       <PageHeader
         title="Experience Management"
-        description="Kelola pengalaman kerja, magang, dan asisten laboratorium (SAG Laboratory, PT. Teknoreka, dll.) beserta detail accordion."
+        description="Kelola pengalaman kerja, magang, dan asisten laboratorium pada Vertical Timeline serta detail accordion."
         actions={
           <button
             type="button"
@@ -858,7 +859,7 @@ export function ExperienceManagementPage() {
               setEditingItem(null);
               setIsCreating(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
           >
             <FaPlus /> Tambah Experience
           </button>
@@ -875,7 +876,7 @@ export function ExperienceManagementPage() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+            className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
           >
             <option value="all">Semua Tipe Posisi</option>
             {POSITION_TYPES.map((t) => (

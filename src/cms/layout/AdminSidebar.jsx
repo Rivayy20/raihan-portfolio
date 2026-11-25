@@ -5,19 +5,19 @@ import { CMS_NAV_GROUPS } from '../config/navigation';
 
 function SidebarContent({ onNavigate, onLogout, adminProfile, onCloseMobile }) {
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-zinc-900 border-r border-slate-200 dark:border-zinc-800">
+    <div className="flex flex-col h-full bg-surface border-r border-border-subtle">
       {/* Brand Header */}
-      <div className="h-16 px-5 flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 shrink-0">
+      <div className="h-16 px-5 flex items-center justify-between border-b border-border-subtle shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-[#00E5FF]/15 border border-[#00B4D8]/30 text-[#0096B4] dark:text-[#00E5FF] flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-primary/12 border border-primary/25 text-primary flex items-center justify-center shrink-0 shadow-xs">
             <FaShieldAlt className="text-base" />
           </div>
           <div>
-            <span className="font-heading font-black tracking-tight text-base text-slate-900 dark:text-zinc-100 block leading-none">
+            <span className="font-heading font-bold tracking-tight text-base text-ink block leading-none">
               RAZH CMS
             </span>
-            <span className="text-[11px] font-medium text-slate-500 dark:text-zinc-400">
-              Admin Workspace
+            <span className="text-[11px] font-medium text-muted">
+              Editorial Studio
             </span>
           </div>
         </div>
@@ -27,7 +27,7 @@ function SidebarContent({ onNavigate, onLogout, adminProfile, onCloseMobile }) {
             type="button"
             onClick={onCloseMobile}
             aria-label="Tutup menu navigasi"
-            className="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="lg:hidden p-2 rounded-lg text-muted hover:text-ink hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaTimes />
           </button>
@@ -38,7 +38,7 @@ function SidebarContent({ onNavigate, onLogout, adminProfile, onCloseMobile }) {
       <nav aria-label="Navigasi CMS" className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         {CMS_NAV_GROUPS.map((group) => (
           <div key={group.id}>
-            <p className="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+            <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted/80">
               {group.label}
             </p>
             <ul className="space-y-1">
@@ -53,8 +53,8 @@ function SidebarContent({ onNavigate, onLogout, adminProfile, onCloseMobile }) {
                       className={({ isActive }) =>
                         `flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                           isActive
-                            ? 'bg-[#00E5FF]/15 text-[#0096B4] dark:text-[#00E5FF] font-semibold'
-                            : 'text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800/70 hover:text-slate-900 dark:hover:text-zinc-100'
+                            ? 'bg-primary/12 text-primary border border-primary/20 font-semibold'
+                            : 'text-muted hover:bg-surface-subtle hover:text-ink border border-transparent'
                         }`
                       }
                     >
@@ -70,12 +70,12 @@ function SidebarContent({ onNavigate, onLogout, adminProfile, onCloseMobile }) {
       </nav>
 
       {/* Footer Admin Info & Logout */}
-      <div className="p-3 border-t border-slate-200 dark:border-zinc-800 shrink-0 space-y-2">
-        <div className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200/70 dark:border-zinc-800">
-          <p className="text-xs font-semibold text-slate-800 dark:text-zinc-200 truncate">
+      <div className="p-3 border-t border-border-subtle shrink-0 space-y-2">
+        <div className="px-3 py-2.5 rounded-xl bg-surface-subtle border border-border-subtle">
+          <p className="text-xs font-semibold text-ink truncate">
             {adminProfile?.email || 'Administrator'}
           </p>
-          <p className="text-[11px] uppercase tracking-wider font-bold text-[#0096B4] dark:text-[#00E5FF] mt-0.5">
+          <p className="text-[11px] uppercase tracking-wider font-semibold text-primary mt-0.5">
             {adminProfile?.role || 'super_admin'}
           </p>
         </div>

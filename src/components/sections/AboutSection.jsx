@@ -1,13 +1,24 @@
 import { useId, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Section } from '../ui/Section';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { FaGraduationCap, FaChevronDown } from 'react-icons/fa';
 import { Card } from '../ui/Card';
-import { ExperienceSummary } from './ExperienceSummary';
 import { ExperiencePanel } from './ExperiencePanel';
 import { CertificationsSection } from './CertificationsSection';
-import { FaGraduationCap, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
-import { containerVariants, itemVariants } from '../../utils/motionVariants';
+import { EDITORIAL_EASE } from '../../utils/motionVariants';
+
+const DEFAULT_NARRATIVE_HIGHLIGHTS = [
+  'Telkom University',
+  'Information Systems',
+  'Software Engineering',
+  'Game Developer Intern',
+  'Unity',
+  'Blender',
+  'React',
+  'Laravel',
+  'PHP',
+  'MySQL',
+];
 
 function escapeRegExp(str) {
   return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -30,7 +41,10 @@ function renderHighlightedParagraph(text, highlights = []) {
     );
     if (!matched) return part;
     return (
-      <mark key={idx} className="bg-accent text-black px-1 font-bold">
+      <mark
+        key={idx}
+        className="rounded-sm bg-primary/12 dark:bg-primary/20 px-1.5 py-0.5 text-ink font-medium"
+      >
         {part}
       </mark>
     );
@@ -38,6 +52,7 @@ function renderHighlightedParagraph(text, highlights = []) {
 }
 
 const EducationCard = ({ about, education, isExpanded, onToggle }) => {
+  const reduceMotion = useReducedMotion();
   const currentItems = education.filter((item) => item.educationLevel === 'current');
   const previousItems = education.filter((item) => item.educationLevel !== 'current');
 
@@ -50,73 +65,106 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
   const primaryFirst = primaryList[0];
 
   return (
-    <Card
-      className={`bg-[#FDE047] dark:bg-[#B8860B] flex flex-col justify-start transition-all duration-300 ${
-        hasExpandable ? 'cursor-pointer' : ''
-      } ${
-        isExpanded
-          ? 'shadow-[6px_6px_0px_0px_var(--color-black)] -translate-y-1'
-          : 'hover:-translate-y-2'
-      }`}
-      onClick={hasExpandable ? onToggle : undefined}
-    >
-      <div className="flex justify-between items-start mb-4">
-        <div className="w-12 h-12 bg-white brutal-border flex items-center justify-center text-2xl text-black overflow-hidden">
-          {primaryFirst?.logoUrl ? (
-            <img
-              src={primaryFirst.logoUrl}
-              alt={primaryFirst.institution}
-              loading="lazy"
-              decoding="async"
-              className="w-9 h-9 object-contain"
-            />
-          ) : (
-            <FaGraduationCap />
-          )}
+    <Card className="p-6 sm:p-7 bg-surface/95 hover:-translate-y-1 hover:border-border-strong transition-all duration-300">
+      <div className="flex items-start justify-between gap-4 pb-5 border-b border-border-subtle">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="w-11 h-11 rounded-2xl bg-primary/12 border border-primary/25 flex items-center justify-center text-base text-primary overflow-hidden shrink-0">
+            {primaryFirst?.logoUrl ? (
+              <img
+                src={primaryFirst.logoUrl}
+                alt={primaryFirst.institution}
+                loading="lazy"
+                decoding="async"
+                className="w-7 h-7 object-contain"
+              />
+            ) : (
+              <FaGraduationCap aria-hidden="true" />
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="font-body text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+              Academic Background
+            </p>
+            <h3 className="font-heading text-lg sm:text-xl font-medium text-ink">
+              {about?.educationCardTitle || 'Education'}
+            </h3>
+          </div>
         </div>
+
+        {currentItems.length > 0 && (
+          <span className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-primary/12 border border-primary/25 px-2.5 py-1 font-body text-[11px] font-medium text-ink">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            Active
+          </span>
+        )}
       </div>
 
-      <h3 className="text-xl font-black mb-2 text-black">
-        {about?.educationCardTitle || 'Education'}
-      </h3>
-
-      {primaryList.map((edu, idx) => (
-        <div key={edu.id || idx} className={idx > 0 ? 'mt-4 pt-3 border-t border-black/15' : ''}>
-          {(edu.degree || edu.major) && (
-            <p className="font-bold text-lg leading-tight text-black">
-              {edu.degree || edu.major}
+      <div className="pt-5 space-y-3">
+        {primaryList.map((edu, idx) => (
+          <div
+            key={edu.id || idx}
+            className="rounded-2xl bg-canvas/75 dark:bg-canvas/60 border border-border-subtle p-4 sm:p-5"
+          >
+            {(edu.degree || edu.major) && (
+              <p className="font-heading text-base sm:text-lg font-medium text-ink leading-snug">
+                {edu.degree || edu.major}
+              </p>
+            )}
+            <p className="font-body text-sm font-medium text-ink/80 mt-1.5">
+              {edu.institution}
             </p>
-          )}
-          <p className="font-medium mt-2 text-black">{edu.institution}</p>
-          {edu.period && (
-            <p className="text-sm font-bold opacity-70 mt-1 text-black">{edu.period}</p>
-          )}
-        </div>
-      ))}
+            {edu.period && (
+              <p className="font-body text-xs font-medium text-muted mt-1">
+                {edu.period}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
 
       {hasExpandable && (
-        <>
-          <div className="mt-4 pt-4 flex items-center justify-between font-bold text-sm opacity-80 hover:opacity-100 transition-opacity text-black">
-            <span>{isExpanded ? 'Collapse' : 'Click to Expand'}</span>
-            {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
-          </div>
+        <div className="mt-5 pt-4 border-t border-border-subtle">
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={isExpanded}
+            className="w-full flex items-center justify-between py-1 rounded-lg text-xs font-medium uppercase tracking-[0.14em] text-muted hover:text-ink transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            <span>
+              {isExpanded
+                ? 'Hide Previous Education'
+                : about?.previousEduHeading || 'Previous Education'}
+            </span>
+            <FaChevronDown
+              aria-hidden="true"
+              className={`text-[11px] transition-transform duration-300 ${
+                isExpanded ? 'rotate-180 text-primary' : ''
+              }`}
+            />
+          </button>
 
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             {isExpanded && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.28,
+                  ease: EDITORIAL_EASE,
+                }}
                 className="overflow-hidden"
               >
-                <div className="pt-4 border-t-2 border-black/20 mt-2">
+                <div className="pt-4 space-y-4">
                   {primaryList.some((e) => Boolean(e.description)) && (
-                    <div className="mb-4 space-y-2">
+                    <div className="space-y-2">
                       {primaryList.map(
                         (e) =>
                           e.description && (
-                            <p key={e.id} className="text-sm font-medium text-black">
+                            <p
+                              key={e.id}
+                              className="text-sm text-muted leading-relaxed"
+                            >
                               {e.description}
                             </p>
                           )
@@ -124,59 +172,49 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
                     </div>
                   )}
 
-                  {secondaryList.length > 0 && (
-                    <>
-                      <h4 className="font-black text-lg mb-4 text-black">
-                        {about?.previousEduHeading || 'Previous Education'}
-                      </h4>
-
-                      {secondaryList.map((item, idx) => (
-                        <div
-                          key={item.id || idx}
-                          className={idx < secondaryList.length - 1 ? 'mb-4' : ''}
-                        >
-                          <div className="flex items-start gap-2.5">
-                            {item.logoUrl && (
-                              <img
-                                src={item.logoUrl}
-                                alt={item.institution}
-                                loading="lazy"
-                                decoding="async"
-                                className="w-7 h-7 object-contain bg-white border border-black rounded p-0.5 shrink-0 mt-0.5"
-                              />
-                            )}
-                            <div>
-                              <p className="font-bold text-base text-black">
-                                {item.institution}
-                              </p>
-                              {(item.degree || item.major) && (
-                                <p className="text-sm font-medium text-black">
-                                  {item.degree
-                                    ? `${item.degree}${item.major ? ` — ${item.major}` : ''}`
-                                    : `Major: ${item.major}`}
-                                </p>
-                              )}
-                              {item.period && (
-                                <p className="text-sm font-bold opacity-70 mt-1 text-black">
-                                  {item.period}
-                                </p>
-                              )}
-                              {item.description && (
-                                <p className="text-sm text-black/80 mt-1">
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </>
-                  )}
+                  {secondaryList.map((item, idx) => (
+                    <div
+                      key={item.id || idx}
+                      className="flex items-start gap-3 border-l-2 border-primary/40 pl-3.5"
+                    >
+                      {item.logoUrl && (
+                        <img
+                          src={item.logoUrl}
+                          alt={item.institution}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-7 h-7 object-contain bg-white border border-border-subtle rounded-md p-0.5 shrink-0 mt-0.5"
+                        />
+                      )}
+                      <div>
+                        <p className="font-heading text-sm font-medium text-ink">
+                          {item.institution}
+                        </p>
+                        {(item.degree || item.major) && (
+                          <p className="font-body text-xs text-muted mt-0.5">
+                            {item.degree
+                              ? `${item.degree}${item.major ? ` — ${item.major}` : ''}`
+                              : `Major: ${item.major}`}
+                          </p>
+                        )}
+                        {item.period && (
+                          <p className="font-body text-xs text-muted/80 mt-0.5">
+                            {item.period}
+                          </p>
+                        )}
+                        {item.description && (
+                          <p className="font-body text-xs text-muted mt-1 leading-relaxed">
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </>
+        </div>
       )}
     </Card>
   );
@@ -187,10 +225,17 @@ export const AboutSection = ({ sectionConfig }) => {
   const { about, education, experiences, certifications } = data;
   const [expandedCard, setExpandedCard] = useState(null);
   const experiencePanelId = useId();
+  const reduceMotion = useReducedMotion();
 
   const handleToggle = (cardId) => {
     setExpandedCard((prev) => (prev === cardId ? null : cardId));
   };
+
+  const isCentered = sectionConfig?.contentAlignment === 'center';
+  const sectionTitle = sectionConfig?.title || 'About Me';
+  const sectionSubtitle =
+    sectionConfig?.subtitle ||
+    'Combining logic with creativity to build memorable digital solutions.';
 
   const showNarrative =
     about?.showNarrative !== false && (about?.narrativeParagraphs || []).length > 0;
@@ -198,101 +243,198 @@ export const AboutSection = ({ sectionConfig }) => {
   const showExp = about?.showExperienceCard !== false && experiences.length > 0;
   const showCerts = about?.showCertifications !== false && certifications.length > 0;
 
+  const activeHighlights =
+    (about?.narrativeHighlights || []).length > 0
+      ? about.narrativeHighlights
+      : DEFAULT_NARRATIVE_HIGHLIGHTS;
+
+  const headerContainerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: reduceMotion ? 0 : 0.12 },
+    },
+  };
+
+  const eyebrowVariants = {
+    hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduceMotion ? 0.2 : 0.72, ease: EDITORIAL_EASE },
+    },
+  };
+
+  const headingVariants = {
+    hidden: reduceMotion
+      ? { opacity: 0 }
+      : { opacity: 0, y: 16, filter: 'blur(6px)' },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: { duration: reduceMotion ? 0.2 : 0.85, ease: EDITORIAL_EASE },
+    },
+  };
+
+  const subtitleVariants = {
+    hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 14 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduceMotion ? 0.2 : 0.78, ease: EDITORIAL_EASE },
+    },
+  };
+
+  const narrativeContainerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: reduceMotion ? 0 : 0.11,
+        delayChildren: reduceMotion ? 0 : 0.08,
+      },
+    },
+  };
+
+  const narrativeItemVariants = {
+    hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduceMotion ? 0.2 : 0.78, ease: EDITORIAL_EASE },
+    },
+  };
+
+  const eduCardVariants = {
+    hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, x: 24 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: reduceMotion ? 0.2 : 0.85,
+        delay: reduceMotion ? 0 : 0.18,
+        ease: EDITORIAL_EASE,
+      },
+    },
+  };
+
   return (
-    <Section
+    <section
       id="about"
-      title={sectionConfig?.title || 'About Me'}
-      subtitle={
-        sectionConfig?.subtitle ||
-        'Combining logic with creativity to build memorable digital solutions.'
-      }
-      alignment={sectionConfig?.contentAlignment || 'left'}
+      className="py-20 sm:py-28 md:py-32 scroll-mt-24"
     >
-      <div className="flex flex-col">
-        {(showNarrative || showEdu || showExp) && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-start">
-            {/* Personal Narrative */}
-            {showNarrative && (
-              <motion.div
-                className={
-                  showEdu || showExp ? 'md:col-span-2 lg:col-span-5' : 'md:col-span-2 lg:col-span-12'
-                }
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: '-100px' }}
-                variants={itemVariants}
-              >
-                <Card className="bg-base">
-                  <h3 className="text-2xl font-black mb-6 flex items-center gap-3">
-                    <span className="w-8 h-8 bg-accent brutal-border flex items-center justify-center rounded-full text-lg">
-                      !
-                    </span>
-                    {about?.narrativeTitle || 'The Narrative'}
-                  </h3>
-                  <div className="space-y-4 text-lg font-medium text-left text-gray-800 dark:text-gray-300 transition-colors duration-300">
+      <div className="flex flex-col gap-12 sm:gap-16">
+        {/* Staggered Section Header */}
+        <motion.div
+          variants={headerContainerVariants}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className={`flex flex-col gap-4 border-t border-border-subtle pt-8 ${
+            isCentered
+              ? 'mx-auto max-w-3xl items-center text-center'
+              : 'max-w-3xl'
+          }`}
+        >
+          <motion.span
+            variants={eyebrowVariants}
+            className="inline-flex items-center gap-2 font-body text-xs font-medium uppercase tracking-[0.2em] text-muted"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            01 / About
+          </motion.span>
+
+          <motion.h2
+            variants={headingVariants}
+            className="font-heading text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.03em] leading-[1.08] text-ink"
+          >
+            {sectionTitle}
+          </motion.h2>
+
+          {sectionSubtitle && (
+            <motion.p
+              variants={subtitleVariants}
+              className="font-body text-base sm:text-lg text-muted leading-relaxed"
+            >
+              {sectionSubtitle}
+            </motion.p>
+          )}
+        </motion.div>
+
+        <div className="flex flex-col gap-16 sm:gap-20">
+          {/* Part 1: Balanced Two-Column Editorial Split (~60% Narrative / ~40% Education) */}
+          {(showNarrative || showEdu) && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+              {showNarrative && (
+                <motion.div
+                  className={showEdu ? 'lg:col-span-7 max-w-[65ch]' : 'lg:col-span-12 max-w-[72ch]'}
+                  variants={narrativeContainerVariants}
+                  initial={reduceMotion ? false : 'hidden'}
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.15 }}
+                >
+                  <motion.div
+                    variants={narrativeItemVariants}
+                    className="flex items-center gap-3 mb-5"
+                  >
+                    <span className="w-6 h-0.5 rounded-full bg-primary" aria-hidden="true" />
+                    <h3 className="font-heading text-xl sm:text-2xl font-medium text-ink">
+                      {about?.narrativeTitle || 'The Narrative'}
+                    </h3>
+                  </motion.div>
+
+                  <div className="space-y-5 font-body leading-[1.82]">
                     {(about?.narrativeParagraphs || []).map((paragraph, idx) => (
-                      <p key={idx}>
-                        {renderHighlightedParagraph(
-                          paragraph,
-                          about?.narrativeHighlights
-                        )}
-                      </p>
+                      <motion.p
+                        key={idx}
+                        variants={narrativeItemVariants}
+                        className={
+                          idx === 0
+                            ? 'text-[17px] sm:text-lg text-ink/95'
+                            : 'text-[15px] sm:text-base text-muted'
+                        }
+                      >
+                        {renderHighlightedParagraph(paragraph, activeHighlights)}
+                      </motion.p>
                     ))}
                   </div>
-                </Card>
-              </motion.div>
-            )}
+                </motion.div>
+              )}
 
-            {/* Education & Experience summary */}
-            {(showEdu || showExp) && (
-              <motion.div
-                className={`${
-                  showNarrative ? 'md:col-span-2 lg:col-span-7' : 'md:col-span-2 lg:col-span-12'
-                } grid grid-cols-1 ${showEdu && showExp ? 'md:grid-cols-2 lg:grid-cols-1' : ''} gap-8 items-start`}
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: '-100px' }}
-              >
-                {showEdu && (
-                  <motion.div variants={itemVariants}>
-                    <EducationCard
-                      about={about}
-                      education={education}
-                      isExpanded={expandedCard === 'edu'}
-                      onToggle={() => handleToggle('edu')}
-                    />
-                  </motion.div>
-                )}
+              {showEdu && (
+                <motion.div
+                  className={showNarrative ? 'lg:col-span-5' : 'lg:col-span-12 max-w-xl'}
+                  variants={eduCardVariants}
+                  initial={reduceMotion ? false : 'hidden'}
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.2 }}
+                >
+                  <EducationCard
+                    about={about}
+                    education={education}
+                    isExpanded={expandedCard === 'edu'}
+                    onToggle={() => handleToggle('edu')}
+                  />
+                </motion.div>
+              )}
+            </div>
+          )}
 
-                {showExp && (
-                  <motion.div variants={itemVariants}>
-                    <ExperienceSummary
-                      isExpanded={expandedCard === 'exp'}
-                      onToggle={() => handleToggle('exp')}
-                      panelId={experiencePanelId}
-                    />
-                  </motion.div>
-                )}
-              </motion.div>
-            )}
-          </div>
-        )}
+          {/* Part 2: Animated Vertical Career Timeline */}
+          {showExp && <ExperiencePanel id={experiencePanelId} isOpen />}
 
-        {/* Full-width Experience Details */}
-        {showExp && (
-          <ExperiencePanel id={experiencePanelId} isOpen={expandedCard === 'exp'} />
-        )}
-
-        {showCerts && (
-          <div className="pt-12">
-            <CertificationsSection
-              expandedId={expandedCard}
-              onToggle={handleToggle}
-            />
-          </div>
-        )}
+          {/* Part 3: Bento Certifications Grid */}
+          {showCerts && (
+            <div className="pt-12 border-t border-border-subtle">
+              <CertificationsSection
+                expandedId={expandedCard}
+                onToggle={handleToggle}
+              />
+            </div>
+          )}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 };

@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { FaBuilding } from 'react-icons/fa';
 
-// Logos sit on a fixed white tile (not the theme's --color-white) so transparent
-// logos keep their original colors in both themes. Falls back to a neutral icon.
+// Logos sit on a fixed clean white tile so transparent org logos preserve brand
+// fidelity across both Light and Dark themes.
 export const OrgLogo = ({ src, alt = '', className = '' }) => {
   const [failed, setFailed] = useState(false);
 
   return (
     <span
-      className={`shrink-0 inline-flex items-center justify-center overflow-hidden bg-[#FFFFFF] border-2 border-black rounded-lg ${className}`}
+      className={`shrink-0 inline-flex items-center justify-center overflow-hidden bg-[#FFFFFF] border border-border-subtle rounded-xl shadow-2xs ${className}`}
     >
       {src && !failed ? (
         <img
@@ -19,10 +19,10 @@ export const OrgLogo = ({ src, alt = '', className = '' }) => {
           loading="lazy"
           decoding="async"
           onError={() => setFailed(true)}
-          className="w-full h-full object-contain p-0.5"
+          className="w-full h-full object-contain p-1"
         />
       ) : (
-        <FaBuilding aria-hidden="true" className="w-1/2 h-1/2 text-[#0A0A0A]" />
+        <FaBuilding aria-hidden="true" className="w-1/2 h-1/2 text-[#171719]/75" />
       )}
     </span>
   );

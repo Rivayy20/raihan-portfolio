@@ -1,82 +1,83 @@
 /**
  * Static Tailwind v4 class dictionaries for safe, purge-proof CMS color presets.
- * Database stores only semantic preset keys; raw CSS/HTML is never stored or injected.
+ * Keys match persisted database enums while visual tokens implement the
+ * Modern Minimalist Editorial + GTA VI Sunset atmosphere across Light & Dark themes.
  */
 
 export const SKILL_CATEGORY_COLORS = {
-  teal: 'bg-[#5EEAD4] dark:bg-[#008B8B]',
-  purple: 'bg-[#D8B4FE] dark:bg-[#483D8B]',
-  yellow: 'bg-[#FDE047] dark:bg-[#B8860B]',
-  blue: 'bg-[#93C5FD] dark:bg-[#00008B]',
-  cyan: 'bg-[#67E8F9] dark:bg-[#0891B2]',
-  white: 'bg-white',
-  coral: 'bg-[#FDA4AF] dark:bg-[#9F1239]',
-  mint: 'bg-[#86EFAC] dark:bg-[#166534]',
+  teal: 'bg-gradient-to-br from-[#FF6B6B]/[0.06] via-surface to-surface',
+  purple: 'bg-gradient-to-br from-[#A78BFA]/[0.08] via-surface to-surface',
+  yellow: 'bg-gradient-to-br from-[#FFB38A]/[0.10] via-surface to-surface',
+  blue: 'bg-gradient-to-br from-[#F48FB1]/[0.08] via-surface to-[#49345F]/[0.04]',
+  cyan: 'bg-gradient-to-br from-[#FF9B71]/[0.08] via-surface to-surface',
+  white: 'bg-surface',
+  coral: 'bg-gradient-to-br from-[#FF6B6B]/[0.09] via-surface to-surface',
+  mint: 'bg-gradient-to-br from-[#A78BFA]/[0.07] via-surface to-[#FFB38A]/[0.05]',
 };
 
 export const PROJECT_PANEL_COLORS = {
-  primary: 'bg-primary',
-  secondary: 'bg-secondary',
-  accent: 'bg-[#FFD60A]',
-  teal: 'bg-[#5EEAD4] dark:bg-[#008B8B]',
-  purple: 'bg-[#D8B4FE] dark:bg-[#483D8B]',
-  blue: 'bg-[#93C5FD] dark:bg-[#1E3A8A]',
-  white: 'bg-white',
+  primary: 'bg-gradient-to-br from-[#FF6B6B]/14 via-[#FFB38A]/10 to-[#49345F]/10 dark:from-[#FF6B6B]/18 dark:via-[#49345F]/28 dark:to-[#171719]',
+  secondary: 'bg-gradient-to-br from-[#A78BFA]/15 via-[#F48FB1]/10 to-[#49345F]/12 dark:from-[#A78BFA]/20 dark:via-[#49345F]/30 dark:to-[#171719]',
+  accent: 'bg-gradient-to-br from-[#FFB38A]/18 via-[#FF9B71]/10 to-[#F48FB1]/10 dark:from-[#FFB38A]/18 dark:via-[#49345F]/24 dark:to-[#171719]',
+  teal: 'bg-gradient-to-br from-[#FF6B6B]/12 via-[#F48FB1]/10 to-[#A78BFA]/10 dark:from-[#FF6B6B]/15 dark:via-[#49345F]/25 dark:to-[#171719]',
+  purple: 'bg-gradient-to-br from-[#A78BFA]/16 via-[#49345F]/10 to-[#F48FB1]/10 dark:from-[#A78BFA]/20 dark:via-[#49345F]/32 dark:to-[#171719]',
+  blue: 'bg-gradient-to-br from-[#49345F]/12 via-[#A78BFA]/10 to-[#FFB38A]/10 dark:from-[#49345F]/35 dark:via-[#A78BFA]/15 dark:to-[#171719]',
+  white: 'bg-surface-subtle/60',
 };
 
 export const CERTIFICATION_CARD_COLORS = {
-  white: 'bg-white',
-  primary: 'bg-primary',
-  accent: 'bg-accent',
-  teal: 'bg-[#5EEAD4]',
-  yellow: 'bg-[#FDE047]',
+  white: 'bg-surface',
+  primary: 'bg-gradient-to-br from-[#FF6B6B]/[0.05] to-surface',
+  accent: 'bg-gradient-to-br from-[#FFB38A]/[0.07] to-surface',
+  teal: 'bg-gradient-to-br from-[#F48FB1]/[0.06] to-surface',
+  yellow: 'bg-gradient-to-br from-[#FF9B71]/[0.07] to-surface',
 };
 
 export const SOCIAL_LINK_COLORS = {
-  white: 'bg-white',
-  secondary: 'bg-[#00B4D8]',
-  accent: 'bg-[#FFD60A]',
-  primary: 'bg-primary',
+  white: 'hover:border-ink/40 hover:text-ink',
+  secondary: 'hover:border-[#F48FB1]/70 hover:text-ink',
+  accent: 'hover:border-[#FFB38A]/80 hover:text-ink',
+  primary: 'hover:border-[#FF6B6B]/70 hover:text-ink',
 };
 
 export const THEME_COLOR_PRESETS = {
   razh_cyan: {
-    label: 'RAZH Cyan & Yellow (Default)',
+    label: 'Tropical Sunset (Default)',
     light: {
-      '--color-primary': '#00E5FF',
-      '--color-secondary': '#00B4D8',
-      '--color-accent': '#FFD60A',
+      '--color-primary': '#FF6B6B',
+      '--color-secondary': '#F48FB1',
+      '--color-accent': '#FFB38A',
     },
     dark: {
-      '--color-primary': '#0891B2',
-      '--color-secondary': '#00B4D8',
-      '--color-accent': '#D4AF37',
+      '--color-primary': '#FF7B7B',
+      '--color-secondary': '#F48FB1',
+      '--color-accent': '#FFB38A',
     },
   },
   electric_amber: {
-    label: 'Electric Amber & Sky',
+    label: 'Golden Horizon',
     light: {
-      '--color-primary': '#FFD60A',
-      '--color-secondary': '#00B4D8',
-      '--color-accent': '#00E5FF',
+      '--color-primary': '#FF9B71',
+      '--color-secondary': '#FFB38A',
+      '--color-accent': '#FF6B6B',
     },
     dark: {
-      '--color-primary': '#D4AF37',
-      '--color-secondary': '#0891B2',
-      '--color-accent': '#00B4D8',
+      '--color-primary': '#FF9B71',
+      '--color-secondary': '#FFB38A',
+      '--color-accent': '#FF7B7B',
     },
   },
   cobalt_mint: {
-    label: 'Cobalt & Mint',
+    label: 'Twilight Violet',
     light: {
-      '--color-primary': '#5EEAD4',
-      '--color-secondary': '#3B82F6',
-      '--color-accent': '#FDE047',
+      '--color-primary': '#A78BFA',
+      '--color-secondary': '#F48FB1',
+      '--color-accent': '#FFB38A',
     },
     dark: {
-      '--color-primary': '#0D9488',
-      '--color-secondary': '#2563EB',
-      '--color-accent': '#CA8A04',
+      '--color-primary': '#A78BFA',
+      '--color-secondary': '#F48FB1',
+      '--color-accent': '#FFB38A',
     },
   },
 };

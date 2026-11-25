@@ -1,38 +1,59 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Section } from '../ui/Section';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Lightbox } from '../ui/Lightbox';
 import { getProjectPanelColor } from '../../constants/colorPresets';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
 import { smoothScrollTo } from '../../utils/scrollTo';
+import { EDITORIAL_EASE } from '../../utils/motionVariants';
 import {
   FaExternalLinkAlt,
   FaGithub,
   FaArrowLeft,
   FaArrowRight,
   FaImages,
+  FaExpandAlt,
 } from 'react-icons/fa';
 
 const swipeConfidenceThreshold = 10000;
 const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
 
-const variants = {
+const carouselVariants = {
   enter: (direction) => ({
-    x: direction > 0 ? 300 : -300,
+    x: direction > 0 ? 56 : -56,
     opacity: 0,
   }),
   center: {
-    zIndex: 1,
     x: 0,
     opacity: 1,
+    transition: { duration: 0.52, ease: EDITORIAL_EASE },
   },
   exit: (direction) => ({
-    zIndex: 0,
-    x: direction < 0 ? 300 : -300,
+    x: direction < 0 ? 56 : -56,
     opacity: 0,
+    transition: { duration: 0.42, ease: EDITORIAL_EASE },
   }),
+};
+
+const infoContainerVariants = {
+  infoHidden: { opacity: 1 },
+  infoVisible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.055,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const infoItemVariants = {
+  infoHidden: { opacity: 0, y: 10 },
+  infoVisible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: EDITORIAL_EASE },
+  },
 };
 
 function normalizeGalleryImage(img, projectTitle, idx) {
@@ -53,8 +74,10 @@ function normalizeGalleryImage(img, projectTitle, idx) {
 export const ProjectsSection = ({ sectionConfig }) => {
   const { data } = usePortfolioData();
   const projects = data.projects || [];
+  const reduceMotion = useReducedMotion();
 
   const [[page, direction], setPage] = useState([0, 0]);
+  const [activeImageByProject, setActiveImageByProject] = useState({});
   const [lightboxData, setLightboxData] = useState({
     project: null,
     activeIndex: 0,
@@ -100,327 +123,536 @@ export const ProjectsSection = ({ sectionConfig }) => {
   const subtitle =
     sectionConfig?.subtitle ||
     'Selected works showcasing my ability to solve problems across different domains.';
-  const alignment = sectionConfig?.contentAlignment || 'left';
+  const isCentered = sectionConfig?.contentAlignment === 'center';
+
+  const headerContainerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: reduceMotion ? 0 : 0.12 },
+    },
+  };
+
+  const eyebrowVariants = {
+    hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduceMotion ? 0.2 : 0.72, ease: EDITORIAL_EASE },
+    },
+  };
+
+  const headingVariants = {
+    hidden: reduceMotion
+      ? { opacity: 0 }
+      : { opacity: 0, y: 16, filter: 'blur(6px)' },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: { duration: reduceMotion ? 0.2 : 0.85, ease: EDITORIAL_EASE },
+    },
+  };
+
+  const subtitleVariants = {
+    hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 14 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduceMotion ? 0.2 : 0.78, ease: EDITORIAL_EASE },
+    },
+  };
+
+  const revealBlock = (delay = 0) => ({
+    hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 18 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: reduceMotion ? 0.2 : 0.75,
+        delay: reduceMotion ? 0 : delay,
+        ease: EDITORIAL_EASE,
+      },
+    },
+  });
 
   if (projects.length === 0) {
     return (
-      <Section id="projects" title={title} subtitle={subtitle} alignment={alignment}>
-        <Card className="bg-white p-8 text-center">
-          <p className="font-bold text-lg text-black">
-            Projects are currently being updated. Check back soon!
-          </p>
-        </Card>
-      </Section>
+      <section id="projects" className="py-20 sm:py-28 md:py-32 scroll-mt-24">
+        <div className="flex flex-col gap-12 sm:gap-14">
+          <div
+            className={`flex flex-col gap-4 border-t border-border-subtle pt-8 ${
+              isCentered
+                ? 'mx-auto max-w-3xl items-center text-center'
+                : 'max-w-3xl'
+            }`}
+          >
+            <span className="inline-flex items-center gap-2 font-body text-xs font-medium uppercase tracking-[0.2em] text-muted">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+              03 / Selected Work
+            </span>
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.03em] leading-[1.08] text-ink">
+              {title}
+            </h2>
+            {subtitle && (
+              <p className="font-body text-base sm:text-lg text-muted leading-relaxed">
+                {subtitle}
+              </p>
+            )}
+          </div>
+
+          <Card className="p-10 text-center">
+            <p className="font-body text-base text-muted">
+              Projects are currently being updated. Check back soon.
+            </p>
+          </Card>
+        </div>
+      </section>
     );
   }
 
   const carouselIndex = ((page % projects.length) + projects.length) % projects.length;
   const project = projects[carouselIndex];
-  const projectPanelColor = getProjectPanelColor(project.colorPreset);
+  const projectKey = project.id || project.title || String(carouselIndex);
+  const projectBackdrop = getProjectPanelColor(project.colorPreset);
   const projectImages = (project.images || []).map((img, idx) =>
     normalizeGalleryImage(img, project.title, idx)
   );
-  const desktopPreviewImages = projectImages.slice(0, 3);
-  const extraScreenshotCount = Math.max(0, projectImages.length - 3);
+  const activeImageIdx =
+    projectImages.length > 0
+      ? Math.min(activeImageByProject[projectKey] ?? 0, projectImages.length - 1)
+      : 0;
+  const activeImage = projectImages[activeImageIdx] || null;
   const liveDemoUrl = project.links?.liveDemo;
   const githubUrl = project.links?.github;
   const isAnchorLiveDemo = String(liveDemoUrl || '').trim().startsWith('#');
+  const outcomeList = Array.isArray(project.impact) ? project.impact.slice(0, 3) : [];
+
+  const selectProjectImage = (idx) => {
+    setActiveImageByProject((prev) => ({
+      ...prev,
+      [projectKey]: idx,
+    }));
+  };
 
   return (
-    <Section id="projects" title={title} subtitle={subtitle} alignment={alignment}>
-      <div className="flex flex-col gap-6">
-        {/* Navigation & Controls Top */}
-        {projects.length > 1 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-            <div className="font-black text-xl hidden sm:block px-4 py-2 bg-white brutal-border brutal-shadow">
-              Project {carouselIndex + 1} / {projects.length}
-            </div>
-            <div className="flex gap-4 w-full sm:w-auto justify-between sm:justify-end">
-              <button
-                type="button"
-                className="flex items-center gap-2 px-6 py-3 bg-white brutal-border brutal-shadow hover:-translate-y-1 active:translate-y-1 active:shadow-none transition-all font-bold cursor-pointer"
-                onClick={() => paginate(-1)}
-              >
-                <FaArrowLeft /> Prev
-              </button>
-              <div className="font-black text-xl sm:hidden flex items-center px-4 py-2 bg-white brutal-border">
-                {carouselIndex + 1} / {projects.length}
-              </div>
-              <button
-                type="button"
-                className="flex items-center gap-2 px-6 py-3 bg-white brutal-border brutal-shadow hover:-translate-y-1 active:translate-y-1 active:shadow-none transition-all font-bold cursor-pointer"
-                onClick={() => paginate(1)}
-              >
-                Next <FaArrowRight />
-              </button>
-            </div>
-          </div>
-        )}
+    <section id="projects" className="py-20 sm:py-28 md:py-32 scroll-mt-24">
+      <div className="flex flex-col gap-12 sm:gap-14">
+        {/* Staggered Section Header */}
+        <motion.div
+          variants={headerContainerVariants}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className={`flex flex-col gap-4 border-t border-border-subtle pt-8 ${
+            isCentered
+              ? 'mx-auto max-w-3xl items-center text-center'
+              : 'max-w-3xl'
+          }`}
+        >
+          <motion.span
+            variants={eyebrowVariants}
+            className="inline-flex items-center gap-2 font-body text-xs font-medium uppercase tracking-[0.2em] text-muted"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            03 / Selected Work
+          </motion.span>
 
-        {/* Carousel Container */}
-        <div className="w-full overflow-hidden px-1 py-1">
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={project.id || carouselIndex}
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { type: 'spring', stiffness: 300, damping: 30 },
-                opacity: { duration: 0.2 },
-              }}
-              drag={projects.length > 1 ? 'x' : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={1}
-              onDragEnd={(e, { offset, velocity }) => {
-                if (projects.length <= 1) return;
-                const swipe = swipePower(offset.x, velocity.x);
-                if (swipe < -swipeConfidenceThreshold) {
-                  paginate(1);
-                } else if (swipe > swipeConfidenceThreshold) {
-                  paginate(-1);
-                }
-              }}
-              className="w-full"
+          <motion.h2
+            variants={headingVariants}
+            className="font-heading text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.03em] leading-[1.08] text-ink"
+          >
+            {title}
+          </motion.h2>
+
+          {subtitle && (
+            <motion.p
+              variants={subtitleVariants}
+              className="font-body text-base sm:text-lg text-muted leading-relaxed"
             >
-              <Card className="flex flex-col lg:flex-row overflow-hidden p-0 border-r-4 border-b-4 bg-white cursor-grab active:cursor-grabbing shadow-[4px_4px_0px_0px_var(--color-black)]">
-                {/* Image Area (Collage Desktop / Scroll Mobile) */}
-                <div
-                  className={`w-full lg:w-5/12 ${projectPanelColor} border-b-4 lg:border-b-0 lg:border-r-4 border-black p-4 md:p-6 lg:p-8 relative overflow-hidden flex flex-col justify-center`}
+              {subtitle}
+            </motion.p>
+          )}
+        </motion.div>
+
+        <div className="flex flex-col gap-5">
+          {/* Top Navigation Bar & Tabular Project Counter */}
+          {projects.length > 1 && (
+            <motion.div
+              variants={revealBlock(0.28)}
+              initial={reduceMotion ? false : 'hidden'}
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              className="flex items-center justify-between gap-4"
+            >
+              <div className="inline-flex items-center gap-2 font-heading text-xs sm:text-sm font-medium tracking-[0.18em] text-muted tabular-nums">
+                <span>PROJECT</span>
+                <span className="inline-flex items-center justify-center min-w-6 overflow-hidden">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={carouselIndex}
+                      initial={reduceMotion ? false : { y: 8, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={reduceMotion ? undefined : { y: -8, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: EDITORIAL_EASE }}
+                      className="text-ink font-semibold"
+                    >
+                      {String(carouselIndex + 1).padStart(2, '0')}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
+                <span>/ {String(projects.length).padStart(2, '0')}</span>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => paginate(-1)}
+                  aria-label="Previous Project"
+                  className="group w-10 h-10 rounded-full border border-border-subtle bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-surface-subtle hover:border-primary/60 transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
-                  <div
-                    className="absolute inset-0 opacity-20"
-                    style={{
-                      backgroundImage: 'radial-gradient(#000 2px, transparent 2px)',
-                      backgroundSize: '20px 20px',
-                    }}
+                  <FaArrowLeft
+                    aria-hidden="true"
+                    className="text-xs transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:scale-105"
                   />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => paginate(1)}
+                  aria-label="Next Project"
+                  className="group w-10 h-10 rounded-full border border-border-subtle bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-surface-subtle hover:border-primary/60 transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                >
+                  <FaArrowRight
+                    aria-hidden="true"
+                    className="text-xs transition-transform duration-200 group-hover:translate-x-0.5 group-hover:scale-105"
+                  />
+                </button>
+              </div>
+            </motion.div>
+          )}
 
-                  {projectImages.length === 0 ? (
-                    <div className="relative z-10 aspect-[4/3] lg:aspect-[4/5] bg-white/80 brutal-border flex flex-col items-center justify-center p-6 text-center text-black shadow-[4px_4px_0px_0px_var(--color-black)]">
-                      <FaImages className="text-4xl mb-2 opacity-60" />
-                      <p className="font-bold text-sm">Preview screenshot coming soon</p>
-                    </div>
-                  ) : (
-                    <>
-                      {/* Desktop Grid Collage */}
-                      <div
-                        className={`hidden lg:grid gap-4 relative z-10 aspect-[4/5] xl:aspect-[3/4] ${
-                          desktopPreviewImages.length === 1
-                            ? 'grid-cols-1 grid-rows-1'
-                            : desktopPreviewImages.length === 2
-                              ? 'grid-cols-1 grid-rows-2'
-                              : 'grid-cols-2 grid-rows-2'
-                        }`}
-                      >
-                        {desktopPreviewImages.map((imgItem, idx) => {
-                          const spanClass =
-                            desktopPreviewImages.length >= 3
-                              ? idx === 0
-                                ? 'col-span-2 row-span-1'
-                                : 'col-span-1 row-span-1'
-                              : 'col-span-1 row-span-1';
-
-                          return (
-                            <div
-                              key={imgItem.id}
-                              onClick={() => openLightbox(project, idx)}
-                              className={`relative brutal-border overflow-hidden cursor-zoom-in group/img bg-white shadow-[4px_4px_0px_0px_var(--color-black)] hover:shadow-[6px_6px_0px_0px_var(--color-black)] hover:-translate-y-1 transition-all ${spanClass}`}
-                            >
-                              <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/10 transition-colors z-10 flex items-center justify-center">
-                                <span className="opacity-0 group-hover/img:opacity-100 bg-white text-black font-bold px-3 py-1 brutal-border scale-90 group-hover/img:scale-100 transition-all pointer-events-none shadow-[2px_2px_0px_0px_var(--color-black)]">
-                                  🔍 Preview
-                                </span>
-                              </div>
-                              {idx === 2 && extraScreenshotCount > 0 && (
-                                <span className="absolute bottom-2 right-2 z-20 bg-black text-white text-xs font-black px-2 py-1 border-2 border-white">
-                                  +{extraScreenshotCount}
-                                </span>
-                              )}
-                              <img
-                                src={imgItem.url}
-                                alt={imgItem.alt}
-                                loading="lazy"
-                                decoding="async"
-                                className="w-full h-full object-cover object-top group-hover/img:scale-105 transition-transform duration-500"
-                              />
-                            </div>
-                          );
-                        })}
+          {/* Main Project Showcase Card with Horizontal Slide Transitions */}
+          <motion.div
+            variants={revealBlock(0.36)}
+            initial={reduceMotion ? false : 'hidden'}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.12 }}
+            className="w-full overflow-hidden"
+          >
+            <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+              <motion.div
+                key={page}
+                custom={direction}
+                variants={reduceMotion ? undefined : carouselVariants}
+                initial={reduceMotion ? false : 'enter'}
+                animate="center"
+                exit={reduceMotion ? undefined : 'exit'}
+                drag={projects.length > 1 && !reduceMotion ? 'x' : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.4}
+                onDragEnd={(e, { offset, velocity }) => {
+                  if (projects.length <= 1) return;
+                  const swipe = swipePower(offset.x, velocity.x);
+                  if (swipe < -swipeConfidenceThreshold) {
+                    paginate(1);
+                  } else if (swipe > swipeConfidenceThreshold) {
+                    paginate(-1);
+                  }
+                }}
+                className="w-full"
+              >
+                <Card className="p-0 overflow-hidden flex flex-col lg:flex-row">
+                  {/* Left Column: Primary Screenshot Focal Point + Thumbnail Strip */}
+                  <div
+                    className={`w-full lg:w-6/12 ${projectBackdrop} p-5 sm:p-6 lg:p-8 flex flex-col justify-center gap-4 border-b lg:border-b-0 lg:border-r border-border-subtle`}
+                  >
+                    {projectImages.length === 0 ? (
+                      <div className="aspect-16/10 rounded-xl bg-surface/75 border border-border-subtle flex flex-col items-center justify-center p-6 text-center text-muted">
+                        <FaImages aria-hidden="true" className="text-3xl mb-2 opacity-50" />
+                        <p className="text-sm font-medium">Preview coming soon</p>
                       </div>
+                    ) : (
+                      <>
+                        {/* Prominent Primary Screenshot */}
+                        <button
+                          type="button"
+                          onClick={() => openLightbox(project, activeImageIdx)}
+                          aria-label={`Open full preview of ${project.title}`}
+                          className="group/preview relative aspect-16/10 w-full rounded-xl border border-black/10 dark:border-white/12 overflow-hidden bg-surface shadow-sm hover:shadow-md cursor-zoom-in transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary text-left"
+                        >
+                          <AnimatePresence mode="wait" initial={false}>
+                            {activeImage && (
+                              <motion.div
+                                key={activeImage.id}
+                                initial={
+                                  reduceMotion ? false : { opacity: 0, scale: 0.985 }
+                                }
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={
+                                  reduceMotion ? undefined : { opacity: 0, scale: 1.01 }
+                                }
+                                transition={{ duration: 0.28, ease: EDITORIAL_EASE }}
+                                className="w-full h-full"
+                              >
+                                <img
+                                  src={activeImage.url}
+                                  alt={activeImage.alt}
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="w-full h-full object-cover object-top transition-all duration-500 ease-out group-hover/preview:scale-103 group-hover/preview:brightness-105 group-hover/preview:contrast-105"
+                                />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
 
-                      {/* Mobile/Tablet Scroll Snap Gallery */}
-                      <div className="flex lg:hidden overflow-x-auto snap-x snap-mandatory gap-4 pb-4 pt-2 px-2 -mx-2 hide-scrollbar relative z-10">
-                        {projectImages.map((imgItem, idx) => (
+                          {/* Subtle View Preview Pill on Hover */}
+                          <span className="pointer-events-none absolute bottom-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-[#171719]/82 text-[#F6F3EE] backdrop-blur-md px-3 py-1.5 text-[11px] font-medium opacity-0 translate-y-1 group-hover/preview:opacity-100 group-hover/preview:translate-y-0 transition-all duration-200">
+                            <FaExpandAlt aria-hidden="true" className="text-[10px]" />
+                            <span>View Preview</span>
+                          </span>
+                        </button>
+
+                        {/* Minimalist Thumbnail Navigation when multiple screenshots exist */}
+                        {projectImages.length > 1 && (
                           <div
-                            key={imgItem.id}
-                            onClick={() => openLightbox(project, idx)}
-                            className="w-[85%] sm:w-[70%] shrink-0 snap-center brutal-border overflow-hidden cursor-zoom-in group/img bg-white shadow-[4px_4px_0px_0px_var(--color-black)] active:scale-[0.98] transition-transform"
+                            role="tablist"
+                            aria-label={`${project.title} screenshots`}
+                            className="flex items-center gap-2.5 overflow-x-auto pb-1 hide-scrollbar"
                           >
-                            <div className="relative aspect-[4/3] sm:aspect-video w-full">
-                              <img
-                                src={imgItem.url}
-                                alt={imgItem.alt}
-                                loading="lazy"
-                                decoding="async"
-                                className="w-full h-full object-cover object-top"
-                              />
-                            </div>
+                            {projectImages.map((imgItem, idx) => {
+                              const isActiveThumb = idx === activeImageIdx;
+                              return (
+                                <button
+                                  key={imgItem.id}
+                                  type="button"
+                                  role="tab"
+                                  aria-selected={isActiveThumb}
+                                  aria-label={`View screenshot ${idx + 1} of ${projectImages.length}`}
+                                  onClick={() => selectProjectImage(idx)}
+                                  className={`relative w-20 sm:w-22 aspect-16/10 shrink-0 rounded-lg overflow-hidden border transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                                    isActiveThumb
+                                      ? 'border-primary ring-2 ring-primary/25 opacity-100'
+                                      : 'border-border-subtle opacity-65 hover:opacity-100 hover:border-border-strong'
+                                  }`}
+                                >
+                                  <img
+                                    src={imgItem.url}
+                                    alt={imgItem.alt}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-full h-full object-cover object-top"
+                                  />
+                                </button>
+                              );
+                            })}
                           </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Content Area */}
-                <div className="w-full lg:w-7/12 p-6 md:p-8 lg:p-10 flex flex-col justify-between">
-                  <div>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <Badge color="white">{project.category}</Badge>
-                    </div>
-                    <h3 className="text-3xl md:text-4xl font-black mb-3 leading-tight">
-                      {project.title}
-                    </h3>
-                    {project.subtitle && (
-                      <p className="text-xl font-bold text-gray-600 dark:text-gray-300 transition-colors duration-300 mb-8">
-                        {project.subtitle}
-                      </p>
-                    )}
-
-                    {project.description && (
-                      <p className="font-medium text-gray-800 dark:text-gray-300 mb-6 leading-relaxed">
-                        {project.description}
-                      </p>
-                    )}
-
-                    <div className="grid grid-cols-1 gap-6 mb-8 mt-6">
-                      {project.problem && (
-                        <div>
-                          <h4 className="font-black text-xl mb-2 flex items-center gap-2">
-                            <span className="w-6 h-6 bg-accent brutal-border flex items-center justify-center text-sm">
-                              ?
-                            </span>
-                            Problem
-                          </h4>
-                          <p className="font-medium text-gray-800 dark:text-gray-300 transition-colors duration-300">
-                            {project.problem}
-                          </p>
-                        </div>
-                      )}
-
-                      {project.solution && (
-                        <div>
-                          <h4 className="font-black text-xl mb-2 flex items-center gap-2">
-                            <span className="w-6 h-6 bg-primary brutal-border flex items-center justify-center text-sm">
-                              !
-                            </span>
-                            Solution
-                          </h4>
-                          <p className="font-medium text-gray-800 dark:text-gray-300 transition-colors duration-300">
-                            {project.solution}
-                          </p>
-                        </div>
-                      )}
-
-                      {project.impact && project.impact.length > 0 && (
-                        <div>
-                          <h4 className="font-black text-xl mb-2 flex items-center gap-2">
-                            <span className="w-6 h-6 bg-[#FFD60A] brutal-border flex items-center justify-center text-sm">
-                              ★
-                            </span>
-                            Impact / Outcome
-                          </h4>
-                          <ul className="list-disc list-inside font-medium text-gray-800 dark:text-gray-300 transition-colors duration-300 marker:text-primary">
-                            {project.impact.map((item, idx) => (
-                              <li key={idx}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-
-                    {project.tech && project.tech.length > 0 && (
-                      <div className="mb-8">
-                        <h4 className="font-black text-lg mb-3">Tech Stack</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {project.tech.map((tech, i) => (
-                            <span
-                              key={i}
-                              className="bg-gray-100 dark:bg-[#1A1A1A] border-2 border-black px-3 py-1 text-sm font-bold transition-colors duration-300"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                        )}
+                      </>
                     )}
                   </div>
 
-                  {/* Action Buttons */}
-                  {(liveDemoUrl || githubUrl) && (
-                    <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t-2 border-dashed border-black/20 mt-auto">
-                      {liveDemoUrl && (
-                        <a
-                          href={liveDemoUrl}
-                          target={isAnchorLiveDemo ? undefined : '_blank'}
-                          rel={isAnchorLiveDemo ? undefined : 'noopener noreferrer'}
-                          onClick={
-                            isAnchorLiveDemo
-                              ? (e) => smoothScrollTo(e, liveDemoUrl)
-                              : undefined
-                          }
-                          className="brutal-btn bg-white text-sm px-6 py-3 flex items-center gap-2 flex-1 justify-center hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-black)] transition-all"
+                  {/* Right Column: Compact Case Study Information */}
+                  <motion.div
+                    variants={infoContainerVariants}
+                    initial={reduceMotion ? false : 'infoHidden'}
+                    animate="infoVisible"
+                    className="w-full lg:w-6/12 p-6 sm:p-7 lg:p-8 flex flex-col justify-between gap-6"
+                  >
+                    <div className="space-y-4">
+                      {/* Index & Category Badge + Title */}
+                      <motion.div variants={infoItemVariants}>
+                        <div className="flex flex-wrap items-center gap-2.5 mb-2.5">
+                          <span className="font-heading text-xs font-semibold tracking-[0.18em] text-primary tabular-nums">
+                            {String(carouselIndex + 1).padStart(2, '0')}
+                          </span>
+                          <Badge color="white">{project.category}</Badge>
+                        </div>
+
+                        <h3 className="font-heading text-2xl sm:text-3xl font-medium tracking-tight text-ink leading-tight">
+                          {project.title}
+                        </h3>
+
+                        {project.subtitle && (
+                          <p className="font-body text-sm sm:text-base text-muted mt-1">
+                            {project.subtitle}
+                          </p>
+                        )}
+                      </motion.div>
+
+                      {project.description && (
+                        <motion.p
+                          variants={infoItemVariants}
+                          className="font-body text-sm text-ink/85 leading-relaxed max-w-prose"
                         >
-                          <FaExternalLinkAlt /> Live Demo
-                        </a>
+                          {project.description}
+                        </motion.p>
                       )}
-                      {githubUrl && (
-                        <a
-                          href={githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="brutal-btn bg-black text-white text-sm px-6 py-3 flex items-center gap-2 flex-1 justify-center hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-black)] transition-all"
-                        >
-                          <FaGithub /> Source
-                        </a>
+
+                      {/* Compact Challenge, Solution & Outcomes */}
+                      <motion.div
+                        variants={infoItemVariants}
+                        className="space-y-3.5 pt-3.5 border-t border-border-subtle"
+                      >
+                        {project.problem && (
+                          <div>
+                            <h4 className="font-body text-[11px] font-medium uppercase tracking-[0.16em] text-muted mb-1">
+                              Challenge
+                            </h4>
+                            <p className="font-body text-sm text-ink/85 leading-relaxed">
+                              {project.problem}
+                            </p>
+                          </div>
+                        )}
+
+                        {project.solution && (
+                          <div>
+                            <h4 className="font-body text-[11px] font-medium uppercase tracking-[0.16em] text-muted mb-1">
+                              Solution
+                            </h4>
+                            <p className="font-body text-sm text-ink/85 leading-relaxed">
+                              {project.solution}
+                            </p>
+                          </div>
+                        )}
+
+                        {outcomeList.length > 0 && (
+                          <div>
+                            <h4 className="font-body text-[11px] font-medium uppercase tracking-[0.16em] text-muted mb-1.5">
+                              Key Outcomes
+                            </h4>
+                            <ul className="space-y-1">
+                              {outcomeList.map((item, idx) => (
+                                <li
+                                  key={idx}
+                                  className="flex items-start gap-2 font-body text-sm text-ink/85"
+                                >
+                                  <span
+                                    aria-hidden="true"
+                                    className="mt-2 h-1.5 w-1.5 rounded-full bg-primary shrink-0"
+                                  />
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </motion.div>
+
+                      {/* Technologies Used */}
+                      {project.tech && project.tech.length > 0 && (
+                        <motion.div variants={infoItemVariants} className="pt-1">
+                          <h4 className="font-body text-[11px] font-medium uppercase tracking-[0.16em] text-muted mb-2">
+                            Technologies Used
+                          </h4>
+                          <div className="flex flex-wrap gap-1.5">
+                            {project.tech.map((tech, i) => (
+                              <span
+                                key={i}
+                                className="rounded-full bg-surface-subtle border border-border-subtle px-2.5 py-1 font-body text-xs text-ink/85"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </motion.div>
                       )}
                     </div>
-                  )}
-                </div>
-              </Card>
-            </motion.div>
-          </AnimatePresence>
-        </div>
 
-        {/* Bottom Dot Indicators */}
-        {projects.length > 1 && (
-          <div className="flex justify-center mt-4">
-            <div className="flex gap-3">
-              {projects.map((item, idx) => (
-                <button
-                  type="button"
-                  key={item.id || idx}
-                  onClick={() => {
-                    const newDirection = idx > carouselIndex ? 1 : -1;
-                    setPage([idx, newDirection]);
-                  }}
-                  className={`w-3 h-3 rounded-full border-2 border-black transition-all cursor-pointer ${
-                    idx === carouselIndex ? 'bg-black scale-150' : 'bg-white'
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+                    {/* Action Buttons */}
+                    {(liveDemoUrl || githubUrl) && (
+                      <motion.div
+                        variants={infoItemVariants}
+                        className="flex flex-wrap gap-3 pt-4 border-t border-border-subtle"
+                      >
+                        {liveDemoUrl && (
+                          <a
+                            href={liveDemoUrl}
+                            target={isAnchorLiveDemo ? undefined : '_blank'}
+                            rel={isAnchorLiveDemo ? undefined : 'noopener noreferrer'}
+                            onClick={
+                              isAnchorLiveDemo
+                                ? (e) => smoothScrollTo(e, liveDemoUrl)
+                                : undefined
+                            }
+                            className="group inline-flex items-center justify-center gap-2 rounded-full bg-ink text-canvas hover:bg-primary hover:text-[#171719] hover:-translate-y-0.5 px-6 py-2.5 text-xs sm:text-sm font-medium transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                          >
+                            <span>Live Demo</span>
+                            <FaExternalLinkAlt
+                              aria-hidden="true"
+                              className="text-[11px] transition-transform duration-200 group-hover:translate-x-0.5"
+                            />
+                          </a>
+                        )}
+                        {githubUrl && (
+                          <a
+                            href={githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 rounded-full border border-border-strong px-6 py-2.5 text-xs sm:text-sm font-medium text-ink hover:bg-surface-subtle hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                          >
+                            <FaGithub aria-hidden="true" />
+                            <span>Source Code</span>
+                          </a>
+                        )}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                </Card>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+
+          {/* Minimalist Horizontal Segmented Progress Indicator */}
+          {projects.length > 1 && (
+            <motion.div
+              variants={revealBlock(0.44)}
+              initial={reduceMotion ? false : 'hidden'}
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              className="flex items-center justify-center pt-1"
+            >
+              <div
+                className="flex items-center gap-2 w-full max-w-xs"
+                role="group"
+                aria-label="Project progress"
+              >
+                {projects.map((item, idx) => {
+                  const isCurrent = idx === carouselIndex;
+                  return (
+                    <button
+                      type="button"
+                      key={item.id || idx}
+                      onClick={() => {
+                        if (idx === carouselIndex) return;
+                        const newDirection = idx > carouselIndex ? 1 : -1;
+                        setPage([idx, newDirection]);
+                      }}
+                      aria-label={`Go to project ${idx + 1}: ${item.title}`}
+                      aria-current={isCurrent ? 'step' : undefined}
+                      className="relative flex-1 py-2 cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded"
+                    >
+                      <span className="relative block h-1 w-full rounded-full bg-border-subtle group-hover:bg-border-strong transition-colors overflow-hidden">
+                        {isCurrent && (
+                          <motion.span
+                            layoutId="projects-active-progress"
+                            transition={{
+                              duration: reduceMotion ? 0 : 0.45,
+                              ease: EDITORIAL_EASE,
+                            }}
+                            className="absolute inset-0 rounded-full bg-primary"
+                          />
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </div>
       </div>
 
-      {lightboxData.isOpen && (
-        <Lightbox lightboxData={lightboxData} setLightboxData={setLightboxData} />
-      )}
-    </Section>
+      <Lightbox lightboxData={lightboxData} setLightboxData={setLightboxData} />
+    </section>
   );
 };
