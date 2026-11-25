@@ -142,7 +142,7 @@ function SectionRowEditor({ section, index, total, onMove, isReordering }) {
       : section.publication_status;
 
   return (
-    <div className="border border-slate-200 dark:border-zinc-800 rounded-xl p-4 bg-slate-50/50 dark:bg-zinc-950/50 space-y-3">
+    <div className="border border-border-subtle rounded-xl p-4 bg-surface-subtle/40 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <OrderControls
@@ -154,13 +154,13 @@ function SectionRowEditor({ section, index, total, onMove, isReordering }) {
           />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-heading font-bold uppercase text-sm text-slate-900 dark:text-zinc-100">
+              <span className="font-heading font-bold uppercase text-sm text-ink">
                 {section.section_key}
               </span>
               <StatusBadge status={badgeStatus} />
               <StatusBadge status={isVisible ? 'visible' : 'hidden'} />
             </div>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 truncate mt-0.5">
+            <p className="text-xs text-muted truncate mt-0.5">
               {title || '(Tanpa judul section)'}
             </p>
           </div>
@@ -169,14 +169,14 @@ function SectionRowEditor({ section, index, total, onMove, isReordering }) {
         <button
           type="button"
           onClick={() => setIsExpanded((prev) => !prev)}
-          className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-zinc-700 hover:bg-white dark:hover:bg-zinc-900 text-xs font-semibold cursor-pointer"
+          className="px-3 py-1.5 rounded-lg border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           {isExpanded ? 'Tutup' : 'Edit Section'}
         </button>
       </div>
 
       {isExpanded && (
-        <div className="pt-3 border-t border-slate-200 dark:border-zinc-800 space-y-4">
+        <div className="pt-3 border-t border-border-subtle space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <TextField
               label="Judul Section (Opsional)"
@@ -220,7 +220,7 @@ function SectionRowEditor({ section, index, total, onMove, isReordering }) {
                 type="button"
                 disabled={isSaving}
                 onClick={handleDiscard}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 text-xs font-semibold cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
               >
                 <FaUndo className="text-[10px]" /> Discard Draft
               </button>
@@ -229,7 +229,7 @@ function SectionRowEditor({ section, index, total, onMove, isReordering }) {
               type="button"
               disabled={isSaving}
               onClick={handleSaveDraft}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-semibold cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ink hover:opacity-90 text-canvas text-xs font-semibold cursor-pointer transition-opacity"
             >
               <FaSave className="text-[10px]" /> Save Draft
             </button>
@@ -247,7 +247,7 @@ function SectionRowEditor({ section, index, total, onMove, isReordering }) {
               type="button"
               disabled={isSaving}
               onClick={handlePublish}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
             >
               <FaCheck className="text-[10px]" /> Publish
             </button>
@@ -462,8 +462,8 @@ function GeneralSettingsForm({ rawSettings, sections, isReordering, onMoveSectio
 
       <SectionCard
         title="Theme & Batas Kustomisasi Warna"
-        description="Gunakan preset warna terkurasi agar konsistensi kontras & Neo-Brutalism tetap terjaga."
-        actions={<FaPalette className="text-[#00B4D8]" />}
+        description="Gunakan preset warna Editorial Sunset terkurasi agar konsistensi kontras & estetika minimalist tetap terjaga."
+        actions={<FaPalette className="text-primary" />}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <SelectField
@@ -478,7 +478,7 @@ function GeneralSettingsForm({ rawSettings, sections, isReordering, onMoveSectio
           />
 
           <div className="space-y-2">
-            <span className="block text-sm font-semibold text-slate-800 dark:text-zinc-200">
+            <span className="block text-sm font-semibold text-ink">
               Color Preset
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -491,25 +491,25 @@ function GeneralSettingsForm({ rawSettings, sections, isReordering, onMoveSectio
                     onClick={() => updateField('color_preset', key)}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                       selected
-                        ? 'border-[#00B4D8] ring-2 ring-[#00B4D8]/30 bg-cyan-50/40 dark:bg-cyan-950/30'
-                        : 'border-slate-200 dark:border-zinc-800 hover:border-slate-300'
+                        ? 'border-primary ring-2 ring-primary/30 bg-primary/8'
+                        : 'border-border-subtle hover:border-border-strong bg-surface'
                     }`}
                   >
                     <div className="flex items-center gap-1.5 mb-2">
                       <span
-                        className="w-4 h-4 rounded-full border border-black/20"
+                        className="w-4 h-4 rounded-full border border-border-strong"
                         style={{ backgroundColor: preset.light['--color-primary'] }}
                       />
                       <span
-                        className="w-4 h-4 rounded-full border border-black/20"
+                        className="w-4 h-4 rounded-full border border-border-strong"
                         style={{ backgroundColor: preset.light['--color-secondary'] }}
                       />
                       <span
-                        className="w-4 h-4 rounded-full border border-black/20"
+                        className="w-4 h-4 rounded-full border border-border-strong"
                         style={{ backgroundColor: preset.light['--color-accent'] }}
                       />
                     </div>
-                    <p className="text-xs font-semibold text-slate-800 dark:text-zinc-200 leading-tight">
+                    <p className="text-xs font-semibold text-ink leading-tight">
                       {preset.label}
                     </p>
                   </button>
@@ -600,7 +600,7 @@ export function GeneralSettingsPage() {
         actions={
           <a
             href="/preview"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink transition-colors"
           >
             <FaEye /> Preview Website
           </a>

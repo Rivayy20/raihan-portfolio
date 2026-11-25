@@ -177,7 +177,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
 
   return (
     <div
-      className="fixed inset-0 z-[65] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-xs"
+      className="fixed inset-0 z-65 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-xs"
       role="dialog"
       aria-modal="true"
       aria-label={`Detail media ${asset.original_name}`}
@@ -186,16 +186,16 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
       }}
     >
       <div
-        className="w-full max-w-5xl max-h-[92vh] bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-5xl max-h-[92vh] bg-surface border border-border-subtle rounded-2xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-5 py-4 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between gap-4 shrink-0">
+        <div className="px-5 py-4 border-b border-border-subtle flex items-center justify-between gap-4 shrink-0">
           <div className="min-w-0">
-            <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-zinc-100 truncate">
+            <h2 className="font-heading text-lg font-bold text-ink truncate">
               {asset.original_name}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="text-xs text-muted">
               {categoryMeta?.label || asset.category} · {asset.bucket_id}/{asset.storage_path}
             </p>
           </div>
@@ -205,7 +205,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
             disabled={isBusy}
             onClick={onClose}
             aria-label="Tutup modal detail"
-            className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-xl text-muted hover:text-ink hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaTimes />
           </button>
@@ -214,20 +214,20 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
         {/* Body */}
         <div className="flex-1 overflow-y-auto grid grid-cols-1 lg:grid-cols-12">
           {/* Preview Area */}
-          <div className="lg:col-span-7 bg-slate-100 dark:bg-zinc-950 p-4 sm:p-6 flex flex-col items-center justify-center min-h-[280px] border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-zinc-800">
+          <div className="lg:col-span-7 bg-surface-subtle/60 p-4 sm:p-6 flex flex-col items-center justify-center min-h-70 border-b lg:border-b-0 lg:border-r border-border-subtle">
             {isUrlLoading || !url ? (
-              <div className="w-full h-64 rounded-xl bg-slate-200 dark:bg-zinc-800 animate-pulse" />
+              <div className="w-full h-64 rounded-xl bg-surface-subtle animate-pulse" />
             ) : isPdf ? (
               <div className="w-full flex flex-col gap-3">
                 <iframe
                   src={`${url}#toolbar=0`}
                   title={asset.original_name}
-                  className="hidden md:block w-full h-[460px] rounded-xl border border-slate-200 dark:border-zinc-800 bg-white"
+                  className="hidden md:block w-full h-115 rounded-xl border border-border-subtle bg-white"
                 />
-                <div className="flex md:hidden flex-col items-center text-center py-8 px-4 bg-white dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-800">
+                <div className="flex md:hidden flex-col items-center text-center py-8 px-4 bg-surface rounded-xl border border-border-subtle">
                   <FaFilePdf className="text-5xl text-red-500 mb-3" />
-                  <p className="text-sm font-semibold">Pratinjau PDF Inline Terbatas di Mobile</p>
-                  <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1">
+                  <p className="text-sm font-semibold text-ink">Pratinjau PDF Inline Terbatas di Mobile</p>
+                  <p className="text-xs text-muted mt-1">
                     Buka dokumen di tab baru atau unduh langsung ke perangkat Anda.
                   </p>
                 </div>
@@ -236,7 +236,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-slate-300 dark:border-zinc-700 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-zinc-800"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-semibold text-ink hover:bg-surface-subtle transition-colors"
                   >
                     <FaExternalLinkAlt className="text-[11px]" /> Buka di Tab Baru
                   </a>
@@ -245,7 +245,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
                     download={asset.original_name}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold transition-colors"
                   >
                     <FaDownload className="text-[11px]" /> Download PDF
                   </a>
@@ -255,7 +255,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
               <img
                 src={url}
                 alt={asset.alt_text || asset.original_name}
-                className="max-h-[480px] w-auto object-contain rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
+                className="max-h-120 w-auto object-contain rounded-xl border border-border-subtle bg-surface"
               />
             )}
           </div>
@@ -268,7 +268,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
                 type="button"
                 disabled={isBusy}
                 onClick={handleCopyUrl}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
               >
                 <FaCopy className="text-[11px]" /> Copy URL
               </button>
@@ -284,7 +284,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
                 type="button"
                 disabled={isBusy}
                 onClick={() => replaceInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
               >
                 <FaExchangeAlt className="text-[11px]" /> Replace File
               </button>
@@ -294,7 +294,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
                   type="button"
                   disabled={isBusy}
                   onClick={() => setIsConfirmPromoteOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold cursor-pointer transition-colors"
                 >
                   <FaGlobe className="text-[11px]" /> Promote to Public
                 </button>
@@ -303,12 +303,12 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
 
             {replaceProgress !== null && (
               <div className="space-y-1">
-                <p className="text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF]">
+                <p className="text-xs font-semibold text-primary">
                   Mengganti file... {replaceProgress}%
                 </p>
-                <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-zinc-800 overflow-hidden">
+                <div className="w-full h-1.5 rounded-full bg-surface-subtle overflow-hidden">
                   <div
-                    className="h-full bg-[#00B4D8] transition-all"
+                    className="h-full bg-primary transition-all"
                     style={{ width: `${replaceProgress}%` }}
                   />
                 </div>
@@ -316,10 +316,10 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
             )}
 
             {/* File Metadata */}
-            <dl className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200/70 dark:border-zinc-800 text-xs">
+            <dl className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-surface-subtle/60 border border-border-subtle text-xs">
               <div>
-                <dt className="text-slate-400 dark:text-zinc-500 font-semibold">Visibilitas</dt>
-                <dd className="font-semibold mt-0.5 flex items-center gap-1">
+                <dt className="text-muted font-semibold">Visibilitas</dt>
+                <dd className="font-semibold text-ink mt-0.5 flex items-center gap-1">
                   {asset.is_public ? (
                     <>
                       <FaGlobe className="text-emerald-500" /> Public CDN
@@ -332,22 +332,22 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-400 dark:text-zinc-500 font-semibold">Ukuran</dt>
-                <dd className="font-semibold mt-0.5">{formatFileSize(asset.size_bytes)}</dd>
+                <dt className="text-muted font-semibold">Ukuran</dt>
+                <dd className="font-semibold text-ink mt-0.5">{formatFileSize(asset.size_bytes)}</dd>
               </div>
               <div>
-                <dt className="text-slate-400 dark:text-zinc-500 font-semibold">MIME Type</dt>
-                <dd className="font-mono mt-0.5">{asset.mime_type}</dd>
+                <dt className="text-muted font-semibold">MIME Type</dt>
+                <dd className="font-mono text-ink mt-0.5">{asset.mime_type}</dd>
               </div>
               <div>
-                <dt className="text-slate-400 dark:text-zinc-500 font-semibold">Dimensi</dt>
-                <dd className="font-semibold mt-0.5">
+                <dt className="text-muted font-semibold">Dimensi</dt>
+                <dd className="font-semibold text-ink mt-0.5">
                   {asset.width && asset.height ? `${asset.width} × ${asset.height} px` : '—'}
                 </dd>
               </div>
               <div className="col-span-2">
-                <dt className="text-slate-400 dark:text-zinc-500 font-semibold">Diunggah</dt>
-                <dd className="font-medium mt-0.5">{formatTimestamp(asset.created_at)}</dd>
+                <dt className="text-muted font-semibold">Diunggah</dt>
+                <dd className="font-medium text-ink mt-0.5">{formatTimestamp(asset.created_at)}</dd>
               </div>
             </dl>
 
@@ -363,7 +363,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
               <button
                 type="submit"
                 disabled={isBusy}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-semibold disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-ink hover:opacity-90 text-canvas text-xs font-semibold disabled:opacity-50 cursor-pointer transition-opacity"
               >
                 <FaSave className="text-[11px]" />
                 {isSavingMeta ? 'Menyimpan...' : 'Simpan Metadata'}
@@ -371,13 +371,13 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
             </form>
 
             {/* Usage Dependency Guard */}
-            <div className="pt-4 border-t border-slate-100 dark:border-zinc-800 space-y-2.5">
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 flex items-center gap-1.5">
+            <div className="pt-4 border-t border-border-subtle space-y-2.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1.5">
                 <FaLink /> Referensi Konten ({usageList.length})
               </p>
 
               {usageQuery.isLoading ? (
-                <p className="text-xs text-slate-500 dark:text-zinc-400">
+                <p className="text-xs text-muted">
                   Memeriksa dependensi aset...
                 </p>
               ) : usageQuery.isError ? (
@@ -397,7 +397,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
                   ))}
                 </ul>
               ) : (
-                <p className="text-xs text-slate-500 dark:text-zinc-400">
+                <p className="text-xs text-muted">
                   Aset ini belum dipakai di modul konten mana pun.
                 </p>
               )}
@@ -407,7 +407,7 @@ function MediaDetailContent({ asset, onClose, onAssetUpdated, onAssetDeleted }) 
                   type="button"
                   disabled={isBusy || usageQuery.isLoading || usageQuery.isError || isInUse}
                   onClick={() => setIsConfirmDeleteOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 text-xs font-semibold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 text-xs font-semibold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
                 >
                   <FaTrash className="text-[11px]" /> Hapus Aset Permanen
                 </button>

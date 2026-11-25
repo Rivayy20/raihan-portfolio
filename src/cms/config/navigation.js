@@ -52,7 +52,7 @@ export const CMS_NAV_GROUPS = [
         label: 'Hero & CV',
         to: '/admin/hero',
         icon: FaRocket,
-        description: 'Headline, Lanyard ID Badge, floating labels, dan dokumen CV.',
+        description: 'Badge intro, headline gradient, foto portrait, floating card, dan dokumen CV.',
       },
       {
         label: 'About',

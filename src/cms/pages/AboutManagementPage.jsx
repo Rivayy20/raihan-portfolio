@@ -183,7 +183,7 @@ function AboutForm({ rawAbout }) {
           <button
             type="button"
             onClick={addParagraph}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
           >
             <FaPlus className="text-[10px]" /> Paragraf
           </button>
@@ -207,13 +207,13 @@ function AboutForm({ rawAbout }) {
           </div>
 
           <div className="space-y-3">
-            <span className="block text-sm font-semibold text-slate-800 dark:text-zinc-200">
+            <span className="block text-sm font-semibold text-ink">
               Paragraf Narasi
             </span>
             {form.narrative_paragraphs.map((paragraph, idx) => (
               <div
                 key={idx}
-                className="p-3.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/60 space-y-2"
+                className="p-3.5 rounded-xl border border-border-subtle bg-surface-subtle/60 space-y-2"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
@@ -223,7 +223,7 @@ function AboutForm({ rawAbout }) {
                       onMoveUp={() => moveParagraph(idx, idx - 1)}
                       onMoveDown={() => moveParagraph(idx, idx + 1)}
                     />
-                    <span className="text-xs font-bold text-slate-500 dark:text-zinc-400">
+                    <span className="text-xs font-bold text-muted">
                       Paragraf {idx + 1}
                     </span>
                   </div>
@@ -233,7 +233,7 @@ function AboutForm({ rawAbout }) {
                     disabled={form.narrative_paragraphs.length <= 1}
                     onClick={() => removeParagraph(idx)}
                     aria-label="Hapus paragraf"
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 disabled:opacity-30 cursor-pointer"
+                    className="p-1.5 rounded-lg text-muted hover:text-red-500 disabled:opacity-30 cursor-pointer transition-colors"
                   >
                     <FaTrash className="text-xs" />
                   </button>
@@ -244,7 +244,7 @@ function AboutForm({ rawAbout }) {
                   value={paragraph}
                   onChange={(e) => updateParagraph(idx, e.target.value)}
                   placeholder="Tulis isi paragraf..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B4D8]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border-subtle bg-surface text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 />
               </div>
             ))}
@@ -261,16 +261,16 @@ function AboutForm({ rawAbout }) {
       </SectionCard>
 
       <SectionCard
-        title="Label & Visibilitas Blok di Section About"
-        description="Atur heading kartu Education, Experience, dan Certifications."
+        title="Label & Visibilitas Blok Bento Section About"
+        description="Atur heading kartu Bento Education, Vertical Timeline Experience, dan Expandable Certifications."
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 space-y-3">
+          <div className="p-4 rounded-xl border border-border-subtle bg-surface-subtle/30 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-heading font-bold text-sm">Kartu Education</span>
+              <span className="font-heading font-bold text-sm text-ink">Kartu Education (Bento)</span>
               <Link
                 to="/admin/education"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
               >
                 Kelola Data <FaExternalLinkAlt className="text-[10px]" />
               </Link>
@@ -296,12 +296,12 @@ function AboutForm({ rawAbout }) {
             />
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 space-y-3">
+          <div className="p-4 rounded-xl border border-border-subtle bg-surface-subtle/30 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-heading font-bold text-sm">Kartu Experience</span>
+              <span className="font-heading font-bold text-sm text-ink">Blok Experience (Timeline)</span>
               <Link
                 to="/admin/experience"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
               >
                 Kelola Data <FaExternalLinkAlt className="text-[10px]" />
               </Link>
@@ -327,7 +327,7 @@ function AboutForm({ rawAbout }) {
             />
           </div>
 
-          <div className="md:col-span-2 p-4 rounded-xl border border-slate-200 dark:border-zinc-800 grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+          <div className="md:col-span-2 p-4 rounded-xl border border-border-subtle bg-surface-subtle/30 grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
             <TextField
               label="Heading Sub-Section Certifications"
               value={form.certifications_heading}
@@ -343,7 +343,7 @@ function AboutForm({ rawAbout }) {
               />
               <Link
                 to="/admin/certifications"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline shrink-0"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline shrink-0"
               >
                 Kelola Sertifikat <FaExternalLinkAlt className="text-[10px]" />
               </Link>

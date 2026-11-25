@@ -52,10 +52,10 @@ const PLATFORMS = [
 ];
 
 const SOCIAL_SWATCHES = [
-  { key: 'white', label: 'White' },
-  { key: 'secondary', label: 'Sky Blue' },
-  { key: 'accent', label: 'Yellow' },
-  { key: 'primary', label: 'Cyan' },
+  { key: 'white', label: 'Editorial Surface', swatch: 'bg-surface' },
+  { key: 'secondary', label: 'Sunset Rose', swatch: 'bg-secondary/35' },
+  { key: 'accent', label: 'Sunset Peach', swatch: 'bg-accent/45' },
+  { key: 'primary', label: 'Sunset Coral', swatch: 'bg-primary/35' },
 ];
 
 const contactSchema = z.object({
@@ -94,7 +94,7 @@ function ContactForm({ rawContact }) {
       effective.response_time_text ?? 'Usually Replies Within 24 Hours',
     location_text: effective.location_text ?? 'Bandung, Indonesia',
     form_heading: effective.form_heading ?? 'Send a Message',
-    form_submit_label: effective.form_submit_label ?? 'Shoot Message',
+    form_submit_label: effective.form_submit_label ?? 'Send Message',
     show_availability: effective.show_availability ?? true,
     show_response_time: effective.show_response_time ?? true,
     show_location: effective.show_location ?? true,
@@ -278,7 +278,7 @@ function ContactForm({ rawContact }) {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-zinc-800">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 pt-4 border-t border-border-subtle">
           <ToggleField
             label="Status Indikator Hijau (Available)"
             checked={form.is_available}
@@ -472,7 +472,7 @@ function SocialLinkForm({ item, totalCount, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 text-xs font-semibold cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           <FaTimes /> Tutup
         </button>
@@ -510,8 +510,8 @@ function SocialLinkForm({ item, totalCount, onClose }) {
       </div>
 
       <div className="mt-4 space-y-2">
-        <span className="block text-sm font-semibold text-slate-800 dark:text-zinc-200">
-          Warna Tombol di Contact
+        <span className="block text-sm font-semibold text-ink">
+          Aksen Hover di Contact
         </span>
         <div className="flex flex-wrap gap-2">
           {SOCIAL_SWATCHES.map((sw) => {
@@ -521,15 +521,15 @@ function SocialLinkForm({ item, totalCount, onClose }) {
                 key={sw.key}
                 type="button"
                 onClick={() => updateField('color_preset', sw.key)}
-                className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold cursor-pointer ${
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold text-ink cursor-pointer transition-all ${
                   active
-                    ? 'border-[#00B4D8] ring-2 ring-[#00B4D8]/30'
-                    : 'border-slate-200 dark:border-zinc-700'
+                    ? 'border-primary ring-2 ring-primary/30 bg-primary/8'
+                    : 'border-border-subtle bg-surface hover:border-border-strong'
                 }`}
               >
                 <span
-                  className={`w-4 h-4 rounded-md border border-black/30 ${
-                    SOCIAL_LINK_COLORS[sw.key] || ''
+                  className={`w-4 h-4 rounded-md border border-border-strong ${
+                    sw.swatch || SOCIAL_LINK_COLORS[sw.key] || ''
                   }`}
                 />
                 {sw.label}
@@ -539,7 +539,7 @@ function SocialLinkForm({ item, totalCount, onClose }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-border-subtle">
         <ToggleField
           label="Visible"
           checked={form.is_visible}
@@ -664,11 +664,11 @@ export function ContactManagementPage() {
         const eff = resolveEffectiveRecord(row);
         return (
           <div>
-            <p className="font-semibold text-slate-900 dark:text-zinc-100">
+            <p className="font-semibold text-ink">
               {eff.label}{' '}
-              <span className="text-xs font-normal text-slate-400">({eff.platform})</span>
+              <span className="text-xs font-normal text-muted">({eff.platform})</span>
             </p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 truncate max-w-[260px]">
+            <p className="text-xs text-muted truncate max-w-65">
               {eff.url}
             </p>
           </div>
@@ -683,13 +683,13 @@ export function ContactManagementPage() {
         return (
           <div className="flex flex-wrap gap-1 text-xs">
             {eff.show_in_contact && (
-              <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800">Contact</span>
+              <span className="px-2 py-0.5 rounded bg-surface-subtle text-ink">Contact</span>
             )}
             {eff.show_in_footer && (
-              <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800">Footer</span>
+              <span className="px-2 py-0.5 rounded bg-surface-subtle text-ink">Footer</span>
             )}
             {eff.show_in_seo_same_as && (
-              <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800">SEO</span>
+              <span className="px-2 py-0.5 rounded bg-surface-subtle text-ink">SEO</span>
             )}
           </div>
         );
@@ -724,14 +724,14 @@ export function ContactManagementPage() {
               setIsCreatingSocial(false);
               setEditingSocial(row);
             }}
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaEdit className="text-xs" />
           </button>
           <button
             type="button"
             onClick={() => setDeleteTarget(row)}
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
           >
             <FaTrash className="text-xs" />
           </button>
@@ -744,7 +744,7 @@ export function ContactManagementPage() {
     <div className="space-y-8">
       <PageHeader
         title="Contact & Social Links"
-        description="Kelola informasi kontak, status ketersediaan, serta tautan media sosial untuk Contact, Footer, dan SEO."
+        description="Kelola informasi kontak, status ketersediaan, kartu salin email interaktif, serta tautan media sosial untuk Contact, Footer, dan SEO."
       />
 
       {contactQuery.isLoading ? (
@@ -762,13 +762,13 @@ export function ContactManagementPage() {
       )}
 
       {/* Social Links Section */}
-      <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-zinc-800">
+      <div className="space-y-4 pt-4 border-t border-border-subtle">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-xl font-bold text-slate-900 dark:text-zinc-100">
+            <h2 className="font-heading text-xl font-bold text-ink">
               Social Links (Single Source of Truth)
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
+            <p className="text-xs sm:text-sm text-muted">
               Digunakan otomatis pada Contact Section, Footer, dan Schema JSON-LD Person.
             </p>
           </div>
@@ -778,7 +778,7 @@ export function ContactManagementPage() {
               setEditingSocial(null);
               setIsCreatingSocial(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer self-start sm:self-auto"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer self-start sm:self-auto transition-colors"
           >
             <FaPlus /> Tambah Social Link
           </button>

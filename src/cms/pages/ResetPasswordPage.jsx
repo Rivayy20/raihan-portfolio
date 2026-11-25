@@ -83,15 +83,15 @@ export function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 flex flex-col justify-center items-center px-4 py-10">
-      <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-sm p-6 sm:p-8">
+    <div className="min-h-screen bg-canvas text-ink font-body flex flex-col justify-center items-center px-4 py-10">
+      <div className="w-full max-w-md bg-surface border border-border-subtle rounded-2xl shadow-sm p-6 sm:p-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-[#00E5FF]/15 border border-[#00B4D8]/30 text-[#0096B4] dark:text-[#00E5FF] flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-primary/12 border border-primary/25 text-primary flex items-center justify-center shrink-0">
             <FaKey className="text-lg" />
           </div>
           <div>
-            <h1 className="font-heading text-xl font-bold tracking-tight">Reset Password Admin</h1>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">RAZH CMS Security</p>
+            <h1 className="font-heading text-xl font-bold tracking-tight text-ink">Reset Password Admin</h1>
+            <p className="text-xs text-muted">RAZH CMS Security</p>
           </div>
         </div>
 
@@ -105,7 +105,7 @@ export function ResetPasswordPage() {
             </div>
             <Link
               to="/admin/login"
-              className="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white font-semibold text-sm transition-colors"
+              className="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-xl bg-primary hover:bg-[#f25858] text-white font-semibold text-sm transition-colors"
             >
               Lanjut ke Halaman Login
             </Link>
@@ -120,7 +120,7 @@ export function ResetPasswordPage() {
             </div>
             <Link
               to="/admin/login"
-              className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 font-semibold text-sm transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-ink font-semibold text-sm transition-colors"
             >
               <FaArrowLeft className="text-xs" /> Kembali ke Login
             </Link>
@@ -138,11 +138,11 @@ export function ResetPasswordPage() {
             )}
 
             <div>
-              <label htmlFor="new-password" className="block text-sm font-semibold mb-1.5">
+              <label htmlFor="new-password" className="block text-sm font-semibold text-ink mb-1.5">
                 Password Baru
               </label>
               <div className="relative">
-                <FaLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none" />
+                <FaLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted/70 text-sm pointer-events-none" />
                 <input
                   id="new-password"
                   type={showPassword ? 'text' : 'password'}
@@ -151,13 +151,13 @@ export function ResetPasswordPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 8 karakter (huruf & angka)"
                   disabled={isSubmitting}
-                  className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+                  className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-border-subtle bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1 cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink p-1 cursor-pointer transition-colors"
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
@@ -168,11 +168,11 @@ export function ResetPasswordPage() {
             </div>
 
             <div>
-              <label htmlFor="confirm-password" className="block text-sm font-semibold mb-1.5">
+              <label htmlFor="confirm-password" className="block text-sm font-semibold text-ink mb-1.5">
                 Konfirmasi Password Baru
               </label>
               <div className="relative">
-                <FaLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none" />
+                <FaLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted/70 text-sm pointer-events-none" />
                 <input
                   id="confirm-password"
                   type={showPassword ? 'text' : 'password'}
@@ -181,7 +181,7 @@ export function ResetPasswordPage() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Ulangi password baru"
                   disabled={isSubmitting}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 />
               </div>
               {fieldErrors.confirmPassword && (
@@ -194,7 +194,7 @@ export function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-2.5 px-4 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white font-semibold text-sm transition-colors disabled:opacity-60 cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-[#f25858] text-white font-semibold text-sm transition-colors disabled:opacity-60 cursor-pointer"
             >
               {isSubmitting ? 'Menyimpan...' : 'Simpan Password Baru'}
             </button>

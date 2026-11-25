@@ -44,13 +44,13 @@ import { PageHeader } from '../components/ui/PageHeader';
 import { StatusBadge } from '../components/ui/StatusBadge';
 
 const PROJECT_SWATCHES = [
-  { key: 'primary', label: 'Primary (Cyan)' },
-  { key: 'secondary', label: 'Secondary (Blue)' },
-  { key: 'accent', label: 'Accent (Yellow)' },
-  { key: 'teal', label: 'Teal' },
-  { key: 'purple', label: 'Purple' },
-  { key: 'blue', label: 'Soft Blue' },
-  { key: 'white', label: 'White' },
+  { key: 'primary', label: 'Sunset Coral' },
+  { key: 'secondary', label: 'Twilight Lavender' },
+  { key: 'accent', label: 'Sunset Peach' },
+  { key: 'teal', label: 'Coral Rose' },
+  { key: 'purple', label: 'Deep Violet' },
+  { key: 'blue', label: 'Indigo Dusk' },
+  { key: 'white', label: 'Editorial Subtle' },
 ];
 
 const projectSchema = z.object({
@@ -101,13 +101,13 @@ function GalleryItemCard({
 
   return (
     <div
-      className={`rounded-2xl border p-3.5 bg-slate-50/60 dark:bg-zinc-950/60 space-y-3 ${
+      className={`rounded-2xl border p-3.5 bg-surface-subtle/50 space-y-3 ${
         entry.is_primary
-          ? 'border-[#00B4D8] ring-2 ring-[#00B4D8]/30'
-          : 'border-slate-200 dark:border-zinc-800'
+          ? 'border-primary ring-2 ring-primary/30'
+          : 'border-border-subtle'
       }`}
     >
-      <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 flex items-center justify-center">
+      <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-surface-subtle border border-border-subtle flex items-center justify-center">
         {url ? (
           <img
             src={url}
@@ -115,11 +115,11 @@ function GalleryItemCard({
             className="w-full h-full object-cover object-top"
           />
         ) : (
-          <FaImage className="text-2xl text-slate-400" />
+          <FaImage className="text-2xl text-muted" />
         )}
 
         {entry.is_primary && (
-          <span className="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FFD60A] text-black text-[10px] font-black shadow-xs">
+          <span className="absolute top-2 left-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary text-white text-[10px] font-bold shadow-xs">
             <FaStar /> Main Showcase
           </span>
         )}
@@ -140,8 +140,8 @@ function GalleryItemCard({
             title="Jadikan Main Showcase"
             className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold inline-flex items-center gap-1 cursor-pointer transition-colors ${
               entry.is_primary
-                ? 'bg-[#FFD60A] text-black'
-                : 'border border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-300 hover:border-[#FFD60A]'
+                ? 'bg-primary text-white'
+                : 'border border-border-subtle bg-surface text-muted hover:border-primary hover:text-primary'
             }`}
           >
             <FaStar className="text-[10px]" /> {entry.is_primary ? 'Utama' : 'Set Utama'}
@@ -151,7 +151,7 @@ function GalleryItemCard({
             type="button"
             onClick={() => setIsReplaceOpen(true)}
             title="Ganti Screenshot"
-            className="p-1.5 rounded-lg border border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-300 hover:border-[#00B4D8] cursor-pointer"
+            className="p-1.5 rounded-lg border border-border-subtle bg-surface text-muted hover:border-primary hover:text-primary cursor-pointer transition-colors"
           >
             <FaExchangeAlt className="text-[11px]" />
           </button>
@@ -160,7 +160,7 @@ function GalleryItemCard({
             type="button"
             onClick={onRemove}
             title="Hapus dari Galeri"
-            className="p-1.5 rounded-lg border border-red-200 dark:border-red-900 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-1.5 rounded-lg border border-red-200 dark:border-red-900 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
           >
             <FaTrash className="text-[11px]" />
           </button>
@@ -173,14 +173,14 @@ function GalleryItemCard({
           value={entry.alt_text || ''}
           onChange={(e) => onUpdateMeta({ alt_text: e.target.value })}
           placeholder="Alt text screenshot..."
-          className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs"
+          className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-surface text-xs text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
         <input
           type="text"
           value={entry.caption || ''}
           onChange={(e) => onUpdateMeta({ caption: e.target.value })}
           placeholder="Caption Lightbox (opsional)..."
-          className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs"
+          className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-surface text-xs text-ink focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
       </div>
 
@@ -425,7 +425,7 @@ function ProjectEditor({ item, totalCount, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold cursor-pointer"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           <FaArrowLeft className="text-[11px]" /> Kembali ke Daftar Projects
         </button>
@@ -506,10 +506,11 @@ function ProjectEditor({ item, totalCount, onClose }) {
             required
           />
           <TagInputField
-            label="Impact / Outcome"
+            label="Impact / Key Outcomes"
             value={form.impact}
             onChange={(tags) => updateField('impact', tags)}
             placeholder="Contoh: Faster administration, Reduced human error"
+            helperText="Ditampilkan pada blok Key Outcomes di Project Showcase."
           />
           <TagInputField
             label="Tech Stack"
@@ -520,7 +521,7 @@ function ProjectEditor({ item, totalCount, onClose }) {
         </div>
 
         <div className="mt-5 space-y-2">
-          <span className="block text-sm font-semibold text-slate-800 dark:text-zinc-200">
+          <span className="block text-sm font-semibold text-ink">
             Warna Panel Showcase (Color Preset)
           </span>
           <div className="flex flex-wrap gap-2">
@@ -531,14 +532,14 @@ function ProjectEditor({ item, totalCount, onClose }) {
                   key={sw.key}
                   type="button"
                   onClick={() => updateField('color_preset', sw.key)}
-                  className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold cursor-pointer ${
+                  className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold text-ink cursor-pointer transition-all ${
                     active
-                      ? 'border-[#00B4D8] ring-2 ring-[#00B4D8]/30'
-                      : 'border-slate-200 dark:border-zinc-700'
+                      ? 'border-primary ring-2 ring-primary/30 bg-primary/8'
+                      : 'border-border-subtle bg-surface hover:border-border-strong'
                   }`}
                 >
                   <span
-                    className={`w-4 h-4 rounded-md border border-black/30 ${
+                    className={`w-4 h-4 rounded-md border border-border-strong ${
                       PROJECT_PANEL_COLORS[sw.key] || ''
                     }`}
                   />
@@ -549,7 +550,7 @@ function ProjectEditor({ item, totalCount, onClose }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-zinc-800">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-4 border-t border-border-subtle">
           <ToggleField
             label="Featured Project"
             description="Tandai sebagai karya unggulan pada showcase."
@@ -572,14 +573,14 @@ function ProjectEditor({ item, totalCount, onClose }) {
           <button
             type="button"
             onClick={() => setIsAddGalleryOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
           >
             <FaPlus className="text-[10px]" /> Tambah Screenshot
           </button>
         }
       >
         {gallery.length === 0 ? (
-          <p className="text-sm text-slate-500 dark:text-zinc-400">
+          <p className="text-sm text-muted">
             Belum ada screenshot di galeri project ini. Klik "+ Tambah Screenshot" untuk memilih dari Media Library atau mengunggah gambar baru.
           </p>
         ) : (
@@ -734,12 +735,12 @@ export function ProjectsManagementPage() {
         return (
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="font-semibold text-slate-900 dark:text-zinc-100">{eff.name}</p>
+              <p className="font-semibold text-ink">{eff.name}</p>
               {eff.is_featured && (
-                <FaStar className="text-[#FFD60A] text-xs" title="Featured" />
+                <FaStar className="text-primary text-xs" title="Featured" />
               )}
             </div>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="text-xs text-muted">
               {eff.category} · {eff.subtitle}
             </p>
           </div>
@@ -752,7 +753,7 @@ export function ProjectsManagementPage() {
       render: (row) => {
         const eff = resolveEffectiveProject(row);
         return (
-          <span className="text-xs font-semibold text-slate-600 dark:text-zinc-300">
+          <span className="text-xs font-semibold text-muted">
             {eff.gallery.length} gambar
           </span>
         );
@@ -787,14 +788,14 @@ export function ProjectsManagementPage() {
               setIsCreating(false);
               setEditingItem(row);
             }}
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaEdit className="text-xs" />
           </button>
           <button
             type="button"
             onClick={() => setDeleteTarget(row)}
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
           >
             <FaTrash className="text-xs" />
           </button>
@@ -807,7 +808,7 @@ export function ProjectsManagementPage() {
     <div className="space-y-6">
       <PageHeader
         title="Projects & Gallery Management"
-        description="Kelola proyek portfolio, tech stack, tautan demo/source, dan multi-screenshot showcase."
+        description="Kelola proyek portfolio, tech stack, key outcomes, tautan demo/source, dan multi-screenshot showcase."
         actions={
           <button
             type="button"
@@ -815,7 +816,7 @@ export function ProjectsManagementPage() {
               setEditingItem(null);
               setIsCreating(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
           >
             <FaPlus /> Tambah Project
           </button>
@@ -832,7 +833,7 @@ export function ProjectsManagementPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+            className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
           >
             <option value="all">Semua Status</option>
             <option value="published">Published</option>

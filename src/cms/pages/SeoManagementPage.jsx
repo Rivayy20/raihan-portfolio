@@ -303,42 +303,42 @@ function SeoForm({ rawSeo }) {
       <SectionCard
         title="Live Search & Social Preview"
         description="Simulasi tampilan hasil pencarian Google dan kartu pratinjau tautan media sosial."
-        actions={<FaSearch className="text-[#00B4D8]" />}
+        actions={<FaSearch className="text-primary" />}
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Google SERP Preview */}
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 space-y-1.5">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+          <div className="p-4 rounded-xl border border-border-subtle bg-canvas space-y-1.5">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-2">
               Google Search Snippet
             </p>
-            <p className="text-xs text-slate-600 dark:text-zinc-400 flex items-center gap-1.5 truncate">
+            <p className="text-xs text-muted flex items-center gap-1.5 truncate">
               <FaGlobe className="text-[10px]" /> {form.canonical_url}
             </p>
             <p className="text-lg font-semibold text-blue-700 dark:text-blue-400 leading-snug line-clamp-1">
               {form.seo_title || 'RAZH Portfolio'}
             </p>
-            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
+            <p className="text-xs text-muted leading-relaxed line-clamp-2">
               {form.meta_description || 'Belum ada meta description.'}
             </p>
           </div>
 
           {/* Open Graph Social Card Preview */}
-          <div className="rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 overflow-hidden">
+          <div className="rounded-xl border border-border-subtle bg-surface-subtle/60 overflow-hidden">
             {ogImageUrl && (
               <img
                 src={ogImageUrl}
                 alt="OG Preview"
-                className="w-full h-36 object-cover border-b border-slate-200 dark:border-zinc-800"
+                className="w-full h-36 object-cover border-b border-border-subtle"
               />
             )}
             <div className="p-3.5 space-y-1">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted">
                 {form.og_site_name || 'RAZH'}
               </p>
-              <p className="text-sm font-bold text-slate-900 dark:text-zinc-100 line-clamp-1">
+              <p className="text-sm font-bold text-ink line-clamp-1">
                 {form.og_title || form.seo_title}
               </p>
-              <p className="text-xs text-slate-600 dark:text-zinc-400 line-clamp-2">
+              <p className="text-xs text-muted line-clamp-2">
                 {form.og_description || form.meta_description}
               </p>
             </div>

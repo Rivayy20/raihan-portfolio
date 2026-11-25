@@ -110,44 +110,44 @@ export function AccountSecurityPage() {
           }
         >
           <dl className="space-y-4 text-sm">
-            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200/70 dark:border-zinc-800">
-              <FaUserShield className="text-[#00B4D8] mt-0.5 shrink-0" />
+            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-surface-subtle/60 border border-border-subtle">
+              <FaUserShield className="text-primary mt-0.5 shrink-0" />
               <div className="min-w-0 flex-1">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
                   Email Administrator
                 </dt>
-                <dd className="font-semibold text-slate-900 dark:text-zinc-100 mt-0.5 break-all">
+                <dd className="font-semibold text-ink mt-0.5 break-all">
                   {adminProfile?.email || user?.email}
                 </dd>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200/70 dark:border-zinc-800">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+              <div className="p-3.5 rounded-xl bg-surface-subtle/60 border border-border-subtle">
+                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
                   Role
                 </dt>
-                <dd className="font-bold uppercase text-[#0096B4] dark:text-[#00E5FF] mt-0.5">
+                <dd className="font-bold uppercase text-primary mt-0.5">
                   {adminProfile?.role || 'super_admin'}
                 </dd>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200/70 dark:border-zinc-800">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+              <div className="p-3.5 rounded-xl bg-surface-subtle/60 border border-border-subtle">
+                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
                   User ID
                 </dt>
-                <dd className="font-mono text-xs text-slate-700 dark:text-zinc-300 mt-1 truncate">
+                <dd className="font-mono text-xs text-ink mt-1 truncate">
                   {adminProfile?.user_id || user?.id}
                 </dd>
               </div>
             </div>
           </dl>
 
-          <div className="mt-5 pt-5 border-t border-slate-100 dark:border-zinc-800 space-y-2.5">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 flex items-center gap-2">
-              <FaShieldAlt className="text-[#00B4D8]" /> Proteksi Keamanan Aktif
+          <div className="mt-5 pt-5 border-t border-border-subtle space-y-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-2">
+              <FaShieldAlt className="text-primary" /> Proteksi Keamanan Aktif
             </p>
-            <ul className="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-zinc-300">
+            <ul className="space-y-2 text-xs sm:text-sm text-muted">
               {[
                 'Registrasi publik dinonaktifkan (invite/manual provisioning only)',
                 'Column-level grants + RLS memblokir akses draft bagi pengunjung publik',
@@ -159,10 +159,10 @@ export function AccountSecurityPage() {
                 </li>
               ))}
               <li className="flex items-start gap-2">
-                <FaKeyboard className="text-[#00B4D8] mt-0.5 shrink-0" />
+                <FaKeyboard className="text-primary mt-0.5 shrink-0" />
                 <span>
                   Shortcut login dari halaman portfolio:{' '}
-                  <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 font-mono text-xs font-bold">
+                  <kbd className="px-1.5 py-0.5 rounded bg-surface-subtle border border-border-strong font-mono text-xs font-bold text-ink">
                     Ctrl + .
                   </kbd>
                 </span>
@@ -174,7 +174,7 @@ export function AccountSecurityPage() {
         <SectionCard
           title="Ubah Password"
           description="Perbarui password login Supabase Auth Anda secara berkala."
-          actions={<FaKey className="text-slate-400" />}
+          actions={<FaKey className="text-muted" />}
         >
           <form onSubmit={handlePasswordChange} noValidate className="space-y-4">
             <TextField
@@ -205,7 +205,7 @@ export function AccountSecurityPage() {
               <button
                 type="submit"
                 disabled={isUpdating}
-                className="px-5 py-2.5 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-sm font-semibold transition-colors disabled:opacity-60 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-primary hover:bg-[#f25858] text-white text-sm font-semibold transition-colors disabled:opacity-60 cursor-pointer"
               >
                 {isUpdating ? 'Menyimpan...' : 'Perbarui Password'}
               </button>

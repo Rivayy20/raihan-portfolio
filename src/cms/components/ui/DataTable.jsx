@@ -39,25 +39,25 @@ export function DataTable({
   }
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden">
+    <div className="bg-surface border border-border-subtle rounded-2xl shadow-xs overflow-hidden">
       {showToolbar && (
-        <div className="p-4 border-b border-slate-100 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-4 border-b border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {typeof onSearchChange === 'function' && (
             <div className="relative w-full sm:max-w-xs">
-              <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none" />
+              <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted/70 text-xs pointer-events-none" />
               <input
                 type="text"
                 value={searchValue ?? ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 text-sm text-slate-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-[#00B4D8]"
+                className="w-full pl-9 pr-8 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
               />
               {searchValue && (
                 <button
                   type="button"
                   onClick={() => onSearchChange('')}
                   aria-label="Hapus pencarian"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1 cursor-pointer"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-ink p-1 cursor-pointer transition-colors"
                 >
                   <FaTimes className="text-xs" />
                 </button>
@@ -84,11 +84,11 @@ export function DataTable({
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-zinc-800 bg-slate-50/80 dark:bg-zinc-950/60">
+                <tr className="border-b border-border-subtle bg-surface-subtle/60">
                   {columns.map((col) => (
                     <th
                       key={col.key}
-                      className={`px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 ${
+                      className={`px-4 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-muted ${
                         col.align === 'right' ? 'text-right' : ''
                       } ${col.headerClassName || ''}`}
                     >
@@ -97,21 +97,21 @@ export function DataTable({
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/80 text-sm">
+              <tbody className="divide-y divide-border-subtle text-sm">
                 {data.map((row, idx) => (
                   <tr
                     key={resolveRowKey(row, idx)}
                     onClick={onRowClick ? () => onRowClick(row) : undefined}
                     className={`transition-colors ${
                       onRowClick
-                        ? 'hover:bg-slate-50 dark:hover:bg-zinc-800/40 cursor-pointer'
-                        : 'hover:bg-slate-50/70 dark:hover:bg-zinc-800/20'
+                        ? 'hover:bg-surface-subtle/70 cursor-pointer'
+                        : 'hover:bg-surface-subtle/40'
                     }`}
                   >
                     {columns.map((col) => (
                       <td
                         key={col.key}
-                        className={`px-4 py-3.5 align-middle text-slate-700 dark:text-zinc-300 ${
+                        className={`px-4 py-3.5 align-middle text-ink ${
                           col.align === 'right' ? 'text-right' : ''
                         } ${col.cellClassName || ''}`}
                       >
@@ -125,7 +125,7 @@ export function DataTable({
           </div>
 
           {/* Mobile Card Stack */}
-          <div className="md:hidden divide-y divide-slate-100 dark:divide-zinc-800">
+          <div className="md:hidden divide-y divide-border-subtle">
             {data.map((row, idx) => {
               const key = resolveRowKey(row, idx);
               if (renderMobileCard) {
@@ -147,11 +147,11 @@ export function DataTable({
                       className="flex items-start justify-between gap-4 text-sm"
                     >
                       {col.label && (
-                        <span className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-zinc-500 shrink-0 pt-0.5">
+                        <span className="text-xs font-semibold uppercase tracking-wide text-muted shrink-0 pt-0.5">
                           {col.label}
                         </span>
                       )}
-                      <div className="text-right text-slate-800 dark:text-zinc-200 min-w-0">
+                      <div className="text-right text-ink min-w-0">
                         {col.render ? col.render(row, idx) : row?.[col.key]}
                       </div>
                     </div>

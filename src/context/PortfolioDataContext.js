@@ -6,4 +6,5 @@ export const PortfolioDataContext = createContext({
   isPreview: false,
   previewMode: 'published',
   previewOffsetTop: 0,
+  introReady: true,
 });

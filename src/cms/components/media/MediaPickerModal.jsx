@@ -90,30 +90,30 @@ function MediaPickerContent({
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-xs"
+      className="fixed inset-0 z-70 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-xs"
       role="dialog"
       aria-modal="true"
       aria-label={title}
       onClick={onClose}
     >
       <div
-        className="w-full max-w-5xl max-h-[90vh] bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-5xl max-h-[90vh] bg-surface border border-border-subtle rounded-2xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header & Tabs */}
-        <div className="px-5 py-4 border-b border-slate-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div className="px-5 py-4 border-b border-border-subtle flex flex-wrap items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-3">
-            <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-zinc-100">
+            <h2 className="font-heading text-lg font-bold text-ink">
               {title}
             </h2>
-            <div className="flex bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl">
+            <div className="flex bg-surface-subtle p-1 rounded-xl border border-border-subtle">
               <button
                 type="button"
                 onClick={() => setActiveTab('library')}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                   activeTab === 'library'
-                    ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-zinc-100 shadow-xs'
-                    : 'text-slate-500 dark:text-zinc-400'
+                    ? 'bg-surface text-ink shadow-xs'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 <FaImages /> Media Library
@@ -123,8 +123,8 @@ function MediaPickerContent({
                 onClick={() => setActiveTab('upload')}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                   activeTab === 'upload'
-                    ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-zinc-100 shadow-xs'
-                    : 'text-slate-500 dark:text-zinc-400'
+                    ? 'bg-surface text-ink shadow-xs'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 <FaCloudUploadAlt /> Upload Baru
@@ -136,7 +136,7 @@ function MediaPickerContent({
             type="button"
             onClick={onClose}
             aria-label="Tutup picker media"
-            className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-xl text-muted hover:text-ink hover:bg-surface-subtle cursor-pointer transition-colors"
           >
             <FaTimes />
           </button>
@@ -156,20 +156,20 @@ function MediaPickerContent({
             <>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1">
-                  <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs" />
+                  <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted/70 text-xs" />
                   <input
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Cari nama file atau alt text..."
-                    className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B4D8]"
+                    className="w-full pl-9 pr-4 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                   />
                 </div>
 
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+                  className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
                 >
                   <option value="all">Semua Kategori</option>
                   {categoryOptions.map((c) => (
@@ -182,7 +182,7 @@ function MediaPickerContent({
                 <select
                   value={visibilityFilter}
                   onChange={(e) => setVisibilityFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+                  className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
                 >
                   <option value="all">Semua Visibilitas</option>
                   <option value="public">Public Only</option>
@@ -195,7 +195,7 @@ function MediaPickerContent({
                   {Array.from({ length: 8 }).map((_, idx) => (
                     <div
                       key={idx}
-                      className="h-44 rounded-2xl bg-slate-100 dark:bg-zinc-800 animate-pulse"
+                      className="h-44 rounded-2xl bg-surface-subtle animate-pulse"
                     />
                   ))}
                 </div>
@@ -213,7 +213,7 @@ function MediaPickerContent({
                     <button
                       type="button"
                       onClick={() => setActiveTab('upload')}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
                     >
                       <FaCloudUploadAlt /> Upload Baru
                     </button>
@@ -244,8 +244,8 @@ function MediaPickerContent({
 
         {/* Footer Action */}
         {activeTab === 'library' && (
-          <div className="px-5 py-3.5 border-t border-slate-200 dark:border-zinc-800 flex items-center justify-between gap-3 bg-slate-50/70 dark:bg-zinc-950/60 shrink-0">
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+          <div className="px-5 py-3.5 border-t border-border-subtle flex items-center justify-between gap-3 bg-surface-subtle/60 shrink-0">
+            <p className="text-xs text-muted">
               {pickedIds.length > 0
                 ? `${pickedIds.length} aset dipilih`
                 : 'Klik aset untuk memilih'}
@@ -254,7 +254,7 @@ function MediaPickerContent({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
               >
                 Batal
               </button>
@@ -262,7 +262,7 @@ function MediaPickerContent({
                 type="button"
                 disabled={pickedIds.length === 0}
                 onClick={handleConfirm}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold disabled:opacity-40 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold disabled:opacity-40 cursor-pointer transition-colors"
               >
                 <FaCheck className="text-[11px]" />
                 {multiple ? `Pilih ${pickedIds.length} Aset` : 'Gunakan Media Ini'}

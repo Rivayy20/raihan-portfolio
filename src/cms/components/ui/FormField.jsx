@@ -2,29 +2,29 @@ import { useId, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
 const INPUT_BASE =
-  'w-full px-3.5 py-2.5 rounded-xl border bg-white dark:bg-zinc-950 text-sm text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed transition-colors';
+  'w-full px-3.5 py-2.5 rounded-xl border bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:opacity-60 disabled:cursor-not-allowed transition-colors';
 
 function borderByError(error) {
   return error
     ? 'border-red-400 dark:border-red-700'
-    : 'border-slate-300 dark:border-zinc-700';
+    : 'border-border-subtle hover:border-border-strong';
 }
 
 export function SectionCard({ title, description, actions, children, className = '' }) {
   return (
     <section
-      className={`bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-xs p-5 sm:p-6 ${className}`}
+      className={`bg-surface border border-border-subtle rounded-2xl shadow-xs p-5 sm:p-6 ${className}`}
     >
       {(title || description || actions) && (
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-4 mb-5 border-b border-slate-100 dark:border-zinc-800">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-4 mb-5 border-b border-border-subtle">
           <div>
             {title && (
-              <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-zinc-100">
+              <h2 className="font-heading text-lg font-bold text-ink">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted mt-1 leading-relaxed">
                 {description}
               </p>
             )}
@@ -55,7 +55,7 @@ export function TextField({
       {label && (
         <label
           htmlFor={fieldId}
-          className="block text-sm font-semibold text-slate-800 dark:text-zinc-200"
+          className="block text-sm font-semibold text-ink"
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
@@ -70,7 +70,7 @@ export function TextField({
         <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
       ) : (
         helperText && (
-          <p className="text-xs text-slate-500 dark:text-zinc-400">{helperText}</p>
+          <p className="text-xs text-muted">{helperText}</p>
         )
       )}
     </div>
@@ -95,7 +95,7 @@ export function TextAreaField({
       {label && (
         <label
           htmlFor={fieldId}
-          className="block text-sm font-semibold text-slate-800 dark:text-zinc-200"
+          className="block text-sm font-semibold text-ink"
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
@@ -111,7 +111,7 @@ export function TextAreaField({
         <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
       ) : (
         helperText && (
-          <p className="text-xs text-slate-500 dark:text-zinc-400">{helperText}</p>
+          <p className="text-xs text-muted">{helperText}</p>
         )
       )}
     </div>
@@ -137,7 +137,7 @@ export function SelectField({
       {label && (
         <label
           htmlFor={fieldId}
-          className="block text-sm font-semibold text-slate-800 dark:text-zinc-200"
+          className="block text-sm font-semibold text-ink"
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
@@ -155,7 +155,7 @@ export function SelectField({
         <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
       ) : (
         helperText && (
-          <p className="text-xs text-slate-500 dark:text-zinc-400">{helperText}</p>
+          <p className="text-xs text-muted">{helperText}</p>
         )
       )}
     </div>
@@ -178,12 +178,12 @@ export function ToggleField({
       <div className="min-w-0">
         <label
           htmlFor={switchId}
-          className="block text-sm font-semibold text-slate-800 dark:text-zinc-200 cursor-pointer"
+          className="block text-sm font-semibold text-ink cursor-pointer"
         >
           {label}
         </label>
         {description && (
-          <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
+          <p className="text-xs text-muted mt-0.5 leading-relaxed">
             {description}
           </p>
         )}
@@ -198,8 +198,8 @@ export function ToggleField({
         onClick={() => onChange?.(!checked)}
         className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
           checked
-            ? 'bg-[#00B4D8] border-[#0096B4]'
-            : 'bg-slate-200 dark:bg-zinc-700 border-slate-300 dark:border-zinc-600'
+            ? 'bg-primary border-primary'
+            : 'bg-surface-subtle border-border-strong'
         }`}
       >
         <span
@@ -242,7 +242,7 @@ export function TagInputField({
       {label && (
         <label
           htmlFor={autoId}
-          className="block text-sm font-semibold text-slate-800 dark:text-zinc-200"
+          className="block text-sm font-semibold text-ink"
         >
           {label}
         </label>
@@ -268,7 +268,7 @@ export function TagInputField({
           type="button"
           disabled={disabled || !draft.trim()}
           onClick={addTag}
-          className="px-3.5 py-2.5 rounded-xl bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-semibold inline-flex items-center gap-1.5 shrink-0 disabled:opacity-40 cursor-pointer"
+          className="px-3.5 py-2.5 rounded-xl bg-ink hover:opacity-90 text-canvas text-xs font-semibold inline-flex items-center gap-1.5 shrink-0 disabled:opacity-40 cursor-pointer transition-opacity"
         >
           <FaPlus className="text-[10px]" /> Tambah
         </button>
@@ -279,7 +279,7 @@ export function TagInputField({
           {value.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs font-semibold text-slate-800 dark:text-zinc-200"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-subtle border border-border-subtle text-xs font-semibold text-ink"
             >
               <span>{tag}</span>
               {!disabled && (
@@ -287,7 +287,7 @@ export function TagInputField({
                   type="button"
                   onClick={() => removeTag(tag)}
                   aria-label={`Hapus ${tag}`}
-                  className="text-slate-400 hover:text-red-500 cursor-pointer"
+                  className="text-muted hover:text-red-500 cursor-pointer transition-colors"
                 >
                   <FaTimes className="text-[10px]" />
                 </button>
@@ -301,7 +301,7 @@ export function TagInputField({
         <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
       ) : (
         helperText && (
-          <p className="text-xs text-slate-500 dark:text-zinc-400">{helperText}</p>
+          <p className="text-xs text-muted">{helperText}</p>
         )
       )}
     </div>

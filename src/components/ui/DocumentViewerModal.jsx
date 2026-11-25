@@ -26,60 +26,72 @@ export const DocumentViewerModal = ({ isOpen, onClose, pdfUrl, title }) => {
 
   if (!isOpen || !safePdfUrl) return null;
 
-  const safeFilename = title ? `${String(title).trim().replace(/[^a-zA-Z0-9._-]+/g, '_')}.pdf` : '';
+  const safeFilename = title
+    ? `${String(title).trim().replace(/[^a-zA-Z0-9._-]+/g, '_')}.pdf`
+    : '';
   const downloadUrl = buildStorageDownloadUrl(safePdfUrl, safeFilename);
   const iframeSrc = safePdfUrl.includes('#') ? safePdfUrl : `${safePdfUrl}#toolbar=0`;
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-12">
+      <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6 md:p-10">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer"
+          className="absolute inset-0 bg-[#101012]/80 backdrop-blur-md cursor-pointer"
         />
 
         <motion.div
-          initial={{ y: 50, opacity: 0, scale: 0.95 }}
+          initial={{ y: 24, opacity: 0, scale: 0.98 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
-          exit={{ y: 20, opacity: 0, scale: 0.95 }}
-          className="relative bg-white brutal-border w-full h-full max-w-5xl flex flex-col shadow-[8px_8px_0px_0px_var(--color-black)] z-10"
+          exit={{ y: 16, opacity: 0, scale: 0.98 }}
+          transition={{ duration: 0.25 }}
+          className="relative bg-surface border border-border-subtle rounded-2xl w-full h-full max-w-5xl flex flex-col shadow-2xl overflow-hidden z-10"
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b-4 border-black bg-[#FFD60A]">
-            <h2 className="font-black text-xl truncate pr-4 text-black">{title}</h2>
-            <div className="flex gap-2 shrink-0">
+          {/* Minimalist Header */}
+          <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-border-subtle bg-surface">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="w-8 h-8 rounded-lg bg-primary/15 text-ink flex items-center justify-center shrink-0 text-sm">
+                <FaFilePdf />
+              </span>
+              <h2 className="font-heading text-base sm:text-lg font-medium truncate text-ink">
+                {title}
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
               <a
                 href={safePdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden md:flex brutal-btn bg-white border-2 border-black px-3.5 py-2 items-center gap-2 text-sm font-bold shadow-[2px_2px_0px_0px_var(--color-black)] hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-all text-black"
+                className="hidden md:inline-flex items-center gap-2 rounded-full border border-border-subtle px-3.5 py-2 text-xs font-medium text-ink hover:bg-surface-subtle transition-colors"
                 aria-label="Open PDF in New Tab"
               >
-                <FaExternalLinkAlt /> <span>Open</span>
+                <FaExternalLinkAlt className="text-[11px]" /> Open
               </a>
               <a
                 href={downloadUrl}
                 download={safeFilename || true}
-                className="brutal-btn bg-white border-2 border-black px-4 py-2 flex items-center gap-2 text-sm font-bold shadow-[2px_2px_0px_0px_var(--color-black)] hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-all text-black"
+                className="inline-flex items-center gap-2 rounded-full bg-ink text-canvas hover:bg-primary hover:text-[#171719] px-4 py-2 text-xs font-medium transition-colors"
               >
-                <FaDownload /> <span className="hidden sm:inline">Download</span>
+                <FaDownload className="text-[11px]" />
+                <span className="hidden sm:inline">Download</span>
               </a>
               <button
                 type="button"
                 onClick={onClose}
-                className="brutal-btn bg-black text-white border-2 border-black px-4 py-2 flex items-center gap-2 shadow-[2px_2px_0px_0px_var(--color-white)] hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-all"
+                className="w-9 h-9 rounded-full border border-border-subtle flex items-center justify-center text-muted hover:text-ink hover:bg-surface-subtle transition-colors cursor-pointer"
                 aria-label="Close Modal"
               >
-                <FaTimes />
+                <FaTimes className="text-sm" />
               </button>
             </div>
           </div>
 
           {/* Desktop PDF Viewer */}
-          <div className="hidden md:block flex-1 overflow-hidden bg-gray-200 dark:bg-[#1A1A1A] transition-colors duration-300">
+          <div className="hidden md:block flex-1 overflow-hidden bg-surface-subtle">
             <iframe
               src={iframeSrc}
               className="w-full h-full border-none"
@@ -88,21 +100,23 @@ export const DocumentViewerModal = ({ isOpen, onClose, pdfUrl, title }) => {
           </div>
 
           {/* Mobile Fallback UI */}
-          <div className="flex md:hidden flex-1 flex-col items-center justify-center p-6 bg-gray-200 dark:bg-[#1A1A1A] transition-colors duration-300 text-center overflow-y-auto">
-            <div className="w-24 h-24 mb-6 text-gray-400">
-              <FaFilePdf className="w-full h-full drop-shadow-md" />
+          <div className="flex md:hidden flex-1 flex-col items-center justify-center p-8 bg-canvas text-center overflow-y-auto">
+            <div className="w-16 h-16 rounded-2xl bg-primary/12 border border-primary/25 flex items-center justify-center mb-5 text-2xl text-ink">
+              <FaFilePdf />
             </div>
-            <h3 className="text-2xl font-black mb-3 dark:text-white">Preview Not Supported</h3>
-            <p className="text-gray-600 dark:text-gray-300 font-medium mb-8 max-w-sm text-base">
-              Your mobile browser doesn't support inline PDF viewing. Please tap the button below to view or download the document securely.
+            <h3 className="font-heading text-xl font-medium mb-2 text-ink">
+              Document Preview
+            </h3>
+            <p className="text-muted text-sm mb-7 max-w-xs leading-relaxed">
+              Your mobile browser does not display inline PDF frames. Tap below to open or download the document cleanly.
             </p>
             <a
               href={safePdfUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="brutal-btn bg-primary text-black font-black px-8 py-4 text-lg border-4 border-black shadow-[4px_4px_0px_0px_var(--color-black)] hover:translate-y-1 hover:translate-x-1 hover:shadow-none active:translate-y-1 active:translate-x-1 active:shadow-none transition-all flex items-center gap-3"
+              className="inline-flex items-center gap-2.5 rounded-full bg-ink text-canvas hover:bg-primary hover:text-[#171719] font-medium px-7 py-3.5 text-sm transition-colors"
             >
-              <FaExternalLinkAlt /> Open PDF Document
+              <FaExternalLinkAlt className="text-xs" /> Open PDF Document
             </a>
           </div>
         </motion.div>

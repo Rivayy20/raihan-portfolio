@@ -145,25 +145,25 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 flex flex-col justify-center items-center px-4 py-10">
+    <div className="min-h-screen bg-canvas text-ink font-body flex flex-col justify-center items-center px-4 py-10">
       <div className="w-full max-w-md">
         <div className="mb-6">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-[#00B4D8] transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-primary transition-colors"
           >
             <FaArrowLeft className="text-xs" /> Kembali ke Portfolio Publik
           </Link>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-sm p-6 sm:p-8">
+        <div className="bg-surface border border-border-subtle rounded-2xl shadow-sm p-6 sm:p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-11 h-11 rounded-xl bg-[#00E5FF]/15 border border-[#00B4D8]/30 text-[#0096B4] dark:text-[#00E5FF] flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-primary/12 border border-primary/25 text-primary flex items-center justify-center shrink-0">
               <FaShieldAlt className="text-xl" />
             </div>
             <div>
-              <h1 className="font-heading text-xl font-bold tracking-tight">RAZH CMS</h1>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">
+              <h1 className="font-heading text-xl font-bold tracking-tight text-ink">RAZH CMS</h1>
+              <p className="text-xs text-muted">
                 {mode === 'login'
                   ? 'Administrator Content Management Portal'
                   : 'Pemulihan Akses Administrator'}
@@ -202,11 +202,11 @@ export function LoginPage() {
           {mode === 'login' ? (
             <form onSubmit={handleLoginSubmit} noValidate className="space-y-4">
               <div>
-                <label htmlFor="cms-email" className="block text-sm font-semibold mb-1.5">
+                <label htmlFor="cms-email" className="block text-sm font-semibold text-ink mb-1.5">
                   Email Administrator
                 </label>
                 <div className="relative">
-                  <FaEnvelope className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none" />
+                  <FaEnvelope className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted/70 text-sm pointer-events-none" />
                   <input
                     id="cms-email"
                     type="email"
@@ -215,7 +215,7 @@ export function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@example.com"
                     disabled={!isConfigured || isSubmitting}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent disabled:opacity-60"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:opacity-60"
                   />
                 </div>
                 {fieldErrors.email && (
@@ -225,19 +225,19 @@ export function LoginPage() {
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="cms-password" className="block text-sm font-semibold">
+                  <label htmlFor="cms-password" className="block text-sm font-semibold text-ink">
                     Password
                   </label>
                   <button
                     type="button"
                     onClick={() => handleModeSwitch('forgot')}
-                    className="text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline cursor-pointer"
+                    className="text-xs font-semibold text-primary hover:underline cursor-pointer"
                   >
                     Lupa Password?
                   </button>
                 </div>
                 <div className="relative">
-                  <FaLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none" />
+                  <FaLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted/70 text-sm pointer-events-none" />
                   <input
                     id="cms-password"
                     type={showPassword ? 'text' : 'password'}
@@ -246,13 +246,13 @@ export function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     disabled={!isConfigured || isSubmitting}
-                    className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent disabled:opacity-60"
+                    className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-border-subtle bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:opacity-60"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1 cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink p-1 cursor-pointer transition-colors"
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
@@ -265,23 +265,23 @@ export function LoginPage() {
               <button
                 type="submit"
                 disabled={!isConfigured || isSubmitting}
-                className="w-full py-2.5 px-4 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white font-semibold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer mt-2"
+                className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-[#f25858] text-white font-semibold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer mt-2"
               >
                 {isSubmitting ? 'Memverifikasi...' : 'Masuk ke CMS Dashboard'}
               </button>
             </form>
           ) : (
             <form onSubmit={handleForgotSubmit} noValidate className="space-y-4">
-              <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed">
+              <p className="text-sm text-muted leading-relaxed">
                 Masukkan email administrator Anda. Kami akan mengirimkan tautan pemulihan kata sandi jika akun terdaftar.
               </p>
 
               <div>
-                <label htmlFor="cms-reset-email" className="block text-sm font-semibold mb-1.5">
+                <label htmlFor="cms-reset-email" className="block text-sm font-semibold text-ink mb-1.5">
                   Email Administrator
                 </label>
                 <div className="relative">
-                  <FaEnvelope className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none" />
+                  <FaEnvelope className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted/70 text-sm pointer-events-none" />
                   <input
                     id="cms-reset-email"
                     type="email"
@@ -290,7 +290,7 @@ export function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@example.com"
                     disabled={!isConfigured || isSubmitting}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent disabled:opacity-60"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle bg-canvas text-sm text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:opacity-60"
                   />
                 </div>
                 {fieldErrors.email && (
@@ -302,14 +302,14 @@ export function LoginPage() {
                 <button
                   type="submit"
                   disabled={!isConfigured || isSubmitting}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white font-semibold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-[#f25858] text-white font-semibold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isSubmitting ? 'Mengirim Tautan...' : 'Kirim Tautan Reset Password'}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleModeSwitch('login')}
-                  className="w-full py-2 px-4 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-sm font-medium transition-colors cursor-pointer"
+                  className="w-full py-2 px-4 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-ink text-sm font-medium transition-colors cursor-pointer"
                 >
                   Kembali ke Login
                 </button>
@@ -317,8 +317,8 @@ export function LoginPage() {
             </form>
           )}
 
-          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-zinc-800 text-center">
-            <p className="text-xs text-slate-500 dark:text-zinc-500">
+          <div className="mt-6 pt-5 border-t border-border-subtle text-center">
+            <p className="text-xs text-muted">
               Akses terbatas hanya untuk administrator terdaftar. Registrasi publik dinonaktifkan.
             </p>
           </div>

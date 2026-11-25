@@ -203,7 +203,7 @@ function NavItemForm({ item, totalCount, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 text-xs font-semibold cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           <FaTimes /> Tutup
         </button>
@@ -238,7 +238,7 @@ function NavItemForm({ item, totalCount, onClose }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-border-subtle">
         <ToggleField
           label="Aktif (Visible)"
           checked={form.is_visible}
@@ -398,15 +398,15 @@ function NavbarCtaForm({ rawSettings }) {
           value={form.navbar_cta_variant}
           onChange={(e) => updateField('navbar_cta_variant', e.target.value)}
           options={[
-            { value: 'accent', label: 'Accent (Yellow)' },
-            { value: 'primary', label: 'Primary (Cyan)' },
-            { value: 'secondary', label: 'Secondary (Sky Blue)' },
-            { value: 'white', label: 'White' },
+            { value: 'accent', label: 'Editorial Ink / Peach (Default)' },
+            { value: 'primary', label: 'Sunset Coral (Primary)' },
+            { value: 'secondary', label: 'Sunset Rose (Secondary)' },
+            { value: 'white', label: 'Surface Light' },
           ]}
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-border-subtle">
         <ToggleField
           label="Tampilkan Tombol CTA"
           checked={form.show_navbar_cta}
@@ -534,8 +534,8 @@ export function NavbarManagementPage() {
         const eff = resolveEffectiveRecord(row);
         return (
           <div>
-            <p className="font-semibold text-slate-900 dark:text-zinc-100">{eff.label}</p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono">
+            <p className="font-semibold text-ink">{eff.label}</p>
+            <p className="text-xs text-muted font-mono">
               {eff.href} · #{eff.section_id}
             </p>
           </div>
@@ -550,12 +550,12 @@ export function NavbarManagementPage() {
         return (
           <div className="flex flex-wrap gap-1.5 text-xs">
             {eff.show_in_navbar && (
-              <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 font-medium">
+              <span className="px-2 py-0.5 rounded bg-surface-subtle text-ink font-medium">
                 Navbar
               </span>
             )}
             {eff.show_in_footer && (
-              <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 font-medium">
+              <span className="px-2 py-0.5 rounded bg-surface-subtle text-ink font-medium">
                 Footer
               </span>
             )}
@@ -592,7 +592,7 @@ export function NavbarManagementPage() {
               setIsCreating(false);
               setEditingItem(row);
             }}
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
             title="Edit"
           >
             <FaEdit className="text-xs" />
@@ -600,7 +600,7 @@ export function NavbarManagementPage() {
           <button
             type="button"
             onClick={() => setDeleteTarget(row)}
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
             title="Hapus"
           >
             <FaTrash className="text-xs" />
@@ -622,7 +622,7 @@ export function NavbarManagementPage() {
               setEditingItem(null);
               setIsCreating(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
           >
             <FaPlus /> Tambah Menu
           </button>

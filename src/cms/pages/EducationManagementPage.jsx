@@ -183,7 +183,7 @@ function EducationForm({ item, totalCount, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 text-xs font-semibold cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink cursor-pointer transition-colors"
         >
           <FaTimes /> Tutup
         </button>
@@ -361,8 +361,8 @@ export function EducationManagementPage() {
         const eff = resolveEffectiveRecord(row);
         return (
           <div>
-            <p className="font-semibold text-slate-900 dark:text-zinc-100">{eff.institution}</p>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="font-semibold text-ink">{eff.institution}</p>
+            <p className="text-xs text-muted">
               {eff.degree || eff.major || 'General'} · {eff.period}
             </p>
           </div>
@@ -375,7 +375,7 @@ export function EducationManagementPage() {
       render: (row) => {
         const eff = resolveEffectiveRecord(row);
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-zinc-800">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-subtle text-ink">
             {eff.education_level === 'current' ? 'Current' : 'Previous'}
           </span>
         );
@@ -410,7 +410,7 @@ export function EducationManagementPage() {
               setIsCreating(false);
               setEditingItem(row);
             }}
-            className="p-2 rounded-lg text-slate-500 hover:text-[#0096B4] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-primary hover:bg-surface-subtle cursor-pointer transition-colors"
             title="Edit"
           >
             <FaEdit className="text-xs" />
@@ -418,7 +418,7 @@ export function EducationManagementPage() {
           <button
             type="button"
             onClick={() => setDeleteTarget(row)}
-            className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"
+            className="p-2 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition-colors"
             title="Hapus"
           >
             <FaTrash className="text-xs" />
@@ -440,7 +440,7 @@ export function EducationManagementPage() {
               setEditingItem(null);
               setIsCreating(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold cursor-pointer transition-colors"
           >
             <FaPlus /> Tambah Pendidikan
           </button>
@@ -469,7 +469,7 @@ export function EducationManagementPage() {
           <select
             value={levelFilter}
             onChange={(e) => setLevelFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-sm"
+            className="px-3 py-2 rounded-xl border border-border-subtle bg-canvas text-sm text-ink"
           >
             <option value="all">Semua Tingkat</option>
             <option value="current">Current Education</option>

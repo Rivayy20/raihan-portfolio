@@ -14,55 +14,51 @@ export const ExperienceSummary = ({ isExpanded, onToggle, panelId }) => {
     .join(' · ');
 
   return (
-    <Card
-      className={`bg-[#67E8F9] dark:bg-[#00008B] flex flex-col justify-start text-black transition-all duration-300 ${
-        isExpanded
-          ? 'shadow-[6px_6px_0px_0px_var(--color-black)] -translate-y-1'
-          : 'hover:-translate-y-2'
-      }`}
-    >
+    <Card className="p-6 sm:p-7">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isExpanded}
         aria-controls={panelId}
-        className="w-full text-left cursor-pointer rounded-md focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-black"
+        className="w-full text-left cursor-pointer rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
       >
-        <span className="flex justify-between items-start mb-4">
-          <span className="w-12 h-12 bg-white brutal-border flex items-center justify-center text-2xl">
-            <FaBriefcase />
+        <div className="flex items-center justify-between gap-4 pb-4 border-b border-border-subtle">
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-10 rounded-xl bg-accent/20 border border-accent/40 flex items-center justify-center text-base text-ink">
+              <FaBriefcase />
+            </span>
+            <div>
+              <span className="block font-heading text-lg font-medium text-ink">
+                {about?.experienceCardTitle || 'Experience'}
+              </span>
+              <span className="block font-body text-xs text-muted">
+                {about?.experienceCardSubtitle || 'Academic & Industry Experience'}
+              </span>
+            </div>
+          </div>
+          <span className="rounded-full bg-surface-subtle border border-border-subtle px-3 py-1 text-xs font-medium text-muted">
+            {pluralize(experiences.length, 'Role')}
           </span>
-        </span>
+        </div>
 
-        <span className="block text-xl font-black font-heading mb-2">
-          {about?.experienceCardTitle || 'Experience'}
-        </span>
-        <span className="block font-bold text-lg leading-tight">
-          {about?.experienceCardSubtitle || 'Academic & Industry Experience'}
-        </span>
-
-        <span className="flex gap-2 mt-3" aria-hidden="true">
+        <div className="flex items-center gap-2.5 mt-4" aria-hidden="true">
           {experiences.map(({ id, logo }) => (
             <OrgLogo
               key={`${id}-${logo || 'fallback'}`}
               src={logo}
-              className="w-9 h-9 sm:w-10 sm:h-10"
+              className="w-9 h-9"
             />
           ))}
-        </span>
+        </div>
 
         {supportingText && (
-          <span className="block font-medium mt-2">{supportingText}</span>
+          <p className="font-body text-sm text-muted mt-3">{supportingText}</p>
         )}
 
-        <span className="inline-block mt-4 px-3 py-1 bg-white border-2 border-black rounded-full text-xs font-black uppercase tracking-wide">
-          {pluralize(experiences.length, 'Experience')}
-        </span>
-
-        <span className="mt-4 pt-4 flex items-center justify-between gap-3 font-bold text-sm">
-          <span>{isExpanded ? 'Collapse' : 'Click to Explore'}</span>
+        <div className="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between text-xs font-medium uppercase tracking-[0.14em] text-muted">
+          <span>{isExpanded ? 'Collapse Details' : 'Explore Roles'}</span>
           <Chevron isOpen={isExpanded} />
-        </span>
+        </div>
       </button>
     </Card>
   );

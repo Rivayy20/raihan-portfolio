@@ -1,15 +1,35 @@
 import { useState } from 'react';
 import { Card } from '../ui/Card';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaChevronDown, FaChevronUp, FaExternalLinkAlt, FaFilePdf } from 'react-icons/fa';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import {
+  FaArrowRight,
+  FaAward,
+  FaCheckCircle,
+  FaChevronDown,
+  FaExternalLinkAlt,
+  FaFilePdf,
+} from 'react-icons/fa';
 import { DocumentViewerModal } from '../ui/DocumentViewerModal';
 import { getCertificationCardColor } from '../../constants/colorPresets';
+import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 const VERIFICATION_STATUS_META = {
-  verified: { symbol: '✔', colorClass: 'text-green-600', label: 'Verified Credential' },
-  in_progress: { symbol: '◔', colorClass: 'text-amber-600', label: 'In Progress' },
-  expired: { symbol: '!', colorClass: 'text-red-600', label: 'Expired' },
-  unverified: { symbol: '—', colorClass: 'text-gray-500', label: 'Unverified' },
+  verified: {
+    dotClass: 'text-emerald-600 dark:text-emerald-400',
+    label: 'Verified Credential',
+  },
+  in_progress: {
+    dotClass: 'text-amber-600 dark:text-amber-400',
+    label: 'In Progress',
+  },
+  expired: {
+    dotClass: 'text-red-600 dark:text-red-400',
+    label: 'Expired',
+  },
+  unverified: {
+    dotClass: 'text-muted',
+    label: 'Unverified',
+  },
 };
 
 export const CertificationCard = ({
@@ -27,75 +47,115 @@ export const CertificationCard = ({
   onToggle,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   const cardColorClass = color || getCertificationCardColor(colorPreset);
   const statusMeta =
     VERIFICATION_STATUS_META[verificationStatus] || VERIFICATION_STATUS_META.verified;
 
+  const handleCardKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onToggle();
+    }
+  };
+
   return (
     <>
       <Card
-        className={`relative overflow-hidden group transition-all duration-300 ${cardColorClass} flex flex-col justify-between cursor-pointer ${
-          isExpanded
-            ? 'shadow-[6px_6px_0px_0px_var(--color-black)] -translate-y-1'
-            : 'hover:-translate-y-2'
-        }`}
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
         onClick={onToggle}
+        onKeyDown={handleCardKeyDown}
+        className={`group min-h-46 flex flex-col justify-between p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-primary/45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${cardColorClass} ${
+          isExpanded ? 'border-primary/50' : ''
+        }`}
       >
-        <div className="flex flex-col gap-2 z-10 relative">
-          <div className="flex justify-between items-start gap-4">
-            <span className="font-heading font-bold text-sm bg-white/90 text-black brutal-border px-3 py-1 inline-block">
-              {issuer}
-            </span>
+        <div className="flex flex-col gap-4">
+          {/* Top Bar: Credential Icon, Issuer Badge & Issue Date */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span
+                aria-hidden="true"
+                className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center text-xs shrink-0 transition-colors duration-300 group-hover:bg-primary/18"
+              >
+                <FaAward />
+              </span>
+              <span className="rounded-full bg-surface-subtle border border-border-subtle px-2.5 py-0.5 font-body text-[11px] font-medium uppercase tracking-wider text-ink/80 truncate">
+                {issuer}
+              </span>
+            </div>
+
+            {date && (
+              <span className="font-body text-xs text-muted shrink-0">{date}</span>
+            )}
           </div>
 
-          <h3 className="text-xl md:text-2xl font-black mt-2 text-black">{title}</h3>
+          {/* Certification Title & Scannable Status */}
+          <div className="space-y-2">
+            <h4 className="font-heading text-lg sm:text-xl font-medium text-ink leading-snug group-hover:text-ink transition-colors">
+              {title}
+            </h4>
+            <p className="font-body text-xs text-muted inline-flex items-center gap-1.5">
+              <FaCheckCircle aria-hidden="true" className={statusMeta.dotClass} />
+              <span>{statusMeta.label}</span>
+            </p>
+          </div>
+        </div>
 
-          <div className="mt-auto pt-4 flex items-center justify-between font-bold text-sm opacity-80 group-hover:opacity-100 transition-opacity text-black">
-            <span>{isExpanded ? 'Collapse' : 'Click to Expand'}</span>
-            {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+        <div className="mt-5">
+          {/* Footer Action Row */}
+          <div className="pt-3.5 border-t border-border-subtle flex items-center justify-between text-xs font-medium text-muted group-hover:text-primary transition-colors duration-300">
+            <span>{isExpanded ? 'Hide Details' : 'View Credential'}</span>
+            {isExpanded ? (
+              <FaChevronDown
+                aria-hidden="true"
+                className="text-[11px] rotate-180 transition-transform duration-300"
+              />
+            ) : (
+              <FaArrowRight
+                aria-hidden="true"
+                className="text-[11px] transition-transform duration-300 group-hover:translate-x-1"
+              />
+            )}
           </div>
 
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             {isExpanded && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.25,
+                  ease: EDITORIAL_EASE,
+                }}
                 className="overflow-hidden"
               >
-                <div className="pt-4 border-t-2 border-black/20 mt-2 text-black">
-                  <div className="mb-4">
-                    <p className="font-bold text-sm opacity-70">Issuer</p>
-                    <p className="font-bold">{issuer}</p>
-                  </div>
-                  <div className="mb-4">
-                    <p className="font-bold text-sm opacity-70">Credential</p>
-                    <p className="font-bold">{credentialName || title}</p>
-                  </div>
-                  {date && (
-                    <div className="mb-4">
-                      <p className="font-bold text-sm opacity-70">Issue Date</p>
-                      <p className="font-bold">{date}</p>
-                    </div>
-                  )}
-                  {id && (
-                    <div className="mb-4">
-                      <p className="font-bold text-sm opacity-70">Credential ID</p>
-                      <p className="font-bold break-all">{id}</p>
-                    </div>
-                  )}
-                  <div className="mb-6">
-                    <p className="font-bold text-sm opacity-70">Verification</p>
-                    <p className="font-bold flex items-center gap-2">
-                      <span className={statusMeta.colorClass}>{statusMeta.symbol}</span>{' '}
-                      {statusMeta.label}
+                <div className="pt-4 mt-3.5 border-t border-border-subtle space-y-3 text-sm">
+                  <div>
+                    <p className="font-body text-[11px] font-medium uppercase tracking-wider text-muted">
+                      Credential Name
+                    </p>
+                    <p className="font-body font-medium text-ink mt-0.5">
+                      {credentialName || title}
                     </p>
                   </div>
 
+                  {id && (
+                    <div>
+                      <p className="font-body text-[11px] font-medium uppercase tracking-wider text-muted">
+                        Credential ID
+                      </p>
+                      <p className="font-mono text-xs text-ink/90 mt-0.5 break-all">
+                        {id}
+                      </p>
+                    </div>
+                  )}
+
                   {(pdf || verificationUrl) && (
-                    <div className="pb-2 flex flex-wrap gap-3">
+                    <div className="pt-2 flex flex-wrap gap-2.5">
                       {pdf && (
                         <button
                           type="button"
@@ -103,9 +163,9 @@ export const CertificationCard = ({
                             e.stopPropagation();
                             setIsModalOpen(true);
                           }}
-                          className="flex items-center gap-2 bg-black text-white font-bold py-3 px-5 brutal-border hover:bg-white hover:text-black transition-colors w-full justify-center sm:w-auto cursor-pointer"
+                          className="inline-flex items-center justify-center gap-2 rounded-full bg-ink text-canvas hover:bg-primary hover:text-[#171719] px-4 py-2 text-xs font-medium transition-colors cursor-pointer"
                         >
-                          <FaFilePdf /> View Certificate
+                          <FaFilePdf aria-hidden="true" /> View Certificate
                         </button>
                       )}
                       {verificationUrl && (
@@ -114,9 +174,13 @@ export const CertificationCard = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2 bg-white text-black font-bold py-3 px-5 brutal-border hover:bg-accent transition-colors w-full justify-center sm:w-auto"
+                          className="group/link inline-flex items-center justify-center gap-1.5 rounded-full border border-border-strong px-4 py-2 text-xs font-medium text-ink hover:bg-surface-subtle transition-colors"
                         >
-                          <FaExternalLinkAlt /> Verify
+                          <FaExternalLinkAlt
+                            aria-hidden="true"
+                            className="text-[10px] transition-transform duration-200 group-hover/link:translate-x-0.5"
+                          />{' '}
+                          Verify
                         </a>
                       )}
                     </div>
@@ -126,8 +190,6 @@ export const CertificationCard = ({
             )}
           </AnimatePresence>
         </div>
-
-        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500 z-0 pointer-events-none" />
       </Card>
 
       {pdf && (

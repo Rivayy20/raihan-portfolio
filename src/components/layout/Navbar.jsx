@@ -22,7 +22,10 @@ export const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
 
   const navLinks = useMemo(
-    () => (navigation || []).filter((item) => item.showInNavbar && item.isVisible !== false),
+    () =>
+      (navigation || []).filter(
+        (item) => item.showInNavbar && item.isVisible !== false
+      ),
     [navigation]
   );
 
@@ -33,16 +36,16 @@ export const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setScrolled(window.scrollY > 24);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '-40% 0px -60% 0px',
+      rootMargin: '-38% 0px -58% 0px',
       threshold: 0,
     };
 
@@ -65,7 +68,7 @@ export const Navbar = () => {
     const handleScrollTop = () => {
       if (window.scrollY < 100) setActiveSection('home');
     };
-    window.addEventListener('scroll', handleScrollTop);
+    window.addEventListener('scroll', handleScrollTop, { passive: true });
 
     return () => {
       cancelAnimationFrame(frameId);
@@ -90,129 +93,125 @@ export const Navbar = () => {
     smoothScrollTo(e, targetHref);
   };
 
-  const ctaVariant = ['primary', 'secondary', 'accent', 'white'].includes(
-    settings?.navbarCtaVariant
-  )
-    ? settings.navbarCtaVariant
-    : 'accent';
-
   return (
     <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+      <header
         style={{ top: previewOffsetTop || 0 }}
         className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'py-4' : 'py-6'
+          scrolled
+            ? 'editorial-glass border-b border-border-subtle'
+            : 'bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-12">
-          <div className="bg-white border-[3px] border-black brutal-shadow rounded-xl flex items-center justify-between px-4 md:px-6 py-3">
-            {/* Brand Logo */}
-            <div
-              className="flex-shrink-0 cursor-pointer flex items-center gap-2.5"
-              onClick={(e) => smoothScrollTo(e, '#')}
-            >
-              {settings?.logoUrl && (
-                <img
-                  src={settings.logoUrl}
-                  alt={settings.brandName || 'Logo'}
-                  decoding="async"
-                  className="h-7 w-7 object-contain shrink-0"
-                />
-              )}
-              <span className="font-heading font-black text-2xl tracking-tighter hover:text-primary transition-colors">
-                {settings?.brandName || 'RAZH'}
-              </span>
-            </div>
+        <div className="max-w-6xl xl:max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 h-16 md:h-20 flex items-center justify-between gap-4">
+          {/* Minimalist Wordmark */}
+          <button
+            type="button"
+            onClick={(e) => smoothScrollTo(e, '#')}
+            className="flex items-center gap-2.5 text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary rounded"
+          >
+            {settings?.logoUrl && (
+              <img
+                src={settings.logoUrl}
+                alt={settings.brandName || 'Logo'}
+                decoding="async"
+                className="h-7 w-7 object-contain rounded-md shrink-0"
+              />
+            )}
+            <span className="font-heading font-semibold text-base sm:text-lg tracking-[0.18em] uppercase text-ink hover:text-primary transition-colors">
+              {settings?.brandName || 'RAZH'}
+            </span>
+          </button>
 
-            {/* Center Links (Desktop) */}
-            <div className="hidden lg:flex items-center gap-8">
-              {navLinks.map((link) => {
-                const isActive = activeSection === link.sectionId;
-                const external = isExternalHref(link.href);
-                return (
-                  <a
-                    key={link.id || link.label}
-                    href={link.href}
-                    target={external ? '_blank' : undefined}
-                    rel={external ? 'noopener noreferrer' : undefined}
-                    onClick={(e) => handleLinkClick(e, link.href)}
-                    className={`font-body text-lg transition-transform relative group ${
+          {/* Center Nav Links (Desktop) */}
+          <nav
+            aria-label="Primary Navigation"
+            className="hidden lg:flex items-center gap-8"
+          >
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.sectionId;
+              const external = isExternalHref(link.href);
+              return (
+                <a
+                  key={link.id || link.label}
+                  href={link.href}
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noopener noreferrer' : undefined}
+                  onClick={(e) => handleLinkClick(e, link.href)}
+                  className={`relative py-1.5 font-body text-[13px] font-medium tracking-[0.04em] transition-colors ${
+                    isActive ? 'text-ink' : 'text-muted hover:text-ink'
+                  }`}
+                >
+                  {link.label}
+                  <span
+                    className={`absolute left-0 right-0 -bottom-0.5 h-[2px] rounded-full transition-all duration-300 ${
                       isActive
-                        ? 'font-black text-secondary -translate-y-1'
-                        : 'font-bold text-black hover:text-secondary hover:-translate-y-1'
+                        ? 'bg-primary opacity-100 scale-x-100'
+                        : 'bg-ink/30 opacity-0 scale-x-0'
                     }`}
-                  >
-                    {link.label}
-                    <span
-                      className={`absolute -bottom-1 left-0 h-1 bg-accent transition-all ${
-                        isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                      }`}
-                    />
-                  </a>
-                );
-              })}
-            </div>
+                  />
+                </a>
+              );
+            })}
+          </nav>
 
-            {/* Right Actions */}
-            <div className="flex items-center gap-3 md:gap-4">
-              {settings?.showThemeToggle !== false && (
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black brutal-shadow-hover bg-white hover:-translate-y-1 transition-all"
-                  aria-label="Toggle Dark Mode"
-                >
-                  {theme === 'dark' ? (
-                    <FaSun className="text-black" />
-                  ) : (
-                    <FaMoon className="text-black" />
-                  )}
-                </button>
-              )}
-
-              {settings?.showNavbarCta !== false && settings?.navbarCtaLabel && (
-                <Button
-                  variant={ctaVariant}
-                  className="hidden lg:flex py-2 px-6 text-sm"
-                  onClick={handleCtaClick}
-                >
-                  {settings.navbarCtaLabel}
-                </Button>
-              )}
-
-              {/* Mobile Menu Toggle */}
+          {/* Right Utility Actions */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {settings?.showThemeToggle !== false && (
               <button
                 type="button"
-                className="lg:hidden w-10 h-10 flex items-center justify-center rounded-md border-2 border-black bg-white brutal-shadow-hover"
-                onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                aria-label={isMobileMenuOpen ? 'Close Menu' : 'Open Menu'}
+                onClick={toggleTheme}
+                className="w-9 h-9 rounded-full border border-border-subtle bg-surface/60 hover:bg-surface hover:border-border-strong flex items-center justify-center text-muted hover:text-ink transition-all cursor-pointer"
+                aria-label="Toggle Dark Mode"
               >
-                {isMobileMenuOpen ? (
-                  <FaTimes className="text-black" />
+                {theme === 'dark' ? (
+                  <FaSun className="text-xs text-accent" />
                 ) : (
-                  <FaBars className="text-black" />
+                  <FaMoon className="text-xs" />
                 )}
               </button>
-            </div>
+            )}
+
+            {settings?.showNavbarCta !== false && settings?.navbarCtaLabel && (
+              <Button
+                variant="primary"
+                className="hidden lg:inline-flex py-2 px-5 text-xs tracking-wider"
+                onClick={handleCtaClick}
+              >
+                {settings.navbarCtaLabel}
+              </Button>
+            )}
+
+            {/* Mobile Menu Toggle */}
+            <button
+              type="button"
+              className="lg:hidden w-9 h-9 rounded-full border border-border-subtle bg-surface/70 flex items-center justify-center text-ink hover:border-border-strong transition-colors cursor-pointer"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              aria-label={isMobileMenuOpen ? 'Close Menu' : 'Open Menu'}
+              aria-expanded={isMobileMenuOpen}
+            >
+              {isMobileMenuOpen ? (
+                <FaTimes className="text-sm" />
+              ) : (
+                <FaBars className="text-sm" />
+              )}
+            </button>
           </div>
         </div>
-      </motion.nav>
+      </header>
 
-      {/* Mobile Menu Panel */}
+      {/* Clean Frosted Mobile Drawer */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            style={{ top: 96 + (previewOffsetTop || 0) }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2 }}
+            style={{ top: 68 + (previewOffsetTop || 0) }}
             className="fixed inset-x-4 z-40 lg:hidden"
           >
-            <div className="bg-white border-[3px] border-black brutal-shadow rounded-xl p-6 flex flex-col gap-4">
+            <div className="editorial-glass border border-border-subtle rounded-2xl p-5 shadow-xl flex flex-col gap-1">
               {navLinks.map((link) => {
                 const isActive = activeSection === link.sectionId;
                 const external = isExternalHref(link.href);
@@ -226,15 +225,15 @@ export const Navbar = () => {
                       setIsMobileMenuOpen(false);
                       handleLinkClick(e, link.href);
                     }}
-                    className={`font-heading text-xl border-b-2 py-2 transition-colors flex flex-col relative ${
+                    className={`flex items-center justify-between min-h-11 px-3 rounded-xl font-heading text-base font-medium transition-colors ${
                       isActive
-                        ? 'font-black text-secondary border-transparent'
-                        : 'font-bold text-black border-transparent hover:border-black'
+                        ? 'bg-primary/12 text-ink'
+                        : 'text-muted hover:text-ink hover:bg-surface-subtle/60'
                     }`}
                   >
-                    {link.label}
+                    <span>{link.label}</span>
                     {isActive && (
-                      <span className="absolute bottom-0 left-0 w-full h-1 bg-accent" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                     )}
                   </a>
                 );
@@ -242,11 +241,11 @@ export const Navbar = () => {
 
               {(settings?.showNavbarCta !== false ||
                 (settings?.showMobileCvBtn !== false && hero?.cvUrl)) && (
-                <div className="flex flex-col gap-3 mt-4 pt-4 border-t-2 border-black border-dashed">
+                <div className="flex flex-col gap-2.5 mt-3 pt-4 border-t border-border-subtle">
                   {settings?.showNavbarCta !== false && settings?.navbarCtaLabel && (
                     <Button
-                      variant={ctaVariant}
-                      className="w-full py-4 text-lg"
+                      variant="primary"
+                      className="w-full py-3 text-sm"
                       onClick={(e) => {
                         setIsMobileMenuOpen(false);
                         handleCtaClick(e);
@@ -259,7 +258,7 @@ export const Navbar = () => {
                   {settings?.showMobileCvBtn !== false && hero?.cvUrl && (
                     <Button
                       variant="white"
-                      className="w-full py-4 text-lg border-2 border-black"
+                      className="w-full py-3 text-sm"
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                         setIsCVModalOpen(true);

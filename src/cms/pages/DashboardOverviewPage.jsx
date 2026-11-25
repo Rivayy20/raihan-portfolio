@@ -52,9 +52,9 @@ const ACTION_BADGES = {
 
 function MetricCard({ title, value, subtitle, icon: Icon, iconColor, to }) {
   const content = (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-xs hover:border-[#00B4D8]/60 transition-colors h-full flex flex-col justify-between">
+    <div className="bg-surface border border-border-subtle rounded-2xl p-5 shadow-xs hover:border-primary/50 transition-colors h-full flex flex-col justify-between">
       <div className="flex items-start justify-between gap-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted">
           {title}
         </span>
         <div
@@ -65,11 +65,11 @@ function MetricCard({ title, value, subtitle, icon: Icon, iconColor, to }) {
       </div>
 
       <div className="mt-3">
-        <p className="font-heading text-2xl sm:text-3xl font-bold text-slate-900 dark:text-zinc-100 leading-tight">
+        <p className="font-heading text-2xl sm:text-3xl font-bold text-ink leading-tight">
           {value}
         </p>
         {subtitle && (
-          <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1.5">{subtitle}</p>
+          <p className="text-xs text-muted mt-1.5">{subtitle}</p>
         )}
       </div>
     </div>
@@ -140,8 +140,8 @@ export function DashboardOverviewPage() {
         description={`Selamat datang kembali, ${adminProfile?.email || 'Administrator'}. Pantau status publikasi, media, dan kelola konten portfolio RAZH dari satu tempat.`}
         badge={
           stats?.last_updated_at ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-zinc-800 text-xs font-medium text-slate-600 dark:text-zinc-300">
-              <FaClock className="text-[11px] text-[#00B4D8]" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-subtle border border-border-subtle text-xs font-medium text-muted">
+              <FaClock className="text-[11px] text-primary" />
               Update terakhir: {formatDateTime(stats.last_updated_at)}
             </span>
           ) : null
@@ -151,14 +151,14 @@ export function DashboardOverviewPage() {
             <button
               type="button"
               onClick={handleRefresh}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border-subtle bg-surface hover:bg-surface-subtle text-xs font-semibold text-ink transition-colors cursor-pointer"
             >
               <FaSyncAlt className={statsQuery.isFetching ? 'animate-spin' : ''} />
               Refresh
             </button>
             <Link
               to="/preview"
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#00B4D8] hover:bg-[#0096B4] text-white text-xs font-semibold transition-colors"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-primary hover:bg-[#f25858] text-white text-xs font-semibold transition-colors"
             >
               <FaEye /> Preview Site
             </Link>
@@ -182,7 +182,7 @@ export function DashboardOverviewPage() {
             value={totalProjects}
             subtitle={`${stats.projects_published} Published · ${stats.projects_draft} Draft`}
             icon={FaFolderOpen}
-            iconColor="bg-cyan-100 text-[#0096B4] dark:bg-cyan-950/60 dark:text-[#00E5FF]"
+            iconColor="bg-primary/12 text-primary"
             to="/admin/projects"
           />
           <MetricCard
@@ -236,7 +236,7 @@ export function DashboardOverviewPage() {
             value={stats.last_updated_at ? formatDateTime(stats.last_updated_at).split(',')[0] : '—'}
             subtitle={formatDateTime(stats.last_updated_at)}
             icon={FaClock}
-            iconColor="bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-300"
+            iconColor="bg-surface-subtle text-muted"
           />
         </div>
       )}
@@ -250,7 +250,7 @@ export function DashboardOverviewPage() {
             to="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
           >
             Buka Live Portfolio <FaExternalLinkAlt className="text-[10px]" />
           </Link>
@@ -263,17 +263,17 @@ export function DashboardOverviewPage() {
               <Link
                 key={action.to}
                 to={action.to}
-                className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-zinc-800 hover:border-[#00B4D8] hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors group"
+                className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-border-subtle hover:border-primary/60 hover:bg-surface-subtle/60 transition-colors group"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-[#00E5FF]/15 text-[#0096B4] dark:text-[#00E5FF] flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-primary/12 text-primary flex items-center justify-center shrink-0">
                     <Icon className="text-sm" />
                   </div>
-                  <span className="text-sm font-semibold text-slate-800 dark:text-zinc-200 truncate">
+                  <span className="text-sm font-semibold text-ink truncate">
                     {action.label}
                   </span>
                 </div>
-                <FaArrowRight className="text-xs text-slate-400 group-hover:text-[#00B4D8] group-hover:translate-x-0.5 transition-all shrink-0" />
+                <FaArrowRight className="text-xs text-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0" />
               </Link>
             );
           })}
@@ -300,17 +300,17 @@ export function DashboardOverviewPage() {
               description="Saat ini tidak ada draft atau suntingan tertunda."
             />
           ) : (
-            <ul className="divide-y divide-slate-100 dark:divide-zinc-800">
+            <ul className="divide-y divide-border-subtle">
               {draftsQuery.data.map((item) => (
                 <li
                   key={item.key}
                   className="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-zinc-100 truncate">
+                    <p className="text-sm font-semibold text-ink truncate">
                       {item.title}
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                    <p className="text-xs text-muted mt-0.5">
                       {item.moduleLabel} · {formatDateTime(item.updatedAt)}
                     </p>
                   </div>
@@ -324,7 +324,7 @@ export function DashboardOverviewPage() {
                     />
                     <Link
                       to={item.route}
-                      className="text-xs font-semibold text-[#0096B4] dark:text-[#00E5FF] hover:underline"
+                      className="text-xs font-semibold text-primary hover:underline"
                     >
                       Edit
                     </Link>
@@ -353,7 +353,7 @@ export function DashboardOverviewPage() {
               description="Riwayat akan tercatat otomatis saat Anda mempublikasikan atau menarik perubahan di CMS."
             />
           ) : (
-            <ul className="divide-y divide-slate-100 dark:divide-zinc-800">
+            <ul className="divide-y divide-border-subtle">
               {revisionsQuery.data.map((rev) => {
                 const badge = ACTION_BADGES[rev.action] || ACTION_BADGES.publish;
                 return (
@@ -362,10 +362,10 @@ export function DashboardOverviewPage() {
                     className="py-3 first:pt-0 last:pb-0 flex items-start justify-between gap-3"
                   >
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 dark:text-zinc-100 truncate">
+                      <p className="text-sm font-semibold text-ink truncate">
                         {rev.summary_note || `${rev.entity_table} (#${rev.entity_id})`}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                      <p className="text-xs text-muted mt-0.5">
                         {rev.entity_table} · {formatDateTime(rev.created_at)}
                       </p>
                     </div>
