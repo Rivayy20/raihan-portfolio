@@ -1,89 +1,95 @@
-# Raihan Azka Hidayat - Personal Portfolio
+# RAZH Portfolio — Supabase-Powered Headless CMS
 
-A modern, interactive, and responsive personal portfolio website built with React, Vite, and Tailwind CSS. The design follows a **Neo-Brutalism** aesthetic, characterized by high-contrast colors, thick black borders, sharp shadows, and engaging micro-interactions.
+Personal portfolio website for **Raihan Azka Hidayat (RAZH)** powered by a headless **Supabase** CMS backend, deployed on **Vercel**. Visitors view a fast React SPA backed by stateless public queries and Vercel edge HTML meta injection, while the administrator manages all sections, media assets, drafts, revisions, and SEO settings from a protected `/admin` dashboard.
 
-## 🌟 Features
+## Features
 
-* **Fully Responsive Design:** Optimized for desktop, tablet, and mobile devices.
-* **Complete Dark Mode:** A sophisticated theme-switching mechanism that automatically adapts colors, shadows, and contrast to provide a comfortable viewing experience in low-light environments.
-* **Project Showcase:** Interactive project gallery with image collages, detailed technical descriptions, and links to source code and live demos.
-* **Certifications:** Clickable and expandable certification cards integrated with a built-in PDF viewer modal.
-* **Creative Gallery:** High-performance, lazy-loaded image gallery for photography and visual works, optimized with WebP format.
-* **Contact Form:** Real-time form submission directly to email via Web3Forms API.
+- **Data-Driven Public Portfolio (`/`)**: Dynamically loads published & visible content across Hero, About, Education, Experience, Expertise, Projects, Certifications, Contact, Navbar, Footer, and Theme Presets via `supabasePublic` (stateless PostgREST REST queries scoped to public column allowlists) with `sessionStorage` caching and graceful fallback to `STATIC_PORTFOLIO_DATA`.
+- **Protected CMS Dashboard (`/admin`)**: Authenticated via Supabase Auth + `cms_admins` whitelist check (`ProtectedAdminRoute`), hidden keyboard shortcut (`Ctrl + .` / `Cmd + .`), and 12 dedicated CRUD content modules + Revision History.
+- **Draft, Preview & Revision Workflow**: Edit safely with **Save Draft**, inspect live differences via **Preview Mode (`/preview`)** toggling *Draft Preview* vs *Live Published*, publish updates atomically, and inspect or restore snapshots from `/admin/revisions`.
+- **Centralized Supabase Storage Media Library (`/admin/media`)**: Upload images & PDFs across `public-assets`, `public-documents`, and `private-drafts`, check reference usage via `get_media_asset_usage` before deleting, and migrate all 17 bundled local portfolio assets with 1 click (**Migrasi Aset Lokal**) or via CLI (`scripts/migrate-assets-to-supabase.mjs`).
+- **SEO Head & Vercel Serverless Meta Injector**: Runtime `<SeoHead />` sync plus `/api/render-home` serverless handler injecting dynamic `<title>`, meta description, canonical, Open Graph, Twitter Card, favicon, and sanitized JSON-LD into initial HTML for social media crawlers.
+- **Security & Performance Hardening**: Column-level `anon` grants, strict PostgreSQL RLS on all 20 tables, SVG/traversal/XSS sanitization (`src/utils/safeUrl.js`, `api/_lib/seoHtmlInjector.js`), production CSP & security headers (`vercel.json`), zero CMS/admin leaks into public bundles, and Rolldown vendor chunk splitting (`< 500 kB`).
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-* **Frontend Framework:** [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
-* **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-* **Animations:** [Framer Motion](https://www.framer.com/motion/)
-* **Icons:** [React Icons](https://react-icons.github.io/react-icons/)
-* **Form Handling:** [Web3Forms API](https://web3forms.com/)
-* **Scroll Utility:** Lenis (Smooth Scrolling)
+- **Frontend**: React 19, Vite 8, Tailwind CSS v4, React Router 7, TanStack Query 5, Zod 4
+- **UI & Motion**: Framer Motion, Lenis Smooth Scroll, React Icons
+- **Backend & Storage**: Supabase PostgreSQL, Supabase Auth, Supabase Storage, Row Level Security & RPCs
+- **Contact & Hosting**: Web3Forms API (`VITE_WEB3FORMS_ACCESS_KEY`), Vercel Static + Serverless Function (`/api/render-home`)
 
-## 📁 Folder Structure
+## Folder Structure
 
-```
+```text
+api/
+├── _lib/seoHtmlInjector.js     # Pure meta/OG/JSON-LD sanitizer & HTML injector
+└── render-home.js              # Vercel serverless function serving initial HTML with dynamic SEO
+docs/
+├── CMS_ADMIN_GUIDE.md          # Panduan operator CMS dashboard (Bahasa Indonesia)
+└── DEPLOYMENT_CHECKLIST.md     # Checklist manual deploy GitHub, Supabase & Vercel
+public/
+├── favicon.svg
+├── og-image.png
+├── robots.txt                  # Disallows /admin & /preview
+└── sitemap.xml
+scripts/
+├── migrate-assets-to-supabase.mjs  # Headless CLI uploader for initial 17 local assets
+└── qa-security-audit.mjs           # Automated SQL/RLS, source, XSS & bundle QA suite
 src/
-├── assets/         # Images, PDFs, and static assets
-├── components/     # Reusable React components
-│   ├── layout/     # Navbar, Footer, RootLayout
-│   ├── sections/   # Hero, About, Skills, Projects, CreativeCorner, Contact
-│   └── ui/         # Buttons, Cards, Inputs, Modals, Badges
-├── context/        # React Context (ThemeProvider)
-├── data/           # Static data (projects.js, skills.js, certifications.js)
-├── hooks/          # Custom React hooks (useLenis)
-└── utils/          # Helper functions
+├── assets/                     # Bundled fallback images, logos & PDFs
+├── cms/                        # Lazy-loaded Admin CMS dashboard, repositories & services
+├── components/                 # Presentation UI, layout, sections & SeoHead
+├── constants/                  # Color presets, icon registry, public column allowlists, storage config
+├── context/                    # PortfolioDataContext, ThemeContext, ThemeProvider
+├── data/                       # Static data & staticFallback.js
+├── hooks/                      # usePortfolioData, usePublicPortfolio, useTheme, useLenis, shortcut
+├── lib/                        # supabasePublic.js (stateless public), supabase.js (admin), queryClient.js
+├── pages/                      # PublicPortfolioPage.jsx, PreviewPortfolioPage.jsx
+├── services/                   # publicPortfolioService.js
+└── utils/                      # portfolioMapper.js, safeUrl.js, socialIcons.js, motionVariants.js
+supabase/
+├── migrations/                 # Sequential SQL migrations (0001..0006)
+└── README.md                   # Supabase SQL & auth setup reference
 ```
 
-## 🚀 Installation & Setup
+## Setup & Scripts
 
-### Prerequisites
-Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/Rivayy20/raihan-portfolio.git
-cd raihan-portfolio
-```
-
-### 2. Install dependencies
+### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 3. Environment Variables
-Create a `.env` file in the root directory and add your Web3Forms Access Key:
+### 2. Configure Environment Variables
+Copy `.env.example` to `.env` (never commit `.env`):
 ```env
-VITE_WEB3FORMS_ACCESS_KEY=your_access_key_here
+VITE_WEB3FORMS_ACCESS_KEY=your_web3forms_access_key
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_your_key_here
+VITE_USE_STATIC_FALLBACK=true
+VITE_FORCE_STATIC_MODE=false
 ```
 
-### 4. Run the development server
-```bash
-npm run dev
-```
-The website will be available at `http://localhost:5173/`.
+### 3. Setup Supabase Backend
+Follow [supabase/README.md](supabase/README.md) to execute migrations `0001`–`0006`, disable public sign-ups, provision your admin user, and set auth redirect URLs.
 
-## 📦 Build for Production
+### 4. Available NPM Scripts
+- `npm run dev` — Start Vite local dev server (`http://localhost:5173`)
+- `npm run build` — Build production bundle (`dist/index.html` & `dist/app.html`; when `VERCEL=1`, removes `dist/index.html` so `/` hits `/api/render-home`)
+- `npm run lint` — Run ESLint across `src/`, `api/`, `scripts/`, and `vite.config.js`
+- `npm run qa:security` — Run offline security, RLS SQL, XSS, bundle isolation & size budget QA suite
+- `node scripts/qa-security-audit.mjs --live` — Run live anonymous RLS & Storage probes against Supabase
+- `npm run preview` — Preview built bundle locally
 
-To create an optimized production build:
-```bash
-npm run build
-```
-This command will generate a `dist/` folder containing the compiled assets ready for deployment.
+## Documentation
 
-## 🌐 Deployment
+- [Supabase Database & Auth Setup](supabase/README.md)
+- [Panduan Operator CMS Admin](docs/CMS_ADMIN_GUIDE.md)
+- [Checklist Deployment & Smoke Test](docs/DEPLOYMENT_CHECKLIST.md)
 
-This project is built using Vite and can be easily deployed to platforms like Vercel, Netlify, or GitHub Pages. 
-For Vercel deployment:
-1. Push your code to GitHub.
-2. Connect the repository in Vercel.
-3. Add the `VITE_WEB3FORMS_ACCESS_KEY` in Vercel's Environment Variables settings.
-4. Deploy!
-
-## 🧑‍💻 Author
+## Author
 
 **Raihan Azka Hidayat**
-* Email: [raihanazkahidayat90@gmail.com](mailto:raihanazkahidayat90@gmail.com)
-* LinkedIn: [Raihan Azka Hidayat](https://www.linkedin.com/in/raihan-azka-hidayat-355772341)
-* GitHub: [@Rivayy20](https://github.com/Rivayy20/)
-* Instagram: [@azk.hy_](https://www.instagram.com/azk.hy_/)
+- Email: [raihanazkahidayat90@gmail.com](mailto:raihanazkahidayat90@gmail.com)
+- LinkedIn: [Raihan Azka Hidayat](https://www.linkedin.com/in/raihan-azka-hidayat-355772341)
+- GitHub: [@Rivayy20](https://github.com/Rivayy20/)
+- Instagram: [@azk.hy_](https://www.instagram.com/azk.hy_/)

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLenis } from '../../hooks/useLenis';
 import { Navbar } from './Navbar';
 import { BackToTop } from '../ui/BackToTop';

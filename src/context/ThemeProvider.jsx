@@ -1,17 +1,21 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ThemeContext } from './ThemeContext';
 
-const ThemeContext = createContext();
-
-export const useTheme = () => useContext(ThemeContext);
+function resolveSystemTheme() {
+  try {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  } catch {
+    return 'light';
+  }
+}
 
 export const ThemeProvider = ({ children }) => {
-  // Initialize synchronously for client-side rendering
   const [theme, setTheme] = useState(() => {
     try {
       const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) return savedTheme;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    } catch (e) {
+      if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
+      return resolveSystemTheme();
+    } catch {
       return 'light';
     }
   });
@@ -22,21 +26,44 @@ export const ThemeProvider = ({ children }) => {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
-    try {
-      localStorage.setItem('theme', theme);
-    } catch (e) {
-      // Ignore localStorage errors
-    }
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
+  const toggleTheme = useCallback(() => {
+    setTheme((prevTheme) => {
+      const next = prevTheme === 'light' ? 'dark' : 'light';
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        // Ignore storage write errors
+      }
+      return next;
+    });
+  }, []);
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
+  /**
+   * Applies CMS default_theme ('light' | 'dark' | 'system') ONLY for first-time visitors
+   * who have not explicitly toggled and saved a personal theme preference yet.
+   */
+  const applyDefaultTheme = useCallback((defaultTheme) => {
+    if (!defaultTheme) return;
+    try {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || savedTheme === 'light') return;
+    } catch {
+      // Proceed cleanly if storage is unavailable
+    }
+
+    if (defaultTheme === 'dark' || defaultTheme === 'light') {
+      setTheme(defaultTheme);
+    } else if (defaultTheme === 'system') {
+      setTheme(resolveSystemTheme());
+    }
+  }, []);
+
+  const value = useMemo(
+    () => ({ theme, toggleTheme, applyDefaultTheme }),
+    [theme, toggleTheme, applyDefaultTheme]
   );
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };

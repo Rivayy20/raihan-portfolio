@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const Card = ({ children, className = '', ...props }) => {
   const hasBg = className.includes('bg-');
   return (

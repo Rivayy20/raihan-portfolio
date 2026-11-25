@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const Badge = ({ children, className = '', color = 'accent' }) => {
   const colorClasses = {
     accent: 'bg-accent',

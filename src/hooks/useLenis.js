@@ -16,15 +16,19 @@ export const useLenis = () => {
     });
 
     window.lenis = lenis;
+    let rafId = null;
 
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
       window.lenis = null;
       lenis.destroy();
     };
