@@ -79,6 +79,11 @@ const SeoManagementPage = lazy(() =>
     default: m.SeoManagementPage,
   }))
 );
+const TranslationsManagementPage = lazy(() =>
+  import('./pages/TranslationsManagementPage').then((m) => ({
+    default: m.TranslationsManagementPage,
+  }))
+);
 const AccountSecurityPage = lazy(() =>
   import('./pages/AccountSecurityPage').then((m) => ({
     default: m.AccountSecurityPage,
@@ -216,6 +221,14 @@ function CmsRoutesShell() {
             element={
               <RouteSuspense>
                 <SeoManagementPage />
+              </RouteSuspense>
+            }
+          />
+          <Route
+            path="translations"
+            element={
+              <RouteSuspense>
+                <TranslationsManagementPage />
               </RouteSuspense>
             }
           />

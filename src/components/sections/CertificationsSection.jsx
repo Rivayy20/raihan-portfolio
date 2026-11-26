@@ -3,11 +3,13 @@ import { FaCertificate } from 'react-icons/fa';
 import { CertificationCard } from './CertificationCard';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
 import { useTheme } from '../../hooks/useTheme';
+import { useLanguage } from '../../hooks/useLanguage';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 export const CertificationsSection = ({ expandedId, onToggle }) => {
   const { data } = usePortfolioData();
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const { about, certifications } = data;
   const reduceMotion = useReducedMotion();
   const viewportOnce = resolvedTheme?.config?.animation?.replayOnScroll === false;
@@ -55,7 +57,7 @@ export const CertificationsSection = ({ expandedId, onToggle }) => {
         </span>
         <div>
           <p className="font-body text-xs font-medium uppercase tracking-[0.18em] text-muted">
-            Verified Credentials
+            {t('about.verifiedCredentials', 'Verified Credentials')}
           </p>
           <h3 className="font-heading text-2xl sm:text-3xl font-medium text-ink">
             {about?.certificationsHeading || 'Certifications'}

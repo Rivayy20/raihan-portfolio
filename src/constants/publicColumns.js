@@ -48,4 +48,6 @@ export const PUBLIC_COLUMNS = {
     'id, brand_text, tagline, copyright_text, quick_links_heading, connect_heading, show_availability_badge, show_quick_links, show_social_links, publication_status, published_at, updated_at',
   seo_settings:
     'id, seo_title, meta_description, canonical_url, og_title, og_description, og_image_media_id, og_site_name, twitter_card, twitter_title, twitter_description, structured_data_enabled, structured_data_job_title, structured_data_extra, publication_status, published_at, updated_at',
+  portfolio_translations:
+    'locale, source_locale, translations, publication_status, published_at, updated_at',
 };

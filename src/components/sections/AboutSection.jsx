@@ -8,6 +8,7 @@ import { ExperiencePanel } from './ExperiencePanel';
 import { CertificationsSection } from './CertificationsSection';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
 import { useTheme } from '../../hooks/useTheme';
+import { useLanguage } from '../../hooks/useLanguage';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 const DEFAULT_NARRATIVE_HIGHLIGHTS = [
@@ -57,6 +58,7 @@ function renderHighlightedParagraph(text, highlights = []) {
 const EducationCard = ({ about, education, isExpanded, onToggle }) => {
   const reduceMotion = useReducedMotion();
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const timelineAnimation = resolvedTheme?.config?.effects?.timelineAnimation !== false;
   const currentItems = education.filter((item) => item.educationLevel === 'current');
   const previousItems = education.filter((item) => item.educationLevel !== 'current');
@@ -88,7 +90,7 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
           </div>
           <div className="min-w-0">
             <p className="font-body text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-              Academic Background
+              {t('about.academicBackground', 'Academic Background')}
             </p>
             <h3 className="font-heading text-lg sm:text-xl font-medium text-ink">
               {about?.educationCardTitle || 'Education'}
@@ -99,7 +101,7 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
         {currentItems.length > 0 && (
           <span className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-primary/12 border border-primary/25 px-2.5 py-1 font-body text-[11px] font-medium text-ink">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-            Active
+            {t('about.active', 'Active')}
           </span>
         )}
       </div>
@@ -155,7 +157,7 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
           >
             <span>
               {isExpanded
-                ? 'Hide Previous Education'
+                ? t('about.hidePreviousEdu', 'Hide Previous Education')
                 : about?.previousEduHeading || 'Previous Education'}
             </span>
             <FaChevronDown
@@ -217,7 +219,7 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
                           <p className="font-body text-xs text-muted mt-0.5">
                             {item.degree
                               ? `${item.degree}${item.major ? ` — ${item.major}` : ''}`
-                              : `Major: ${item.major}`}
+                              : `${t('about.majorPrefix', 'Major:')} ${item.major}`}
                           </p>
                         )}
                         {item.period && (
@@ -246,6 +248,7 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
 export const AboutSection = ({ sectionConfig }) => {
   const { data } = usePortfolioData();
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const { about, education, experiences, certifications, settings } = data;
   const isSpiderMan = isSpiderManPreset(settings?.colorPreset);
   const viewportOnce = resolvedTheme?.config?.animation?.replayOnScroll === false;
@@ -372,7 +375,7 @@ export const AboutSection = ({ sectionConfig }) => {
             ) : (
               <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
             )}
-            01 / About
+            {t('about.eyebrow', '01 / About')}
           </motion.span>
 
           <motion.h2
@@ -398,11 +401,11 @@ export const AboutSection = ({ sectionConfig }) => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
               {showNarrative && (
                 <motion.div
-                  className={showEdu ? 'lg:col-span-7 max-w-[65ch]' : 'lg:col-span-12 max-w-[72ch]'}
                   variants={narrativeContainerVariants}
                   initial={reduceMotion ? false : 'hidden'}
                   whileInView="visible"
                   viewport={{ once: viewportOnce, amount: 0.15 }}
+                  className={showEdu ? 'lg:col-span-7 max-w-[65ch]' : 'lg:col-span-12 max-w-[72ch]'}
                 >
                   <motion.div
                     variants={narrativeItemVariants}
@@ -434,11 +437,11 @@ export const AboutSection = ({ sectionConfig }) => {
 
               {showEdu && (
                 <motion.div
-                  className={showNarrative ? 'lg:col-span-5' : 'lg:col-span-12 max-w-xl'}
                   variants={eduCardVariants}
                   initial={reduceMotion ? false : 'hidden'}
                   whileInView="visible"
                   viewport={{ once: viewportOnce, amount: 0.2 }}
+                  className={showNarrative ? 'lg:col-span-5' : 'lg:col-span-12 max-w-xl'}
                 >
                   <EducationCard
                     about={about}

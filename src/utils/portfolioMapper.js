@@ -562,6 +562,30 @@ export function mapRawPortfolioToViewModel(
     structuredDataExtra: rawSeo.structured_data_extra || {},
   };
 
+  // 15. Stored Bilingual Translations (portfolio_translations)
+  const translations = {};
+  const translationMeta = {};
+  for (const row of raw.portfolio_translations || []) {
+    if (!row || (row.locale !== 'en' && row.locale !== 'id')) continue;
+    const isRowAllowed =
+      mode === 'published'
+        ? row.publication_status === 'published'
+        : row.publication_status === 'published' || row.publication_status === 'draft';
+    if (!isRowAllowed) continue;
+
+    translations[row.locale] =
+      row.translations &&
+      typeof row.translations === 'object' &&
+      !Array.isArray(row.translations)
+        ? row.translations
+        : {};
+    translationMeta[row.locale] = {
+      sourceLocale: row.source_locale || 'en',
+      publicationStatus: row.publication_status || 'published',
+      updatedAt: row.updated_at || null,
+    };
+  }
+
   return {
     settings,
     sections,
@@ -577,5 +601,7 @@ export function mapRawPortfolioToViewModel(
     socialLinks,
     footer,
     seo,
+    translations,
+    translationMeta,
   };
 }
