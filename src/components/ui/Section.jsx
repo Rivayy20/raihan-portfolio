@@ -1,5 +1,9 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { isSpiderManPreset } from '../../constants/colorPresets';
+import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { useTheme } from '../../hooks/useTheme';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
+import { SpiderIcon } from './SpiderManElements';
 
 export const Section = ({
   id,
@@ -12,6 +16,10 @@ export const Section = ({
 }) => {
   const isCentered = alignment === 'center';
   const reduceMotion = useReducedMotion();
+  const portfolioCtx = usePortfolioData();
+  const { resolvedTheme } = useTheme();
+  const isSpiderMan = isSpiderManPreset(portfolioCtx?.data?.settings?.colorPreset);
+  const viewportOnce = resolvedTheme?.config?.animation?.replayOnScroll === false;
 
   return (
     <section
@@ -23,7 +31,7 @@ export const Section = ({
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
+            viewport={{ once: viewportOnce, amount: 0.15 }}
             transition={{ duration: 0.5, ease: EDITORIAL_EASE }}
             className={`flex flex-col gap-4 border-t border-border-subtle pt-8 ${
               isCentered
@@ -33,7 +41,11 @@ export const Section = ({
           >
             {eyebrow && (
               <span className="inline-flex items-center gap-2 font-body text-xs font-medium uppercase tracking-[0.2em] text-muted">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                {isSpiderMan ? (
+                  <SpiderIcon className="w-3.5 h-3.5 text-primary shrink-0" />
+                ) : (
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                )}
                 {eyebrow}
               </span>
             )}

@@ -15,6 +15,8 @@ function MediaPickerContent({
   accept,
   defaultCategory,
   defaultIsPublic,
+  allowedMimeTypes,
+  allowedExtensions,
   multiple,
   selectedIds,
   title,
@@ -53,7 +55,13 @@ function MediaPickerContent({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [onClose]);
 
-  const items = mediaQuery.data || [];
+  const rawItems = mediaQuery.data || [];
+  const items =
+    Array.isArray(allowedMimeTypes) && allowedMimeTypes.length > 0
+      ? rawItems.filter((item) =>
+          allowedMimeTypes.includes(String(item.mime_type || '').toLowerCase())
+        )
+      : rawItems;
 
   const toggleAsset = (asset) => {
     if (!multiple) {
@@ -149,6 +157,8 @@ function MediaPickerContent({
               allowedKind={accept}
               defaultCategory={defaultCategory}
               defaultIsPublic={defaultIsPublic}
+              allowedMimeTypes={allowedMimeTypes}
+              allowedExtensions={allowedExtensions}
               compact
               onUploaded={handleUploaded}
             />
@@ -282,6 +292,8 @@ export function MediaPickerModal({
   accept = 'all',
   defaultCategory = 'projects',
   defaultIsPublic = true,
+  allowedMimeTypes,
+  allowedExtensions,
   multiple = false,
   selectedIds = [],
   title = 'Pilih Media',
@@ -296,6 +308,8 @@ export function MediaPickerModal({
       accept={accept}
       defaultCategory={defaultCategory}
       defaultIsPublic={defaultIsPublic}
+      allowedMimeTypes={allowedMimeTypes}
+      allowedExtensions={allowedExtensions}
       multiple={multiple}
       selectedIds={selectedIds}
       title={title}

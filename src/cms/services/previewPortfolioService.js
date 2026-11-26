@@ -26,7 +26,11 @@ function collectReferencedMediaIds(raw) {
       'favicon_media_id',
       'default_og_image_id',
     ]),
-    ...extractMediaIdsFromRows([raw.profile], ['profile_image_id', 'cv_media_id']),
+    ...extractMediaIdsFromRows([raw.profile], [
+      'profile_image_id',
+      'reveal_overlay_id',
+      'cv_media_id',
+    ]),
     ...extractMediaIdsFromRows(raw.education, ['logo_media_id']),
     ...extractMediaIdsFromRows(raw.experiences, ['logo_media_id']),
     ...extractMediaIdsFromRows(raw.skills, ['icon_media_id']),

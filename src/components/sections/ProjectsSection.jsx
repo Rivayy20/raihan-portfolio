@@ -3,8 +3,10 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Lightbox } from '../ui/Lightbox';
-import { getProjectPanelColor } from '../../constants/colorPresets';
+import { SpiderIcon } from '../ui/SpiderManElements';
+import { getProjectPanelColor, isSpiderManPreset } from '../../constants/colorPresets';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { useTheme } from '../../hooks/useTheme';
 import { smoothScrollTo } from '../../utils/scrollTo';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 import {
@@ -73,7 +75,12 @@ function normalizeGalleryImage(img, projectTitle, idx) {
 
 export const ProjectsSection = ({ sectionConfig }) => {
   const { data } = usePortfolioData();
+  const { resolvedTheme } = useTheme();
   const projects = data.projects || [];
+  const isSpiderMan =
+    resolvedTheme?.isSpiderMan || isSpiderManPreset(data?.settings?.colorPreset);
+  const projectHoverEnabled = resolvedTheme?.config?.effects?.projectHover !== false;
+  const viewportOnce = resolvedTheme?.config?.animation?.replayOnScroll === false;
   const reduceMotion = useReducedMotion();
 
   const [[page, direction], setPage] = useState([0, 0]);
@@ -188,7 +195,11 @@ export const ProjectsSection = ({ sectionConfig }) => {
             }`}
           >
             <span className="inline-flex items-center gap-2 font-body text-xs font-medium uppercase tracking-[0.2em] text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+              {isSpiderMan ? (
+                <SpiderIcon className="w-3.5 h-3.5 text-primary shrink-0" />
+              ) : (
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+              )}
               03 / Selected Work
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.03em] leading-[1.08] text-ink">
@@ -243,7 +254,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
           variants={headerContainerVariants}
           initial={reduceMotion ? false : 'hidden'}
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: viewportOnce, amount: 0.2 }}
           className={`flex flex-col gap-4 border-t border-border-subtle pt-8 ${
             isCentered
               ? 'mx-auto max-w-3xl items-center text-center'
@@ -254,7 +265,11 @@ export const ProjectsSection = ({ sectionConfig }) => {
             variants={eyebrowVariants}
             className="inline-flex items-center gap-2 font-body text-xs font-medium uppercase tracking-[0.2em] text-muted"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            {isSpiderMan ? (
+              <SpiderIcon className="w-3.5 h-3.5 text-primary shrink-0" />
+            ) : (
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            )}
             03 / Selected Work
           </motion.span>
 
@@ -282,7 +297,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
               variants={revealBlock(0.28)}
               initial={reduceMotion ? false : 'hidden'}
               whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{ once: viewportOnce, amount: 0.2 }}
               className="flex items-center justify-between gap-4"
             >
               <div className="inline-flex items-center gap-2 font-heading text-xs sm:text-sm font-medium tracking-[0.18em] text-muted tabular-nums">
@@ -336,7 +351,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
             variants={revealBlock(0.36)}
             initial={reduceMotion ? false : 'hidden'}
             whileInView="visible"
-            viewport={{ once: true, amount: 0.12 }}
+            viewport={{ once: viewportOnce, amount: 0.12 }}
             className="w-full overflow-hidden"
           >
             <AnimatePresence mode="popLayout" custom={direction} initial={false}>
@@ -361,11 +376,21 @@ export const ProjectsSection = ({ sectionConfig }) => {
                 }}
                 className="w-full"
               >
-                <Card className="p-0 overflow-hidden flex flex-col lg:flex-row">
+                <Card
+                  className={`p-0 overflow-hidden flex flex-col lg:flex-row ${
+                    projectHoverEnabled ? 'comic-panel-card' : ''
+                  }`}
+                >
                   {/* Left Column: Primary Screenshot Focal Point + Thumbnail Strip */}
                   <div
-                    className={`w-full lg:w-6/12 ${projectBackdrop} p-5 sm:p-6 lg:p-8 flex flex-col justify-center gap-4 border-b lg:border-b-0 lg:border-r border-border-subtle`}
+                    className={`relative w-full lg:w-6/12 ${projectBackdrop} p-5 sm:p-6 lg:p-8 flex flex-col justify-center gap-4 border-b lg:border-b-0 lg:border-r border-border-subtle`}
                   >
+                    {projectHoverEnabled && (
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute top-0 right-0 w-24 h-24 opacity-45 comic-halftone-accent"
+                      />
+                    )}
                     {projectImages.length === 0 ? (
                       <div className="aspect-16/10 rounded-xl bg-surface/75 border border-border-subtle flex flex-col items-center justify-center p-6 text-center text-muted">
                         <FaImages aria-hidden="true" className="text-3xl mb-2 opacity-50" />
@@ -459,11 +484,13 @@ export const ProjectsSection = ({ sectionConfig }) => {
                     className="w-full lg:w-6/12 p-6 sm:p-7 lg:p-8 flex flex-col justify-between gap-6"
                   >
                     <div className="space-y-4">
-                      {/* Index & Category Badge + Title */}
+                      {/* Index & Category Badge + Comic Issue Tag */}
                       <motion.div variants={infoItemVariants}>
                         <div className="flex flex-wrap items-center gap-2.5 mb-2.5">
                           <span className="font-heading text-xs font-semibold tracking-[0.18em] text-primary tabular-nums">
-                            {String(carouselIndex + 1).padStart(2, '0')}
+                            {projectHoverEnabled
+                              ? `ISSUE #${String(carouselIndex + 1).padStart(2, '0')}`
+                              : String(carouselIndex + 1).padStart(2, '0')}
                           </span>
                           <Badge color="white">{project.category}</Badge>
                         </div>
@@ -608,7 +635,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
               variants={revealBlock(0.44)}
               initial={reduceMotion ? false : 'hidden'}
               whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{ once: viewportOnce, amount: 0.2 }}
               className="flex items-center justify-center pt-1"
             >
               <div

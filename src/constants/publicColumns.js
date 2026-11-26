@@ -5,17 +5,23 @@
  * Strictly excludes `draft_data`, `has_unpublished_changes`, and `uploaded_by`
  * so anonymous queries never trigger PostgreSQL 42501 permission errors or read drafts.
  */
+export const PROFILE_LEGACY_COLUMNS =
+  'id, badge_text, show_badge, headline_segments, subheadline, profile_image_id, lanyard_header, lanyard_status, lanyard_name, lanyard_role, show_lanyard, floating_labels, show_floating_labels, primary_cta_text, primary_cta_href, show_primary_cta, secondary_cta_text, show_secondary_cta, cv_media_id, cv_modal_title, show_scroll_indicator, publication_status, published_at, updated_at';
+
+export const PROFILE_REVEAL_V1_COLUMNS = `${PROFILE_LEGACY_COLUMNS}, reveal_enabled, reveal_overlay_id, reveal_radius, reveal_softness, reveal_behavior`;
+
+export const SITE_SETTINGS_LEGACY_COLUMNS =
+  'id, brand_name, full_name, site_title, default_description, site_url, profile_image_id, logo_media_id, favicon_media_id, default_og_image_id, copyright_text, navbar_cta_label, navbar_cta_href, navbar_cta_variant, show_navbar_cta, show_mobile_cv_btn, show_theme_toggle, default_theme, color_preset, publication_status, published_at, updated_at';
+
 export const PUBLIC_COLUMNS = {
   media_assets:
     'id, bucket_id, storage_path, public_url, file_name, original_name, mime_type, file_ext, size_bytes, width, height, category, alt_text, is_public, created_at, updated_at',
-  site_settings:
-    'id, brand_name, full_name, site_title, default_description, site_url, profile_image_id, logo_media_id, favicon_media_id, default_og_image_id, copyright_text, navbar_cta_label, navbar_cta_href, navbar_cta_variant, show_navbar_cta, show_mobile_cv_btn, show_theme_toggle, default_theme, color_preset, publication_status, published_at, updated_at',
+  site_settings: `${SITE_SETTINGS_LEGACY_COLUMNS}, theme_config`,
   site_sections:
     'id, section_key, title, subtitle, display_order, is_visible, layout_variant, content_alignment, publication_status, published_at, updated_at',
   navigation_items:
     'id, label, href, section_id, show_in_navbar, show_in_footer, display_order, is_visible, publication_status, published_at, created_at, updated_at',
-  profile:
-    'id, badge_text, show_badge, headline_segments, subheadline, profile_image_id, lanyard_header, lanyard_status, lanyard_name, lanyard_role, show_lanyard, floating_labels, show_floating_labels, primary_cta_text, primary_cta_href, show_primary_cta, secondary_cta_text, show_secondary_cta, cv_media_id, cv_modal_title, show_scroll_indicator, publication_status, published_at, updated_at',
+  profile: `${PROFILE_REVEAL_V1_COLUMNS}, profile_image_scale, profile_image_offset_x, profile_image_offset_y, reveal_overlay_scale, reveal_overlay_offset_x, reveal_overlay_offset_y`,
   about_content:
     'id, narrative_title, narrative_paragraphs, narrative_highlights, show_narrative, education_card_title, previous_edu_heading, show_education_card, experience_card_title, experience_card_subtitle, show_experience_card, certifications_heading, show_certifications, publication_status, published_at, updated_at',
   education:

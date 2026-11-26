@@ -1,0 +1,49 @@
+.interactive-reveal-root {
+  --reveal-x: 50%;
+  --reveal-y: 50%;
+  --reveal-radius: 0px;
+  --reveal-hard-stop: 36%;
+  --reveal-mid-stop: 68%;
+  --reveal-opacity: 0;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.interactive-reveal-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: var(--reveal-opacity);
+  will-change: opacity, mask-image, -webkit-mask-image;
+  -webkit-mask-image: radial-gradient(
+    circle var(--reveal-radius) at var(--reveal-x) var(--reveal-y),
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) var(--reveal-hard-stop),
+    rgba(0, 0, 0, 0.52) var(--reveal-mid-stop),
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: radial-gradient(
+    circle var(--reveal-radius) at var(--reveal-x) var(--reveal-y),
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) var(--reveal-hard-stop),
+    rgba(0, 0, 0, 0.52) var(--reveal-mid-stop),
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.interactive-reveal-overlay--calibration {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-reveal-overlay {
+    transition: none !important;
+  }
+}

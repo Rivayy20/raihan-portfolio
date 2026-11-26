@@ -93,12 +93,17 @@ export async function uploadMediaAsset({
   category,
   altText = '',
   isPublic = true,
+  allowedMimeTypes,
+  allowedExtensions,
   onProgress,
 }) {
   const client = assertSupabaseClient(supabaseAdmin);
   onProgress?.(10);
 
-  const validation = validateMediaFile(file, category);
+  const validation = validateMediaFile(file, category, {
+    allowedMimeTypes,
+    allowedExtensions,
+  });
   if (!validation.valid) {
     throw new Error(validation.error);
   }
@@ -108,6 +113,12 @@ export async function uploadMediaAsset({
     validation.kind === 'image'
       ? await readImageDimensions(file)
       : { width: null, height: null };
+
+  if (validation.kind === 'image' && (!dimensions.width || !dimensions.height)) {
+    throw new Error(
+      'File gambar tidak dapat dibaca atau rusak. Pastikan file PNG/WebP/JPG valid.'
+    );
+  }
 
   const { fileName } = sanitizeFileName(file.name);
   const { bucketId, storagePath } = resolveUploadDestination({
@@ -184,6 +195,12 @@ export async function replaceMediaAsset({ asset, file, onProgress }) {
     validation.kind === 'image'
       ? await readImageDimensions(file)
       : { width: null, height: null };
+
+  if (validation.kind === 'image' && (!dimensions.width || !dimensions.height)) {
+    throw new Error(
+      'File gambar pengganti tidak dapat dibaca atau rusak.'
+    );
+  }
 
   const { fileName } = sanitizeFileName(file.name);
   const { bucketId, storagePath } = resolveUploadDestination({

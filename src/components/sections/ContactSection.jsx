@@ -12,9 +12,11 @@ import {
 import { Card } from '../ui/Card';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
-import { getSocialLinkColor } from '../../constants/colorPresets';
+import { SpiderIcon, SpiderWebCorner } from '../ui/SpiderManElements';
+import { getSocialLinkColor, isSpiderManPreset } from '../../constants/colorPresets';
 import { getSocialIconComponent } from '../../utils/socialIcons';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { useTheme } from '../../hooks/useTheme';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 function renderAccentHeading(text = "LET'S\nTALK.") {
@@ -34,16 +36,27 @@ function renderAccentHeading(text = "LET'S\nTALK.") {
 
 export const ContactSection = () => {
   const { data } = usePortfolioData();
+  const { resolvedTheme } = useTheme();
   const { contact, socialLinks, hero, settings } = data;
   const reduceMotion = useReducedMotion();
+  const isSpiderMan =
+    resolvedTheme?.isSpiderMan || isSpiderManPreset(settings?.colorPreset);
+  const contactInteractionEnabled =
+    resolvedTheme?.config?.effects?.contactInteraction !== false;
+  const webBackgroundEnabled =
+    resolvedTheme?.config?.effects?.webBackground !== false;
+  const viewportOnce =
+    resolvedTheme?.config?.animation?.replayOnScroll === false;
 
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [webShootBurstKey, setWebShootBurstKey] = useState(0);
 
   const copyTimerRef = useRef(null);
   const statusTimerRef = useRef(null);
+  const lastSubmittedAtRef = useRef(0);
 
   useEffect(() => {
     return () => {
@@ -93,35 +106,74 @@ export const ContactSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.message) {
+    const botcheck = e.target.elements.botcheck;
+    if (botcheck && botcheck.checked) {
+      setFormData({ name: '', email: '', message: '' });
+      setErrorMessage('');
+      setStatus('success');
+      return;
+    }
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedMessage = formData.message.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
       setErrorMessage('Please fill all required fields.');
       setStatus('error');
       return;
     }
 
+    if (trimmedName.length > 120) {
+      setErrorMessage('Name must be 120 characters or fewer.');
+      setStatus('error');
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    if (trimmedEmail.length > 254 || !emailRegex.test(trimmedEmail)) {
       setErrorMessage('Please enter a valid email address.');
+      setStatus('error');
+      return;
+    }
+
+    if (trimmedMessage.length > 3000) {
+      setErrorMessage('Message must be 3000 characters or fewer.');
+      setStatus('error');
+      return;
+    }
+
+    if (
+      lastSubmittedAtRef.current > 0 &&
+      Date.now() - lastSubmittedAtRef.current < 15000
+    ) {
+      setErrorMessage('Please wait a few seconds before sending another message.');
+      setStatus('error');
+      return;
+    }
+
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim();
+    if (!accessKey) {
+      setErrorMessage(
+        'Contact form is temporarily unavailable. Please reach out via direct email.'
+      );
       setStatus('error');
       return;
     }
 
     setStatus('loading');
     setErrorMessage('');
+    if (contactInteractionEnabled && !reduceMotion) {
+      setWebShootBurstKey((k) => k + 1);
+    }
 
     try {
       const formPayload = new FormData();
-      formPayload.append('access_key', import.meta.env.VITE_WEB3FORMS_ACCESS_KEY);
-      formPayload.append('name', formData.name);
-      formPayload.append('email', formData.email);
-      formPayload.append('message', formData.message);
+      formPayload.append('access_key', accessKey);
+      formPayload.append('name', trimmedName);
+      formPayload.append('email', trimmedEmail);
+      formPayload.append('message', trimmedMessage);
       formPayload.append('subject', 'Portfolio Contact Form Submission');
-
-      const botcheck = e.target.elements.botcheck;
-      if (botcheck && botcheck.checked) {
-        setStatus('success');
-        return;
-      }
 
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -131,6 +183,7 @@ export const ContactSection = () => {
       const resData = await res.json();
 
       if (resData.success) {
+        lastSubmittedAtRef.current = Date.now();
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
         if (statusTimerRef.current) window.clearTimeout(statusTimerRef.current);
@@ -210,20 +263,27 @@ export const ContactSection = () => {
         aria-hidden="true"
         className="hero-dot-pattern pointer-events-none absolute inset-0 opacity-45 -z-20"
       />
+      {isSpiderMan && webBackgroundEnabled && (
+        <SpiderWebCorner
+          position="bottom-right"
+          style={{ color: 'var(--color-web-line)' }}
+          className="pointer-events-none absolute bottom-0 right-0 w-44 sm:w-56 h-44 sm:h-56 -z-20"
+        />
+      )}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-16 -left-16 w-80 sm:w-110 h-80 sm:h-110 rounded-full opacity-22 dark:opacity-18 blur-3xl -z-10"
+        className="pointer-events-none absolute top-16 -left-16 w-80 sm:w-110 h-80 sm:h-110 rounded-full opacity-25 dark:opacity-20 blur-3xl -z-10"
         style={{
           background:
-            'radial-gradient(circle, rgba(255,107,107,0.38), rgba(244,143,177,0.20) 52%, transparent 80%)',
+            'radial-gradient(circle, var(--color-web-glow), var(--color-electric-glow) 54%, transparent 80%)',
         }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-10 right-0 w-80 sm:w-110 h-80 sm:h-110 rounded-full opacity-18 dark:opacity-15 blur-3xl -z-10"
+        className="pointer-events-none absolute bottom-10 right-0 w-80 sm:w-110 h-80 sm:h-110 rounded-full opacity-20 dark:opacity-18 blur-3xl -z-10"
         style={{
           background:
-            'radial-gradient(circle, rgba(255,179,138,0.36), rgba(244,143,177,0.18) 48%, rgba(73,52,95,0.16) 78%, transparent 100%)',
+            'radial-gradient(circle, var(--color-electric-glow), var(--color-web-glow) 52%, transparent 80%)',
         }}
       />
 
@@ -233,11 +293,15 @@ export const ContactSection = () => {
           variants={reveal(0, { y: 12, duration: 0.65 })}
           initial={reduceMotion ? false : 'hidden'}
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: viewportOnce, amount: 0.2 }}
           className="border-t border-border-subtle pt-8 max-w-3xl"
         >
           <span className="inline-flex items-center gap-2 font-body text-xs font-medium uppercase tracking-[0.2em] text-muted">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            {isSpiderMan ? (
+              <SpiderIcon className="w-3.5 h-3.5 text-primary shrink-0" />
+            ) : (
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            )}
             04 / Contact
           </span>
         </motion.div>
@@ -260,7 +324,7 @@ export const ContactSection = () => {
                   variants={reveal(0.08, { y: 0, scale: 0.9, duration: 0.68 })}
                   initial={reduceMotion ? false : 'hidden'}
                   whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
+                  viewport={{ once: viewportOnce, amount: 0.2 }}
                   className="w-15 h-15 rounded-full bg-linear-to-tr from-primary/60 via-secondary/50 to-lavender/50 p-0.5 shrink-0 shadow-xs"
                 >
                   <div className="w-full h-full rounded-full overflow-hidden bg-surface-subtle ring-1 ring-canvas">
@@ -279,7 +343,7 @@ export const ContactSection = () => {
                 variants={reveal(0.16, { y: 10, duration: 0.68 })}
                 initial={reduceMotion ? false : 'hidden'}
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{ once: viewportOnce, amount: 0.2 }}
                 className="flex flex-col gap-1.5 min-w-0"
               >
                 {contact?.showAvailability !== false && contact?.availabilityStatus && (
@@ -327,7 +391,7 @@ export const ContactSection = () => {
                 variants={reveal(0.24, { y: 16, blur: true, duration: 0.84 })}
                 initial={reduceMotion ? false : 'hidden'}
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{ once: viewportOnce, amount: 0.2 }}
                 className="font-heading text-4xl sm:text-5xl xl:text-[3.35rem] font-medium tracking-[-0.03em] leading-[1.04] text-ink whitespace-pre-line"
               >
                 {renderAccentHeading(
@@ -340,7 +404,7 @@ export const ContactSection = () => {
                   variants={reveal(0.34, { y: 14, duration: 0.76 })}
                   initial={reduceMotion ? false : 'hidden'}
                   whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
+                  viewport={{ once: viewportOnce, amount: 0.2 }}
                   className="font-body text-sm sm:text-base text-muted mt-4 leading-[1.78] max-w-[44ch]"
                 >
                   {contact.description}
@@ -355,7 +419,7 @@ export const ContactSection = () => {
                   variants={reveal(0.42, { y: 14, duration: 0.72 })}
                   initial={reduceMotion ? false : 'hidden'}
                   whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
+                  viewport={{ once: viewportOnce, amount: 0.2 }}
                 >
                   <div className="group flex items-center justify-between gap-3 rounded-2xl border border-border-subtle bg-surface/90 hover:border-primary/45 p-3.5 sm:p-4 shadow-xs hover:shadow-sm transition-all duration-300">
                     <a
@@ -428,7 +492,7 @@ export const ContactSection = () => {
                   variants={socialRowVariants}
                   initial={reduceMotion ? false : 'hidden'}
                   whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
+                  viewport={{ once: viewportOnce, amount: 0.2 }}
                   className="flex flex-wrap gap-3"
                 >
                   {visibleSocials.map((social) => {
@@ -465,7 +529,7 @@ export const ContactSection = () => {
               variants={formCardVariants}
               initial={reduceMotion ? false : 'hidden'}
               whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
+              viewport={{ once: viewportOnce, amount: 0.15 }}
               className="lg:col-span-7"
             >
               <Card className="p-6 sm:p-8 lg:p-10 transition-all duration-300 hover:border-border-strong">
@@ -474,7 +538,7 @@ export const ContactSection = () => {
                     variants={reveal(0.24, { y: 12, duration: 0.65 })}
                     initial={reduceMotion ? false : 'hidden'}
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.15 }}
+                    viewport={{ once: viewportOnce, amount: 0.15 }}
                     className="mb-1"
                   >
                     <h3 className="font-heading text-xl sm:text-2xl font-medium text-ink">
@@ -498,7 +562,7 @@ export const ContactSection = () => {
                     variants={reveal(0.32, { y: 12, duration: 0.65 })}
                     initial={reduceMotion ? false : 'hidden'}
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.15 }}
+                    viewport={{ once: viewportOnce, amount: 0.15 }}
                     className="grid grid-cols-1 sm:grid-cols-2 gap-5"
                   >
                     <Input
@@ -507,6 +571,7 @@ export const ContactSection = () => {
                       placeholder="John Doe"
                       value={formData.name}
                       onChange={handleChange}
+                      maxLength={120}
                       required
                       disabled={status === 'loading'}
                     />
@@ -518,6 +583,7 @@ export const ContactSection = () => {
                       placeholder="john@example.com"
                       value={formData.email}
                       onChange={handleChange}
+                      maxLength={254}
                       required
                       disabled={status === 'loading'}
                     />
@@ -527,7 +593,7 @@ export const ContactSection = () => {
                     variants={reveal(0.4, { y: 12, duration: 0.65 })}
                     initial={reduceMotion ? false : 'hidden'}
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.15 }}
+                    viewport={{ once: viewportOnce, amount: 0.15 }}
                   >
                     <Input
                       as="textarea"
@@ -537,6 +603,7 @@ export const ContactSection = () => {
                       rows={5}
                       value={formData.message}
                       onChange={handleChange}
+                      maxLength={3000}
                       required
                       disabled={status === 'loading'}
                     />
@@ -548,9 +615,13 @@ export const ContactSection = () => {
                         key="form-error"
                         role="alert"
                         initial={reduceMotion ? false : { opacity: 0, y: -6 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        animate={
+                          reduceMotion || !contactInteractionEnabled
+                            ? { opacity: 1, y: 0 }
+                            : { opacity: 1, y: 0, x: [0, -5, 5, -3, 0] }
+                        }
                         exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
-                        transition={{ duration: 0.2 }}
+                        transition={{ duration: 0.28 }}
                         className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300"
                       >
                         {errorMessage}
@@ -561,13 +632,25 @@ export const ContactSection = () => {
                       <motion.div
                         key="form-success"
                         role="status"
-                        initial={reduceMotion ? false : { opacity: 0, y: -6 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={
+                          reduceMotion
+                            ? false
+                            : { opacity: 0, scale: 0.96, y: -6 }
+                        }
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
-                        transition={{ duration: 0.2 }}
-                        className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-700 dark:text-emerald-300"
+                        transition={{ duration: 0.3, ease: EDITORIAL_EASE }}
+                        style={
+                          contactInteractionEnabled
+                            ? { boxShadow: '0 8px 26px -10px var(--color-web-glow)' }
+                            : undefined
+                        }
+                        className="rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-700 dark:text-emerald-300 flex items-center gap-2.5"
                       >
-                        Message sent successfully! Thank you for reaching out.
+                        {contactInteractionEnabled && (
+                          <SpiderIcon className="w-4 h-4 text-primary shrink-0" />
+                        )}
+                        <span>Message sent successfully! Thank you for reaching out.</span>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -576,33 +659,72 @@ export const ContactSection = () => {
                     variants={reveal(0.48, { y: 12, duration: 0.65 })}
                     initial={reduceMotion ? false : 'hidden'}
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.15 }}
-                    className="pt-1"
+                    viewport={{ once: viewportOnce, amount: 0.15 }}
+                    className="pt-1 flex items-center gap-3"
                   >
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      className="group w-full sm:w-auto px-8 py-3.5 text-sm shadow-sm hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-98"
-                      disabled={status === 'loading'}
-                    >
-                      {status === 'loading' ? (
-                        <>
-                          <FaSpinner
-                            aria-hidden="true"
-                            className="text-xs animate-spin"
-                          />
-                          <span>Sending Message...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>{submitLabel}</span>
-                          <FaArrowRight
-                            aria-hidden="true"
-                            className="text-xs opacity-85 transition-transform duration-300 group-hover:translate-x-1"
-                          />
-                        </>
-                      )}
-                    </Button>
+                    <div className="relative inline-flex w-full sm:w-auto">
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        style={
+                          contactInteractionEnabled
+                            ? { boxShadow: '0 10px 24px -10px var(--color-web-glow)' }
+                            : undefined
+                        }
+                        className="group w-full sm:w-auto px-8 py-3.5 text-sm shadow-sm hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-98"
+                        disabled={status === 'loading'}
+                      >
+                        {status === 'loading' ? (
+                          <>
+                            <FaSpinner
+                              aria-hidden="true"
+                              className="text-xs animate-spin"
+                            />
+                            <span>Sending Message...</span>
+                          </>
+                        ) : (
+                          <>
+                            {contactInteractionEnabled && isSpiderMan && (
+                              <SpiderIcon className="w-3.5 h-3.5 opacity-90 shrink-0" />
+                            )}
+                            <span>{submitLabel}</span>
+                            <FaArrowRight
+                              aria-hidden="true"
+                              className="text-xs opacity-85 transition-transform duration-300 group-hover:translate-x-1"
+                            />
+                          </>
+                        )}
+                      </Button>
+
+                      {/* Theme-aware SVG Web-Shooting Streak on Submit */}
+                      <AnimatePresence>
+                        {contactInteractionEnabled &&
+                          !reduceMotion &&
+                          webShootBurstKey > 0 &&
+                          status === 'loading' && (
+                            <motion.svg
+                              key={webShootBurstKey}
+                              viewBox="0 0 88 28"
+                              fill="none"
+                              aria-hidden="true"
+                              initial={{ opacity: 0.95, scaleX: 0.15 }}
+                              animate={{ opacity: 0, scaleX: 1.2 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.45, ease: 'easeOut' }}
+                              style={{ transformOrigin: '0% 50%' }}
+                              className="pointer-events-none hidden sm:block absolute left-full top-1/2 -translate-y-1/2 ml-2 w-20 h-7"
+                            >
+                              <path
+                                d="M2 14L78 14M2 14L64 5M2 14L64 23"
+                                stroke="var(--color-spider-red)"
+                                strokeWidth="1.6"
+                                strokeLinecap="round"
+                              />
+                              <circle cx="80" cy="14" r="2.2" fill="var(--color-electric-blue)" />
+                            </motion.svg>
+                          )}
+                      </AnimatePresence>
+                    </div>
                   </motion.div>
                 </form>
               </Card>

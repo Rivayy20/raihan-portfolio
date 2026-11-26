@@ -82,6 +82,20 @@ export const STATIC_PORTFOLIO_DATA = {
     showThemeToggle: true,
     defaultTheme: 'system',
     colorPreset: 'razh_cyan',
+    themeConfig: {
+      accentOverrides: { spiderRed: '', electricBlue: '', interactiveAccent: '' },
+      effects: {
+        webBackground: true,
+        cursorTrail: true,
+        spiderSensePulse: true,
+        timelineAnimation: true,
+        skillNetwork: true,
+        projectHover: true,
+        contactInteraction: true,
+        loadingIntro: true,
+      },
+      animation: { intensity: 'balanced', speed: 'normal', replayOnScroll: true },
+    },
   },
   sections: [
     {
@@ -200,6 +214,13 @@ export const STATIC_PORTFOLIO_DATA = {
     subheadline:
       'Information Systems Student at Telkom University with experience in Web Development and Game Development.',
     profileImageUrl: profileImg,
+    profileImageTransform: { scale: 100, offsetX: 0, offsetY: 0 },
+    revealEnabled: false,
+    revealOverlayUrl: null,
+    revealOverlayTransform: { scale: 100, offsetX: 0, offsetY: 0 },
+    revealRadius: 120,
+    revealSoftness: 65,
+    revealBehavior: 'smooth',
     lanyardHeader: 'ID Badge',
     lanyardStatus: 'Access Granted',
     lanyardName: 'RAIHAN AZKA H.',

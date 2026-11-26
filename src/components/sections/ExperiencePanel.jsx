@@ -5,6 +5,7 @@ import { Card } from '../ui/Card';
 import { Chevron, Collapse } from '../ui/Collapse';
 import { OrgLogo } from '../ui/OrgLogo';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { useTheme } from '../../hooks/useTheme';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 const FOCUS_RING =
@@ -139,7 +140,14 @@ const ExperienceDetails = ({ experience }) => {
   );
 };
 
-const ExperienceItem = ({ experience, index, isOpen, onToggle }) => {
+const ExperienceItem = ({
+  experience,
+  index,
+  isOpen,
+  onToggle,
+  timelineAnimation = true,
+  viewportOnce = false,
+}) => {
   const detailsId = useId();
   const reduceMotion = useReducedMotion();
   const {
@@ -165,7 +173,7 @@ const ExperienceItem = ({ experience, index, isOpen, onToggle }) => {
     <motion.li
       initial={reduceMotion ? false : { opacity: 0, y: 18, x: 10 }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, amount: 0.18 }}
+      viewport={{ once: viewportOnce, amount: 0.18 }}
       transition={{
         duration: reduceMotion ? 0.2 : 0.78,
         delay: reduceMotion ? 0 : index * 0.12,
@@ -178,7 +186,7 @@ const ExperienceItem = ({ experience, index, isOpen, onToggle }) => {
         aria-hidden="true"
         initial={reduceMotion ? false : { scale: 0.5, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: viewportOnce, amount: 0.2 }}
         transition={{
           duration: reduceMotion ? 0.15 : 0.45,
           delay: reduceMotion ? 0 : index * 0.12 + 0.08,
@@ -187,16 +195,32 @@ const ExperienceItem = ({ experience, index, isOpen, onToggle }) => {
         className="absolute -left-8 sm:-left-12 top-8 w-6 sm:w-8 flex items-center justify-center z-10"
       >
         {isActive ? (
-          <span className="w-3.5 h-3.5 rounded-full bg-primary ring-4 ring-primary/20 shadow-[0_0_16px_rgba(255,107,107,0.45)] transition-transform duration-300 group-hover/item:scale-125" />
+          <span
+            className={`relative w-3.5 h-3.5 rounded-full bg-primary ring-4 ring-primary/20 transition-transform duration-300 group-hover/item:scale-125 ${
+              timelineAnimation && !reduceMotion ? 'animate-pulse' : ''
+            }`}
+            style={{ boxShadow: '0 0 18px var(--color-spider-sense-glow)' }}
+          />
         ) : (
-          <span className="w-3 h-3 rounded-full bg-canvas border-2 border-border-strong transition-all duration-300 group-hover/item:border-primary group-hover/item:bg-primary/20 group-hover/item:scale-125" />
+          <span
+            className="w-3 h-3 rounded-full bg-canvas border-2 border-border-strong transition-all duration-300 group-hover/item:border-primary group-hover/item:bg-primary/20 group-hover/item:scale-125"
+            style={
+              isOpen
+                ? {
+                    borderColor: 'var(--color-primary)',
+                    boxShadow: '0 0 12px var(--color-web-glow)',
+                  }
+                : undefined
+            }
+          />
         )}
       </motion.span>
 
       {/* Subtle horizontal tick connecting node perimeter to card edge */}
       <span
         aria-hidden="true"
-        className="hidden sm:block absolute -left-5 top-9.5 w-5 h-px bg-border-subtle group-hover/item:bg-primary/45 transition-colors duration-300"
+        className="hidden sm:block absolute -left-5 top-9.5 w-5 h-px transition-colors duration-300 group-hover/item:bg-primary"
+        style={{ backgroundColor: 'var(--color-web-line)' }}
       />
 
       <Card
@@ -269,10 +293,13 @@ const ExperienceItem = ({ experience, index, isOpen, onToggle }) => {
 
 export const ExperiencePanel = ({ id, isOpen = true }) => {
   const { data } = usePortfolioData();
+  const { resolvedTheme } = useTheme();
   const { about, experiences } = data;
   const [openId, setOpenId] = useState(null);
   const timelineRef = useRef(null);
   const reduceMotion = useReducedMotion();
+  const timelineAnimation = resolvedTheme?.config?.effects?.timelineAnimation !== false;
+  const viewportOnce = resolvedTheme?.config?.animation?.replayOnScroll === false;
 
   const { scrollYProgress } = useScroll({
     target: timelineRef,
@@ -291,7 +318,7 @@ export const ExperiencePanel = ({ id, isOpen = true }) => {
       <motion.div
         initial={reduceMotion ? false : { opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: viewportOnce, amount: 0.2 }}
         transition={{ duration: reduceMotion ? 0.2 : 0.75, ease: EDITORIAL_EASE }}
         className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-9"
       >
@@ -311,16 +338,19 @@ export const ExperiencePanel = ({ id, isOpen = true }) => {
       </motion.div>
 
       <div ref={timelineRef} className="relative pl-8 sm:pl-12">
-        {/* Thin neutral background spine */}
+        {/* Web-inspired theme-aware spine */}
         <span
           aria-hidden="true"
-          className="absolute left-3 sm:left-4 top-3 bottom-3 w-px bg-border-subtle"
+          className="absolute left-3 sm:left-4 top-3 bottom-3 w-px"
+          style={{
+            backgroundColor: timelineAnimation ? 'var(--color-web-line)' : undefined,
+          }}
         />
 
         {/* Scroll-linked animated gradient progress rail */}
         <motion.div
           aria-hidden="true"
-          style={{ scaleY: reduceMotion ? 1 : lineScaleY }}
+          style={{ scaleY: reduceMotion || !timelineAnimation ? 1 : lineScaleY }}
           className="origin-top absolute left-3 sm:left-4 top-3 bottom-3 w-0.5 -ml-px rounded-full sunset-gradient-line"
         />
 
@@ -330,6 +360,8 @@ export const ExperiencePanel = ({ id, isOpen = true }) => {
               key={experience.id}
               index={idx}
               experience={experience}
+              timelineAnimation={timelineAnimation}
+              viewportOnce={viewportOnce}
               isOpen={openId === experience.id}
               onToggle={() =>
                 setOpenId((prev) => (prev === experience.id ? null : experience.id))

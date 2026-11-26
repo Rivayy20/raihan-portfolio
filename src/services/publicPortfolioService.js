@@ -1,5 +1,10 @@
 import { fetchPublicRest, isPublicSupabaseConfigured } from '../lib/supabasePublic';
-import { PUBLIC_COLUMNS } from '../constants/publicColumns';
+import {
+  PROFILE_LEGACY_COLUMNS,
+  PROFILE_REVEAL_V1_COLUMNS,
+  PUBLIC_COLUMNS,
+  SITE_SETTINGS_LEGACY_COLUMNS,
+} from '../constants/publicColumns';
 import {
   STATIC_MEDIA_FALLBACKS,
   STATIC_PORTFOLIO_DATA,
@@ -74,6 +79,66 @@ function fetchPublishedSingleton(table) {
   }).then((rows) => (Array.isArray(rows) ? rows[0] ?? null : null));
 }
 
+async function fetchPublishedSiteSettings() {
+  try {
+    return await fetchPublishedSingleton('site_settings');
+  } catch (err) {
+    // Graceful fallback if deployed before migration 0010_centralized_theme_config.sql runs in Supabase
+    const msg = String(err?.message || '');
+    if (msg.includes('400') || msg.includes('403') || msg.includes('theme_config')) {
+      const rows = await fetchPublicRest({
+        table: 'site_settings',
+        columns: SITE_SETTINGS_LEGACY_COLUMNS,
+        filters: ['id=eq.1', 'publication_status=eq.published'],
+        limit: 1,
+      });
+      return Array.isArray(rows) ? rows[0] ?? null : null;
+    }
+    throw err;
+  }
+}
+
+async function fetchPublishedProfile() {
+  try {
+    return await fetchPublishedSingleton('profile');
+  } catch (err) {
+    // Graceful cascade if deployed before migration 0008 or 0007 runs in Supabase
+    const msg = String(err?.message || '');
+    const maybeMissingAlignment =
+      msg.includes('400') ||
+      msg.includes('403') ||
+      msg.includes('profile_image_scale') ||
+      msg.includes('profile_image_offset') ||
+      msg.includes('reveal_overlay_scale') ||
+      msg.includes('reveal_overlay_offset') ||
+      msg.includes('reveal_');
+
+    if (!maybeMissingAlignment) throw err;
+
+    try {
+      const rows = await fetchPublicRest({
+        table: 'profile',
+        columns: PROFILE_REVEAL_V1_COLUMNS,
+        filters: ['id=eq.1', 'publication_status=eq.published'],
+        limit: 1,
+      });
+      return Array.isArray(rows) ? rows[0] ?? null : null;
+    } catch (v1Err) {
+      const v1Msg = String(v1Err?.message || '');
+      if (v1Msg.includes('400') || v1Msg.includes('403') || v1Msg.includes('reveal_')) {
+        const rows = await fetchPublicRest({
+          table: 'profile',
+          columns: PROFILE_LEGACY_COLUMNS,
+          filters: ['id=eq.1', 'publication_status=eq.published'],
+          limit: 1,
+        });
+        return Array.isArray(rows) ? rows[0] ?? null : null;
+      }
+      throw v1Err;
+    }
+  }
+}
+
 function fetchVisibleCollection(table) {
   return fetchPublicRest({
     table,
@@ -110,10 +175,10 @@ export async function fetchPublicPortfolioData() {
       seoSettings,
       mediaAssets,
     ] = await Promise.all([
-      fetchPublishedSingleton('site_settings'),
+      fetchPublishedSiteSettings(),
       fetchVisibleCollection('site_sections'),
       fetchVisibleCollection('navigation_items'),
-      fetchPublishedSingleton('profile'),
+      fetchPublishedProfile(),
       fetchPublishedSingleton('about_content'),
       fetchVisibleCollection('education'),
       fetchVisibleCollection('experiences'),

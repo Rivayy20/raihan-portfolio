@@ -142,7 +142,7 @@ export function normalizeMimeType(mimeType, ext) {
   return '';
 }
 
-export function validateMediaFile(file, category) {
+export function validateMediaFile(file, category, options = {}) {
   if (!file) {
     return { valid: false, error: 'File tidak ditemukan.' };
   }
@@ -190,6 +190,26 @@ export function validateMediaFile(file, category) {
           ? `Kategori "${categoryMeta.label}" hanya menerima dokumen PDF.`
           : `Kategori "${categoryMeta.label}" hanya menerima gambar (JPG, PNG, WebP).`,
     };
+  }
+
+  if (Array.isArray(options.allowedExtensions) && options.allowedExtensions.length > 0) {
+    const allowedExts = options.allowedExtensions.map((e) => String(e).toLowerCase());
+    if (!allowedExts.includes(ext)) {
+      return {
+        valid: false,
+        error: `Format ".${ext}" tidak didukung untuk slot ini. Gunakan: ${allowedExts.map((e) => e.toUpperCase()).join(', ')}.`,
+      };
+    }
+  }
+
+  if (Array.isArray(options.allowedMimeTypes) && options.allowedMimeTypes.length > 0) {
+    const allowedMimes = options.allowedMimeTypes.map((m) => String(m).toLowerCase());
+    if (!allowedMimes.includes(mimeType)) {
+      return {
+        valid: false,
+        error: `Tipe MIME "${mimeType}" tidak didukung untuk slot ini.`,
+      };
+    }
   }
 
   const maxBytes =
