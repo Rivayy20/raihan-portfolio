@@ -26,6 +26,8 @@ export function MediaUploadZone({
   defaultCategory = 'projects',
   allowedKind = 'all',
   defaultIsPublic = true,
+  allowedMimeTypes,
+  allowedExtensions,
   compact = false,
   onUploaded,
 }) {
@@ -49,10 +51,19 @@ export function MediaUploadZone({
   const [queue, setQueue] = useState([]);
 
   const selectedMeta = getMediaCategoryMeta(category);
+  const hasCustomImageFilter =
+    selectedMeta?.kind !== 'pdf' &&
+    Array.isArray(allowedExtensions) &&
+    allowedExtensions.length > 0;
   const acceptAttr =
     selectedMeta?.kind === 'pdf'
       ? '.pdf,application/pdf'
-      : '.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp';
+      : hasCustomImageFilter
+        ? [
+            ...allowedExtensions.map((ext) => `.${ext.toLowerCase()}`),
+            ...(allowedMimeTypes || []),
+          ].join(',')
+        : '.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp';
 
   const updateQueueItem = (id, patch) => {
     setQueue((prev) => prev.map((item) => (item.id === id ? { ...item, ...patch } : item)));
@@ -63,7 +74,10 @@ export function MediaUploadZone({
     if (!files.length || isUploading) return;
 
     const initialQueue = files.map((file, idx) => {
-      const validation = validateMediaFile(file, category);
+      const validation = validateMediaFile(file, category, {
+        allowedMimeTypes,
+        allowedExtensions,
+      });
       return {
         id: makeQueueId(idx),
         file,
@@ -97,6 +111,8 @@ export function MediaUploadZone({
             category,
             altText,
             isPublic,
+            allowedMimeTypes,
+            allowedExtensions,
             onProgress: (pct) => updateQueueItem(item.id, { progress: pct }),
           });
           updateQueueItem(item.id, { status: 'done', progress: 100 });
@@ -211,6 +227,11 @@ export function MediaUploadZone({
               {selectedMeta?.kind === 'pdf' ? (
                 <>
                   <FaFilePdf className="text-red-500" /> Khusus PDF · Maksimal 10 MB
+                </>
+              ) : hasCustomImageFilter ? (
+                <>
+                  <FaImage className="text-primary" />{' '}
+                  {allowedExtensions.map((ext) => ext.toUpperCase()).join(', ')} (Transparan) · Maksimal 5 MB
                 </>
               ) : (
                 <>

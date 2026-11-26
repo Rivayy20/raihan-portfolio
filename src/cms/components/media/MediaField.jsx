@@ -13,6 +13,9 @@ export function MediaField({
   accept = 'image',
   defaultCategory = 'other',
   defaultIsPublic = true,
+  allowedMimeTypes,
+  allowedExtensions,
+  missingAssetText = 'Referensi media tidak ditemukan atau telah dihapus dari Media Library.',
   helperText,
   error,
   required = false,
@@ -29,6 +32,7 @@ export function MediaField({
   const asset = value ? assetQuery.data : null;
   const { url } = useMediaUrl(asset);
   const isPdf = asset?.mime_type === 'application/pdf';
+  const isMissingAsset = Boolean(value) && !assetQuery.isLoading && !assetQuery.isError && !asset;
 
   return (
     <div className="space-y-1.5">
@@ -74,11 +78,23 @@ export function MediaField({
                   {asset.original_name}
                 </p>
                 <p className="text-xs text-muted">
-                  {formatFileSize(asset.size_bytes)} · {asset.is_public ? 'Public' : 'Private Draft'}
+                  {formatFileSize(asset.size_bytes)}
+                  {asset.file_ext ? ` · ${asset.file_ext.toUpperCase()}` : ''}
+                  {asset.width && asset.height ? ` · ${asset.width}×${asset.height} px` : ''}
+                  {' · '}
+                  {asset.is_public ? 'Public' : 'Private Draft'}
                 </p>
               </>
             ) : value && assetQuery.isLoading ? (
               <p className="text-xs text-muted">Memuat info media...</p>
+            ) : value && assetQuery.isError ? (
+              <p className="text-xs text-red-600 dark:text-red-400">
+                Gagal memuat metadata aset media.
+              </p>
+            ) : isMissingAsset ? (
+              <p className="text-xs font-medium text-amber-700 dark:text-amber-300">
+                {missingAssetText}
+              </p>
             ) : (
               <p className="text-xs text-muted">
                 Belum ada media dipilih
@@ -124,6 +140,8 @@ export function MediaField({
         accept={accept}
         defaultCategory={defaultCategory}
         defaultIsPublic={defaultIsPublic}
+        allowedMimeTypes={allowedMimeTypes}
+        allowedExtensions={allowedExtensions}
         title={label ? `Pilih ${label}` : 'Pilih Media'}
         selectedIds={value ? [value] : []}
         onSelect={(selected) => {

@@ -9,6 +9,10 @@ Run each file in `supabase/migrations/` sequentially in the **Supabase Dashboard
 4. `0004_rpc_functions.sql` — Creates admin-guarded RPC helpers (`get_media_asset_usage`, `get_cms_dashboard_stats`, `set_project_primary_media`, `record_content_revision`).
 5. `0005_seed_initial_content.sql` — Idempotently seeds all existing portfolio content into PostgreSQL.
 6. `0006_provision_admin_template.sql` — Replace `<ADMIN_USER_UUID>` and `<ADMIN_EMAIL>` after creating your admin account manually.
+7. `0007_hero_image_reveal.sql` — Adds Hero Interactive Cursor-Based Image Reveal columns (`reveal_enabled`, `reveal_overlay_id`, `reveal_radius`, `reveal_softness`, `reveal_behavior`), anonymous column-level SELECT grant, and Media Library usage dependency check on `public.profile`.
+8. `0008_hero_image_alignment.sql` — Adds Hero per-layer framing & alignment columns (`profile_image_scale`, `profile_image_offset_x`, `profile_image_offset_y`, `reveal_overlay_scale`, `reveal_overlay_offset_x`, `reveal_overlay_offset_y`) with range constraints and anonymous column-level SELECT grant on `public.profile`.
+9. `0009_spiderman_theme.sql` — Extends `public.site_settings.color_preset` CHECK constraint to support `'spider_man'` alongside `'razh_cyan'`, `'electric_amber'`, and `'cobalt_mint'`.
+10. `0010_centralized_theme_config.sql` — Adds `theme_config JSONB` column (`'{}'::jsonb` default, object check constraint) and anonymous column-level SELECT grant on `public.site_settings`.
 
 ## 2. Supabase Authentication Dashboard Configuration
 1. **Disable Public Sign-Up**:

@@ -2,12 +2,15 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { FaCertificate } from 'react-icons/fa';
 import { CertificationCard } from './CertificationCard';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { useTheme } from '../../hooks/useTheme';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 export const CertificationsSection = ({ expandedId, onToggle }) => {
   const { data } = usePortfolioData();
+  const { resolvedTheme } = useTheme();
   const { about, certifications } = data;
   const reduceMotion = useReducedMotion();
+  const viewportOnce = resolvedTheme?.config?.animation?.replayOnScroll === false;
 
   const headerVariants = {
     hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 14 },
@@ -44,7 +47,7 @@ export const CertificationsSection = ({ expandedId, onToggle }) => {
         variants={headerVariants}
         initial={reduceMotion ? false : 'hidden'}
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{ once: viewportOnce, amount: 0.15 }}
         className="flex items-center gap-3.5 mb-8"
       >
         <span className="w-10 h-10 rounded-xl bg-secondary/15 border border-secondary/35 flex items-center justify-center text-base text-ink shrink-0">
@@ -64,7 +67,7 @@ export const CertificationsSection = ({ expandedId, onToggle }) => {
         variants={gridContainerVariants}
         initial={reduceMotion ? false : 'hidden'}
         whileInView="visible"
-        viewport={{ once: true, amount: 0.12 }}
+        viewport={{ once: viewportOnce, amount: 0.12 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start"
       >
         {certifications.map((cert, idx) => {

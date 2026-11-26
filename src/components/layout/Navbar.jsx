@@ -2,8 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { FaMoon, FaSun, FaBars, FaTimes } from 'react-icons/fa';
+import { isSpiderManPreset } from '../../constants/colorPresets';
 import { useTheme } from '../../hooks/useTheme';
 import { DocumentViewerModal } from '../ui/DocumentViewerModal';
+import { SpiderIcon } from '../ui/SpiderManElements';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
 import { smoothScrollTo } from '../../utils/scrollTo';
 
@@ -14,6 +16,7 @@ function isExternalHref(href = '') {
 export const Navbar = () => {
   const { data, previewOffsetTop } = usePortfolioData();
   const { settings, navigation, hero } = data;
+  const isSpiderMan = isSpiderManPreset(settings?.colorPreset);
 
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -41,6 +44,17 @@ export const Navbar = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return undefined;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const observerOptions = {
@@ -110,13 +124,22 @@ export const Navbar = () => {
             onClick={(e) => smoothScrollTo(e, '#')}
             className="flex items-center gap-2.5 text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary rounded"
           >
-            {settings?.logoUrl && (
+            {settings?.logoUrl ? (
               <img
                 src={settings.logoUrl}
                 alt={settings.brandName || 'Logo'}
                 decoding="async"
                 className="h-7 w-7 object-contain rounded-md shrink-0"
               />
+            ) : (
+              isSpiderMan && (
+                <span
+                  aria-hidden="true"
+                  className="w-7 h-7 rounded-lg bg-primary/14 border border-primary/30 text-primary flex items-center justify-center shrink-0"
+                >
+                  <SpiderIcon className="w-3.5 h-3.5" />
+                </span>
+              )
             )}
             <span className="font-heading font-semibold text-base sm:text-lg tracking-[0.18em] uppercase text-ink hover:text-primary transition-colors">
               {settings?.brandName || 'RAZH'}
@@ -161,13 +184,13 @@ export const Navbar = () => {
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="w-9 h-9 rounded-full border border-border-subtle bg-surface/60 hover:bg-surface hover:border-border-strong flex items-center justify-center text-muted hover:text-ink transition-all cursor-pointer"
+                className="w-9 h-9 rounded-full border border-border-subtle bg-surface/60 hover:bg-surface hover:border-border-strong flex items-center justify-center text-muted hover:text-ink transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 aria-label="Toggle Dark Mode"
               >
                 {theme === 'dark' ? (
-                  <FaSun className="text-xs text-accent" />
+                  <FaSun aria-hidden="true" className="text-xs text-accent" />
                 ) : (
-                  <FaMoon className="text-xs" />
+                  <FaMoon aria-hidden="true" className="text-xs" />
                 )}
               </button>
             )}
@@ -185,15 +208,15 @@ export const Navbar = () => {
             {/* Mobile Menu Toggle */}
             <button
               type="button"
-              className="lg:hidden w-9 h-9 rounded-full border border-border-subtle bg-surface/70 flex items-center justify-center text-ink hover:border-border-strong transition-colors cursor-pointer"
+              className="lg:hidden w-9 h-9 rounded-full border border-border-subtle bg-surface/70 flex items-center justify-center text-ink hover:border-border-strong transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               aria-label={isMobileMenuOpen ? 'Close Menu' : 'Open Menu'}
               aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? (
-                <FaTimes className="text-sm" />
+                <FaTimes aria-hidden="true" className="text-sm" />
               ) : (
-                <FaBars className="text-sm" />
+                <FaBars aria-hidden="true" className="text-sm" />
               )}
             </button>
           </div>
@@ -211,7 +234,10 @@ export const Navbar = () => {
             style={{ top: 68 + (previewOffsetTop || 0) }}
             className="fixed inset-x-4 z-40 lg:hidden"
           >
-            <div className="editorial-glass border border-border-subtle rounded-2xl p-5 shadow-xl flex flex-col gap-1">
+            <nav
+              aria-label="Mobile Navigation"
+              className="editorial-glass border border-border-subtle rounded-2xl p-5 shadow-xl flex flex-col gap-1"
+            >
               {navLinks.map((link) => {
                 const isActive = activeSection === link.sectionId;
                 const external = isExternalHref(link.href);
@@ -269,7 +295,7 @@ export const Navbar = () => {
                   )}
                 </div>
               )}
-            </div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>

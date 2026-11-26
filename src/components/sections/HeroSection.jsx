@@ -1,6 +1,7 @@
-import { createElement, Fragment, useMemo, useState } from 'react';
+import { createElement, Fragment, useMemo, useRef, useState } from 'react';
 import {
   motion,
+  useInView,
   useMotionValue,
   useReducedMotion,
   useSpring,
@@ -9,8 +10,18 @@ import {
 import { FaArrowRight, FaCode } from 'react-icons/fa';
 import { Button } from '../ui/Button';
 import { DocumentViewerModal } from '../ui/DocumentViewerModal';
+import { InteractiveImageReveal } from '../ui/InteractiveImageReveal';
+import {
+  SpiderIcon,
+  SpiderSensePulse,
+  SpiderWebCorner,
+  SpiderWebHalo,
+  SpideySenseSparks,
+} from '../ui/SpiderManElements';
 import { TypewriterText } from '../ui/TypewriterText';
+import { isSpiderManPreset } from '../../constants/colorPresets';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { useTheme } from '../../hooks/useTheme';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 import { smoothScrollTo } from '../../utils/scrollTo';
 import { getSocialIconComponent } from '../../utils/socialIcons';
@@ -73,9 +84,21 @@ function renderHeadlinePart(part, idx) {
 
 export const HeroSection = () => {
   const { data, introReady = true } = usePortfolioData();
+  const { resolvedTheme } = useTheme();
   const { hero, settings, contact, socialLinks } = data;
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
+  const heroSectionRef = useRef(null);
   const reduceMotion = useReducedMotion();
+  const effects = resolvedTheme?.config?.effects || {};
+  const webBackgroundEnabled = effects.webBackground !== false;
+  const spiderSenseEnabled = effects.spiderSensePulse !== false;
+  const replayOnScroll = resolvedTheme?.config?.animation?.replayOnScroll !== false;
+  const isHeroInView = useInView(heroSectionRef, {
+    once: !replayOnScroll,
+    amount: 0.18,
+  });
+  const isSpiderMan =
+    resolvedTheme?.isSpiderMan || isSpiderManPreset(settings?.colorPreset);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -83,6 +106,8 @@ export const HeroSection = () => {
   const smoothMouseY = useSpring(mouseY, { stiffness: 180, damping: 22, mass: 0.6 });
   const rotateX = useTransform(smoothMouseY, [-0.5, 0.5], [6, -6]);
   const rotateY = useTransform(smoothMouseX, [-0.5, 0.5], [-6, 6]);
+  const bgParallaxX = useTransform(smoothMouseX, [-0.5, 0.5], [-10, 10]);
+  const bgParallaxY = useTransform(smoothMouseY, [-0.5, 0.5], [-8, 8]);
 
   const visibleSocials = useMemo(
     () =>
@@ -114,7 +139,8 @@ export const HeroSection = () => {
     return Math.min(2600, Math.max(1200, Math.round(completionSec * 1000)));
   }, [headlineWordCount]);
 
-  const animateState = introReady ? 'visible' : 'hidden';
+  const heroActive = introReady && (!replayOnScroll || isHeroInView);
+  const animateState = heroActive ? 'visible' : 'hidden';
 
   // Stage 1: Introduction Label (0.85s)
   const labelVariants = {
@@ -291,6 +317,7 @@ export const HeroSection = () => {
   return (
     <section
       id="home"
+      ref={heroSectionRef}
       className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-center pt-28 pb-16 md:pt-32 md:pb-24"
     >
       {/* Subtle Background Texture Layers */}
@@ -303,13 +330,39 @@ export const HeroSection = () => {
         className="hero-dot-pattern pointer-events-none absolute inset-0 -z-20"
       />
 
-      {/* Restrained Coral-Pink Sunset Ambient Glow Behind Portrait */}
+      {webBackgroundEnabled && (
+        <motion.div
+          key={replayOnScroll ? (heroActive ? 'hero-web-in' : 'hero-web-out') : 'hero-web-once'}
+          aria-hidden="true"
+          style={!reduceMotion ? { x: bgParallaxX, y: bgParallaxY } : undefined}
+          className="pointer-events-none absolute inset-0 -z-20"
+        >
+          <SpiderWebCorner
+            position="top-right"
+            animated
+            style={{ color: isSpiderMan ? 'var(--color-web-line)' : undefined }}
+            className={`absolute -top-2 -right-4 sm:right-0 w-44 sm:w-64 lg:w-80 h-44 sm:h-64 lg:h-80 ${
+              isSpiderMan ? 'opacity-90' : 'text-ink/[0.04] dark:text-white/[0.06]'
+            }`}
+          />
+          <SpiderWebCorner
+            position="top-left"
+            animated
+            style={{ color: isSpiderMan ? 'var(--color-electric-blue)' : undefined }}
+            className={`hidden sm:block absolute -top-2 -left-4 w-36 sm:w-48 h-36 sm:h-48 ${
+              isSpiderMan ? 'opacity-[0.12]' : 'text-secondary/[0.05] dark:text-secondary/[0.07]'
+            }`}
+          />
+        </motion.div>
+      )}
+
+      {/* Restrained Centralized Ambient Glow Behind Portrait */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-10 right-0 w-85 sm:w-120 lg:w-155 h-85 sm:h-120 lg:h-155 rounded-full opacity-30 dark:opacity-22 blur-3xl -z-10"
+        className="pointer-events-none absolute -top-10 right-0 w-85 sm:w-120 lg:w-155 h-85 sm:h-120 lg:h-155 rounded-full opacity-35 dark:opacity-28 blur-3xl -z-10"
         style={{
           background:
-            'radial-gradient(circle at 60% 35%, rgba(255,107,107,0.42), rgba(244,143,177,0.28) 44%, rgba(73,52,95,0.18) 74%, transparent 100%)',
+            'radial-gradient(circle at 60% 35%, var(--color-web-glow), var(--color-electric-glow) 46%, transparent 78%)',
         }}
       />
 
@@ -334,10 +387,14 @@ export const HeroSection = () => {
               animate={animateState}
             >
               <span className="inline-flex items-center gap-2.5 font-body text-[11px] sm:text-xs font-medium uppercase tracking-[0.2em] text-muted">
-                <span
-                  className="h-1.5 w-1.5 rounded-full bg-primary shrink-0"
-                  aria-hidden="true"
-                />
+                {isSpiderMan ? (
+                  <SpiderIcon className="w-3.5 h-3.5 text-primary shrink-0" />
+                ) : (
+                  <span
+                    className="h-1.5 w-1.5 rounded-full bg-primary shrink-0"
+                    aria-hidden="true"
+                  />
+                )}
                 {hero.badgeText}
               </span>
             </motion.div>
@@ -370,9 +427,9 @@ export const HeroSection = () => {
           {/* Description Typewriter Animation (starts after heading completes) */}
           {hero?.subheadline && (
             <TypewriterText
-              key={hero.subheadline}
+              key={`${hero.subheadline}-${replayOnScroll ? (heroActive ? 'in' : 'out') : 'once'}`}
               text={hero.subheadline}
-              start={introReady}
+              start={heroActive}
               startDelayMs={typewriterStartDelayMs}
               speedMs={30}
               className="font-body text-base sm:text-lg text-muted max-w-xl leading-[1.75]"
@@ -546,13 +603,26 @@ export const HeroSection = () => {
                   }
                   className="group relative"
                 >
-                  {/* Soft Coral-Pink-Purple Outer Glow */}
+                  {spiderSenseEnabled && <SpiderSensePulse reduceMotion={reduceMotion} />}
+
+                  {isSpiderMan && (
+                    <>
+                      {webBackgroundEnabled && (
+                        <SpiderWebHalo className="pointer-events-none absolute -inset-6 w-[calc(100%+3rem)] h-[calc(100%+3rem)] text-primary/20 dark:text-primary/25 -z-10 transition-transform duration-700 group-hover:scale-105 group-hover:rotate-12" />
+                      )}
+                      {spiderSenseEnabled && (
+                        <SpideySenseSparks className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 w-28 sm:w-32 h-8 text-primary opacity-60 group-hover:opacity-100 transition-opacity duration-300 z-20 spidey-sense-spark" />
+                      )}
+                    </>
+                  )}
+
+                  {/* Soft Outer Glow */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -inset-3 rounded-full blur-2xl opacity-30 group-hover:opacity-55 transition-opacity duration-500"
+                    className="pointer-events-none absolute -inset-3 rounded-full blur-2xl opacity-38 group-hover:opacity-65 transition-opacity duration-500"
                     style={{
                       background:
-                        'radial-gradient(circle, rgba(255,107,107,0.45), rgba(244,143,177,0.28) 55%, rgba(167,139,250,0.18) 80%, transparent 100%)',
+                        'radial-gradient(circle, var(--color-web-glow), var(--color-electric-glow) 56%, transparent 82%)',
                     }}
                   />
 
@@ -573,8 +643,9 @@ export const HeroSection = () => {
                     <div
                       className="relative z-10 w-full h-full rounded-full overflow-hidden ring-2 ring-canvas"
                       style={{
-                        background:
-                          'linear-gradient(160deg, #49345F 0%, #8E4A73 34%, #FF6B6B 72%, #FFB38A 100%)',
+                        background: isSpiderMan
+                          ? 'linear-gradient(160deg, var(--color-deep-violet) 0%, var(--color-electric-blue) 56%, var(--color-spider-red) 100%)'
+                          : 'linear-gradient(160deg, var(--color-deep-violet) 0%, var(--color-secondary) 46%, var(--color-primary) 82%, var(--color-accent) 100%)',
                       }}
                     >
                       {/* Soft inner ambient glow */}
@@ -583,16 +654,24 @@ export const HeroSection = () => {
                         className="pointer-events-none absolute inset-0"
                         style={{
                           background:
-                            'radial-gradient(circle at 75% 18%, rgba(255, 179, 138, 0.35), transparent 55%)',
+                            'radial-gradient(circle at 75% 18%, var(--color-web-glow), transparent 58%)',
                         }}
                       />
 
-                      <img
-                        src={hero.profileImageUrl}
-                        alt={hero.lanyardName || settings?.fullName || 'Raihan Azka Hidayat'}
+                      <InteractiveImageReveal
+                        baseImage={hero.profileImageUrl}
+                        baseAlt={hero.lanyardName || settings?.fullName || 'Raihan Azka Hidayat'}
+                        baseTransform={hero.profileImageTransform}
+                        overlayImage={hero.revealOverlayUrl}
+                        overlayTransform={hero.revealOverlayTransform}
+                        enabled={Boolean(hero.revealEnabled && hero.revealOverlayUrl)}
+                        revealRadius={hero.revealRadius}
+                        revealSoftness={hero.revealSoftness}
+                        revealBehavior={hero.revealBehavior}
+                        objectPosition="50% 20%"
                         fetchPriority="high"
-                        decoding="async"
-                        className="relative z-10 w-full h-full object-cover object-[50%_20%] transition-transform duration-500 ease-out group-hover:scale-105"
+                        className="relative z-10 w-full h-full rounded-full"
+                        imageClassName="transition-transform duration-500 ease-out group-hover:scale-105"
                       />
                     </div>
                   </div>
@@ -654,12 +733,16 @@ export const HeroSection = () => {
           animate={animateState}
           className="inline-flex items-center gap-3.5 self-center lg:self-start mt-10 py-1.5 px-2 -mx-2 rounded-xl transition-colors duration-300 group focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
         >
-          {/* Minimalist Mouse-Scroll Outline with Animated Dot */}
+          {/* Minimalist Mouse-Scroll Outline with Animated Dot / Spider */}
           <span
             aria-hidden="true"
             className="w-5 h-8 rounded-full border border-border-strong group-hover:border-primary/80 transition-colors duration-300 flex justify-center pt-1.5 shrink-0"
           >
-            <span className="hero-mouse-dot w-1 h-1.5 rounded-full bg-ink/70 group-hover:bg-primary transition-colors duration-300" />
+            {isSpiderMan ? (
+              <SpiderIcon className="hero-mouse-dot w-2.5 h-2.5 text-primary rotate-180" />
+            ) : (
+              <span className="hero-mouse-dot w-1 h-1.5 rounded-full bg-ink/70 group-hover:bg-primary transition-colors duration-300" />
+            )}
           </span>
 
           {/* Thin Vertical Coral-Accented Decorative Line */}

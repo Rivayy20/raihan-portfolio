@@ -3,6 +3,7 @@ import { AnimatePresence, useReducedMotion } from 'framer-motion';
 import { RootLayout } from '../components/layout/RootLayout';
 import { ScrollProgress } from '../components/ui/ScrollProgress';
 import { IntroLoadingScreen } from '../components/ui/IntroLoadingScreen';
+import { SpiderWebCursor } from '../components/ui/SpiderWebCursor';
 import { HeroSection } from '../components/sections/HeroSection';
 import { AboutSection } from '../components/sections/AboutSection';
 import { SkillsSection } from '../components/sections/SkillsSection';
@@ -10,12 +11,12 @@ import { ProjectsSection } from '../components/sections/ProjectsSection';
 import { ContactSection } from '../components/sections/ContactSection';
 import { Footer } from '../components/layout/Footer';
 import { SeoHead } from '../components/seo/SeoHead';
-import { getThemeColorPreset } from '../constants/colorPresets';
 import { PortfolioDataContext } from '../context/PortfolioDataContext';
 import { useTheme } from '../hooks/useTheme';
 import { useAdminLoginShortcut } from '../hooks/useAdminLoginShortcut';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import { usePublicPortfolio } from '../hooks/usePublicPortfolio';
+import { savePublicThemeSnapshot } from '../utils/themeTokens';
 
 const DEFAULT_SECTION_KEYS = ['hero', 'about', 'expertise', 'projects', 'contact'];
 
@@ -38,8 +39,8 @@ function renderSectionByKey(sectionConfig) {
 
 export function PortfolioPresentation({ disableShortcut = false } = {}) {
   useAdminLoginShortcut(!disableShortcut);
-  const { data } = usePortfolioData();
-  const { theme, applyDefaultTheme } = useTheme();
+  const { data, isPreview } = usePortfolioData();
+  const { applyDefaultTheme, resolvedTheme, syncPublicTheme, clearPublicTheme } = useTheme();
 
   useEffect(() => {
     if (data?.settings?.defaultTheme) {
@@ -48,20 +49,16 @@ export function PortfolioPresentation({ disableShortcut = false } = {}) {
   }, [data?.settings?.defaultTheme, applyDefaultTheme]);
 
   useEffect(() => {
-    const preset = getThemeColorPreset(data?.settings?.colorPreset);
-    const tokens = theme === 'dark' ? preset.dark : preset.light;
-    const root = document.documentElement;
+    const colorPreset = data?.settings?.colorPreset || 'razh_cyan';
+    const themeConfig = data?.settings?.themeConfig;
+    syncPublicTheme({ colorPreset, themeConfig });
 
-    for (const [cssVar, val] of Object.entries(tokens || {})) {
-      root.style.setProperty(cssVar, val);
+    if (!isPreview) {
+      savePublicThemeSnapshot({ colorPreset, themeConfig });
     }
+  }, [data?.settings?.colorPreset, data?.settings?.themeConfig, isPreview, syncPublicTheme]);
 
-    return () => {
-      for (const cssVar of Object.keys(tokens || {})) {
-        root.style.removeProperty(cssVar);
-      }
-    };
-  }, [data?.settings?.colorPreset, theme]);
+  useEffect(() => () => clearPublicTheme(), [clearPublicTheme]);
 
   const orderedSections = useMemo(() => {
     const rawSections = data?.sections || [];
@@ -81,6 +78,7 @@ export function PortfolioPresentation({ disableShortcut = false } = {}) {
 
   return (
     <>
+      <SpiderWebCursor enabled={resolvedTheme?.config?.effects?.cursorTrail !== false} />
       <ScrollProgress />
       <RootLayout>{orderedSections.map((sec) => renderSectionByKey(sec))}</RootLayout>
       <Footer />
@@ -278,7 +276,8 @@ export function PublicPortfolioPage() {
     };
   }, [introPhase]);
 
-  const introReady = introPhase === 'done';
+  const introEnabled = data?.settings?.themeConfig?.effects?.loadingIntro !== false;
+  const introReady = introPhase === 'done' || !introEnabled;
 
   const contextValue = useMemo(() => {
     if (!data) return null;
@@ -291,10 +290,12 @@ export function PublicPortfolioPage() {
     };
   }, [data, introReady]);
 
+  const showIntroOverlay = introPhase === 'loading' && introEnabled;
+
   return (
     <>
       {isLoading || !contextValue ? (
-        introPhase === 'loading' ? null : <PublicLoadingSkeleton />
+        showIntroOverlay ? null : <PublicLoadingSkeleton />
       ) : (
         <PortfolioDataContext.Provider value={contextValue}>
           <SeoHead />
@@ -303,10 +304,11 @@ export function PublicPortfolioPage() {
       )}
 
       <AnimatePresence onExitComplete={() => setIntroPhase('done')}>
-        {introPhase === 'loading' && (
+        {showIntroOverlay && (
           <IntroLoadingScreen
             key="intro-loading-screen"
             brandName={data?.settings?.brandName || 'RAZH'}
+            colorPreset={data?.settings?.colorPreset}
           />
         )}
       </AnimatePresence>

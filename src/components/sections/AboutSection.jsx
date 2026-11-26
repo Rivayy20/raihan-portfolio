@@ -2,9 +2,12 @@ import { useId, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { FaGraduationCap, FaChevronDown } from 'react-icons/fa';
 import { Card } from '../ui/Card';
+import { SpiderIcon } from '../ui/SpiderManElements';
+import { isSpiderManPreset } from '../../constants/colorPresets';
 import { ExperiencePanel } from './ExperiencePanel';
 import { CertificationsSection } from './CertificationsSection';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { useTheme } from '../../hooks/useTheme';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 const DEFAULT_NARRATIVE_HIGHLIGHTS = [
@@ -53,6 +56,8 @@ function renderHighlightedParagraph(text, highlights = []) {
 
 const EducationCard = ({ about, education, isExpanded, onToggle }) => {
   const reduceMotion = useReducedMotion();
+  const { resolvedTheme } = useTheme();
+  const timelineAnimation = resolvedTheme?.config?.effects?.timelineAnimation !== false;
   const currentItems = education.filter((item) => item.educationLevel === 'current');
   const previousItems = education.filter((item) => item.educationLevel !== 'current');
 
@@ -99,12 +104,30 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
         )}
       </div>
 
-      <div className="pt-5 space-y-3">
+      <div className="relative pt-5 pl-5 space-y-3">
+        <span
+          aria-hidden="true"
+          className="absolute left-1.5 top-7 bottom-4 w-px rounded-full"
+          style={{
+            backgroundColor: timelineAnimation
+              ? 'var(--color-web-line)'
+              : 'var(--color-border-subtle)',
+          }}
+        />
         {primaryList.map((edu, idx) => (
           <div
             key={edu.id || idx}
-            className="rounded-2xl bg-canvas/75 dark:bg-canvas/60 border border-border-subtle p-4 sm:p-5"
+            className="relative rounded-2xl bg-canvas/75 dark:bg-canvas/60 border border-border-subtle p-4 sm:p-5"
           >
+            <span
+              aria-hidden="true"
+              className="absolute -left-5 top-5.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-primary/15"
+              style={
+                timelineAnimation
+                  ? { boxShadow: '0 0 12px var(--color-spider-sense-glow)' }
+                  : undefined
+              }
+            />
             {(edu.degree || edu.major) && (
               <p className="font-heading text-base sm:text-lg font-medium text-ink leading-snug">
                 {edu.degree || edu.major}
@@ -222,7 +245,10 @@ const EducationCard = ({ about, education, isExpanded, onToggle }) => {
 
 export const AboutSection = ({ sectionConfig }) => {
   const { data } = usePortfolioData();
-  const { about, education, experiences, certifications } = data;
+  const { resolvedTheme } = useTheme();
+  const { about, education, experiences, certifications, settings } = data;
+  const isSpiderMan = isSpiderManPreset(settings?.colorPreset);
+  const viewportOnce = resolvedTheme?.config?.animation?.replayOnScroll === false;
   const [expandedCard, setExpandedCard] = useState(null);
   const experiencePanelId = useId();
   const reduceMotion = useReducedMotion();
@@ -330,7 +356,7 @@ export const AboutSection = ({ sectionConfig }) => {
           variants={headerContainerVariants}
           initial={reduceMotion ? false : 'hidden'}
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: viewportOnce, amount: 0.2 }}
           className={`flex flex-col gap-4 border-t border-border-subtle pt-8 ${
             isCentered
               ? 'mx-auto max-w-3xl items-center text-center'
@@ -341,7 +367,11 @@ export const AboutSection = ({ sectionConfig }) => {
             variants={eyebrowVariants}
             className="inline-flex items-center gap-2 font-body text-xs font-medium uppercase tracking-[0.2em] text-muted"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            {isSpiderMan ? (
+              <SpiderIcon className="w-3.5 h-3.5 text-primary shrink-0" />
+            ) : (
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            )}
             01 / About
           </motion.span>
 
@@ -372,7 +402,7 @@ export const AboutSection = ({ sectionConfig }) => {
                   variants={narrativeContainerVariants}
                   initial={reduceMotion ? false : 'hidden'}
                   whileInView="visible"
-                  viewport={{ once: true, amount: 0.15 }}
+                  viewport={{ once: viewportOnce, amount: 0.15 }}
                 >
                   <motion.div
                     variants={narrativeItemVariants}
@@ -408,7 +438,7 @@ export const AboutSection = ({ sectionConfig }) => {
                   variants={eduCardVariants}
                   initial={reduceMotion ? false : 'hidden'}
                   whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
+                  viewport={{ once: viewportOnce, amount: 0.2 }}
                 >
                   <EducationCard
                     about={about}

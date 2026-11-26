@@ -4,6 +4,7 @@ import {
   sanitizeMediaUrl,
   sanitizeNavigationHref,
 } from './safeUrl.js';
+import { normalizeThemeConfig } from './themeTokens.js';
 
 export const EMPTY_MEDIA_FALLBACKS = {
   profileImageUrl: '',
@@ -36,6 +37,16 @@ function resolveMediaEntry(mediaLookup, mediaId) {
 function normalizeStringArray(val) {
   if (!Array.isArray(val)) return [];
   return val.map((item) => String(item ?? '')).filter(Boolean);
+}
+
+function clampInt(value, min, max, fallback) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(num)));
+}
+
+function normalizeRevealBehavior(value) {
+  return value === 'direct' ? 'direct' : 'smooth';
 }
 
 function normalizeFloatingLabels(val) {
@@ -205,6 +216,7 @@ export function mapRawPortfolioToViewModel(
     showThemeToggle: rawSettings.show_theme_toggle !== false,
     defaultTheme: rawSettings.default_theme || 'system',
     colorPreset: rawSettings.color_preset || 'razh_cyan',
+    themeConfig: normalizeThemeConfig(rawSettings.theme_config),
   };
 
   // 2. Sections
@@ -244,6 +256,8 @@ export function mapRawPortfolioToViewModel(
   // 4. Hero & Profile (singleton)
   const rawProfile = effective(raw.profile) || {};
   const heroProfileUrl = resolveMediaEntry(mediaLookup, rawProfile.profile_image_id)?.url;
+  const heroRevealOverlayUrl =
+    sanitizeMediaUrl(resolveMediaEntry(mediaLookup, rawProfile.reveal_overlay_id)?.url) || null;
   const heroCvUrl = resolveMediaEntry(mediaLookup, rawProfile.cv_media_id)?.url;
   const hero = {
     badgeText: rawProfile.badge_text ?? "Hello, I'm a Student & Developer",
@@ -253,6 +267,21 @@ export function mapRawPortfolioToViewModel(
     profileImageUrl: sanitizeMediaUrl(
       heroProfileUrl || settings.profileImageUrl || safeFallbacks.profileImageUrl
     ),
+    profileImageTransform: {
+      scale: clampInt(rawProfile.profile_image_scale, 50, 200, 100),
+      offsetX: clampInt(rawProfile.profile_image_offset_x, -50, 50, 0),
+      offsetY: clampInt(rawProfile.profile_image_offset_y, -50, 50, 0),
+    },
+    revealEnabled: Boolean(rawProfile.reveal_enabled),
+    revealOverlayUrl: heroRevealOverlayUrl,
+    revealOverlayTransform: {
+      scale: clampInt(rawProfile.reveal_overlay_scale, 50, 200, 100),
+      offsetX: clampInt(rawProfile.reveal_overlay_offset_x, -50, 50, 0),
+      offsetY: clampInt(rawProfile.reveal_overlay_offset_y, -50, 50, 0),
+    },
+    revealRadius: clampInt(rawProfile.reveal_radius, 40, 250, 120),
+    revealSoftness: clampInt(rawProfile.reveal_softness, 0, 100, 65),
+    revealBehavior: normalizeRevealBehavior(rawProfile.reveal_behavior),
     lanyardHeader: rawProfile.lanyard_header || 'ID Badge',
     lanyardStatus: rawProfile.lanyard_status || 'Access Granted',
     lanyardName: rawProfile.lanyard_name || 'RAIHAN AZKA H.',

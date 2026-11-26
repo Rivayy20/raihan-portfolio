@@ -42,6 +42,16 @@
     --color-sunset-orange: #FF9B71;
     --color-lavender: #A78BFA;
     --color-deep-violet: #49345F;
+    --color-on-primary: #171719;
+    --color-spider-red: #E62429;
+    --color-electric-blue: #2563EB;
+    --color-interactive-accent: #FF6B6B;
+    --color-web-line: rgba(255, 107, 107, 0.2);
+    --color-web-glow: rgba(230, 36, 41, 0.28);
+    --color-electric-glow: rgba(37, 99, 235, 0.24);
+    --color-spider-sense-glow: rgba(230, 36, 41, 0.42);
+    --sv-effect-scale: 1;
+    --sv-speed-factor: 1;
     --color-black: #171719;
     --color-white: #FFFFFF;
 
@@ -70,6 +80,15 @@
     --color-sunset-orange: #FF9B71;
     --color-lavender: #A78BFA;
     --color-deep-violet: #49345F;
+    --color-spider-red: #F43238;
+    --color-electric-blue: #60A5FA;
+    --color-interactive-accent: #FF7B7B;
+    --color-web-line: rgba(255, 123, 123, 0.28);
+    --color-web-glow: rgba(244, 50, 56, 0.36);
+    --color-electric-glow: rgba(96, 165, 250, 0.34);
+    --color-spider-sense-glow: rgba(244, 50, 56, 0.55);
+    --sv-effect-scale: 1;
+    --sv-speed-factor: 1;
     --color-black: #F6F3EE;
     --color-white: #1E1E22;
 
@@ -409,5 +428,160 @@
 
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* Centralized Spider-Verse Theme & Effect Utilities                          */
+  /* -------------------------------------------------------------------------- */
+  :root[data-portfolio-theme='spider_man'] ::selection {
+    background-color: var(--color-web-glow);
+    color: var(--color-ink);
+  }
+
+  :root[data-portfolio-theme='spider_man'] .editorial-glass {
+    background-color: rgba(247, 246, 249, 0.85);
+  }
+
+  :root.dark[data-portfolio-theme='spider_man'] .editorial-glass {
+    background-color: rgba(11, 14, 23, 0.85);
+  }
+
+  :root[data-portfolio-theme='spider_man'] .sunset-text-accent {
+    background-image: linear-gradient(
+      125deg,
+      var(--color-spider-red) 0%,
+      var(--color-interactive-accent) 46%,
+      var(--color-electric-blue) 100%
+    );
+  }
+
+  :root.dark[data-portfolio-theme='spider_man'] .sunset-text-accent {
+    background-image: linear-gradient(
+      125deg,
+      var(--color-spider-red) 0%,
+      var(--color-accent) 48%,
+      var(--color-electric-blue) 100%
+    );
+  }
+
+  :root[data-portfolio-theme='spider_man'] .sunset-gradient-line {
+    background: linear-gradient(
+      90deg,
+      var(--color-spider-red) 0%,
+      var(--color-interactive-accent) 48%,
+      var(--color-electric-blue) 100%
+    );
+  }
+
+  :root[data-portfolio-theme='spider_man'] .hero-gradient-text-animated {
+    background-image: linear-gradient(
+      120deg,
+      var(--color-spider-red) 0%,
+      var(--color-interactive-accent) 32%,
+      var(--color-electric-blue) 66%,
+      var(--color-spider-red) 100%
+    );
+  }
+
+  :root.dark[data-portfolio-theme='spider_man'] .hero-gradient-text-animated {
+    background-image: linear-gradient(
+      120deg,
+      var(--color-spider-red) 0%,
+      var(--color-accent) 34%,
+      var(--color-electric-blue) 68%,
+      var(--color-spider-red) 100%
+    );
+  }
+
+  :root[data-portfolio-theme='spider_man'] .hero-conic-border {
+    background: conic-gradient(
+      from 0deg,
+      var(--color-spider-red),
+      var(--color-electric-blue),
+      var(--color-deep-violet),
+      var(--color-interactive-accent),
+      var(--color-spider-red)
+    );
+  }
+
+  :root[data-portfolio-theme='spider_man'] .hero-dot-pattern {
+    background-image: radial-gradient(var(--color-web-line) 1.35px, transparent 1.35px);
+    background-size: 20px 20px;
+  }
+
+  :root[data-portfolio-theme='spider_man'] .intro-loading-bar {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-spider-red) 35%,
+      var(--color-interactive-accent) 60%,
+      var(--color-electric-blue) 85%,
+      transparent 100%
+    );
+  }
+
+  .spider-web-line {
+    stroke: var(--color-web-line);
+  }
+
+  .spider-sense-pulse-ring {
+    border-color: var(--color-spider-red);
+    box-shadow:
+      0 0 22px var(--color-spider-sense-glow),
+      inset 0 0 14px var(--color-electric-glow);
+    animation: spider-sense-expand calc(3.2s * var(--sv-speed-factor, 1)) cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+
+  .spider-sense-pulse-ring--delayed {
+    border-color: var(--color-electric-blue);
+    box-shadow: 0 0 18px var(--color-electric-glow);
+    animation: spider-sense-expand calc(3.2s * var(--sv-speed-factor, 1)) cubic-bezier(0.22, 1, 0.36, 1) calc(1.6s * var(--sv-speed-factor, 1)) infinite;
+  }
+
+  .comic-panel-card {
+    position: relative;
+    transition: border-color 0.3s ease, box-shadow 0.35s ease, transform 0.3s ease;
+  }
+
+  .comic-panel-card:hover {
+    border-color: var(--color-primary);
+    box-shadow:
+      0 18px 44px -18px var(--color-web-glow),
+      0 10px 26px -14px var(--color-electric-glow);
+  }
+
+  .comic-halftone-accent {
+    background-image: radial-gradient(var(--color-web-line) 1.25px, transparent 1.25px);
+    background-size: 10px 10px;
+  }
+
+  @keyframes spider-sense-expand {
+    0% {
+      transform: scale(0.94);
+      opacity: calc(0.65 * var(--sv-effect-scale, 1));
+    }
+    70% {
+      transform: scale(1.13);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1.15);
+      opacity: 0;
+    }
+  }
+
+  .spidey-sense-spark {
+    animation: spidey-sense-pulse calc(2.6s * var(--sv-speed-factor, 1)) ease-in-out infinite;
+  }
+
+  @keyframes spidey-sense-pulse {
+    0%, 100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.48;
+    }
+    50% {
+      transform: translate3d(0, -2px, 0) scale(1.06);
+      opacity: 0.92;
+    }
   }
 }

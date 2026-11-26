@@ -9,10 +9,10 @@ export const Button = ({
     'inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-heading text-sm font-medium tracking-wide transition-all duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60 disabled:cursor-not-allowed';
 
   const variantClasses = {
-    primary: 'bg-ink text-canvas hover:bg-primary hover:text-[#171719]',
-    accent: 'bg-ink text-canvas hover:bg-primary hover:text-[#171719]',
+    primary: 'bg-ink text-canvas hover:bg-primary hover:text-(--color-on-primary)',
+    accent: 'bg-ink text-canvas hover:bg-primary hover:text-(--color-on-primary)',
     secondary:
-      'bg-primary/14 text-ink border border-primary/30 hover:bg-primary hover:text-[#171719] hover:border-primary',
+      'bg-primary/14 text-ink border border-primary/30 hover:bg-primary hover:text-(--color-on-primary) hover:border-primary',
     white:
       'bg-transparent text-ink border border-border-strong hover:bg-surface-subtle hover:border-ink/40',
   };

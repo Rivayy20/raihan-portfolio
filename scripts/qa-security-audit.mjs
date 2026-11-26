@@ -246,12 +246,48 @@ function auditSourceAndHeaders() {
 // ============================================================================
 async function auditSanitizationAndMapper() {
   const safeUrl = await import(pathToFileURL(path.join(ROOT, 'src/utils/safeUrl.js')).href);
+  const { getThemeColorPreset } = await import(
+    pathToFileURL(path.join(ROOT, 'src/constants/colorPresets.js')).href
+  );
+  const { normalizeThemeConfig, resolveThemeTokens, sanitizeBoundedAccentHex } = await import(
+    pathToFileURL(path.join(ROOT, 'src/utils/themeTokens.js')).href
+  );
   const { mapRawPortfolioToViewModel } = await import(
     pathToFileURL(path.join(ROOT, 'src/utils/portfolioMapper.js')).href
   );
   const { buildSeoPayload, injectSeoIntoHtml } = await import(
     pathToFileURL(path.join(ROOT, 'api/_lib/seoHtmlInjector.js')).href
   );
+
+  assert.equal(getThemeColorPreset('spider_man').light['--color-primary'], '#E62429');
+  assert.equal(getThemeColorPreset('__proto__').light['--color-primary'], '#FF6B6B');
+
+  assert.equal(sanitizeBoundedAccentHex('#E62429; background:url(javascript:alert(1))'), '');
+  assert.equal(sanitizeBoundedAccentHex('#000000'), '');
+  assert.equal(sanitizeBoundedAccentHex('#FFFFFF'), '');
+  assert.equal(sanitizeBoundedAccentHex('#e11d48'), '#E11D48');
+
+  const safeResolved = resolveThemeTokens({
+    colorPreset: 'spider_man',
+    mode: 'dark',
+    themeConfig: {
+      accentOverrides: {
+        spiderRed: '#E11D48',
+        electricBlue: '#2563EB',
+        interactiveAccent: 'javascript:alert(1)',
+      },
+      effects: { cursorTrail: false },
+      animation: { intensity: 'cinematic', speed: 'snappy' },
+    },
+  });
+  assert.equal(safeResolved.cssVars['--color-spider-red'], '#E11D48');
+  assert.equal(safeResolved.cssVars['--color-electric-blue'], '#2563EB');
+  assert.equal(safeResolved.config.accentOverrides.interactiveAccent, '');
+  assert.equal(safeResolved.config.effects.cursorTrail, false);
+  assert.equal(safeResolved.config.animation.intensity, 'cinematic');
+  assert.equal(normalizeThemeConfig({ ['__proto__']: { evil: true } }).animation.speed, 'normal');
+  assert.equal(normalizeThemeConfig({}).animation.replayOnScroll, true);
+  assert.equal(normalizeThemeConfig({ animation: { replayOnScroll: false } }).animation.replayOnScroll, false);
 
   assert.equal(safeUrl.sanitizeExternalUrl('javascript:alert(1)'), '');
   assert.equal(safeUrl.sanitizeExternalUrl('JAVASCRIPT:void(0)'), '');
@@ -276,6 +312,11 @@ async function auditSanitizationAndMapper() {
       id: 1,
       site_url: 'javascript:alert(1)',
       navbar_cta_href: 'vbscript:bad',
+      color_preset: 'spider_man',
+      theme_config: {
+        accentOverrides: { spiderRed: '#bad-css();', electricBlue: '#2563eb' },
+        effects: { webBackground: false },
+      },
       publication_status: 'published',
     },
     navigation_items: [
@@ -285,6 +326,17 @@ async function auditSanitizationAndMapper() {
     profile: {
       id: 1,
       primary_cta_href: '//evil.com',
+      profile_image_scale: 999,
+      profile_image_offset_x: -999,
+      profile_image_offset_y: 'NaN',
+      reveal_enabled: true,
+      reveal_overlay_id: '00000000-0000-0000-0000-000000000099',
+      reveal_overlay_scale: 10,
+      reveal_overlay_offset_x: 120,
+      reveal_overlay_offset_y: -80,
+      reveal_radius: 999,
+      reveal_softness: -15,
+      reveal_behavior: 'invalid_mode',
       publication_status: 'published',
     },
     projects: [
@@ -326,12 +378,34 @@ async function auditSanitizationAndMapper() {
     },
   };
 
-  const vm = mapRawPortfolioToViewModel(dirtyRaw, {}, undefined, { mode: 'published' });
+  const vm = mapRawPortfolioToViewModel(
+    dirtyRaw,
+    {
+      '00000000-0000-0000-0000-000000000099': {
+        url: 'data:image/svg+xml,<svg/>',
+        altText: 'Bad overlay',
+        isPublic: true,
+      },
+    },
+    undefined,
+    { mode: 'published' }
+  );
   assert.equal(vm.settings.siteUrl, 'https://raihan-portfolio-two.vercel.app/');
   assert.equal(vm.settings.navbarCtaHref, '#contact');
+  assert.equal(vm.settings.colorPreset, 'spider_man');
+  assert.equal(vm.settings.themeConfig.accentOverrides.spiderRed, '');
+  assert.equal(vm.settings.themeConfig.accentOverrides.electricBlue, '#2563EB');
+  assert.equal(vm.settings.themeConfig.effects.webBackground, false);
   assert.equal(vm.navigation[0].href, '#');
   assert.equal(vm.navigation[1].href, '#projects');
   assert.equal(vm.hero.primaryCtaHref, '#projects');
+  assert.deepEqual(vm.hero.profileImageTransform, { scale: 200, offsetX: -50, offsetY: 0 });
+  assert.deepEqual(vm.hero.revealOverlayTransform, { scale: 50, offsetX: 50, offsetY: -50 });
+  assert.equal(vm.hero.revealEnabled, true);
+  assert.equal(vm.hero.revealOverlayUrl, null);
+  assert.equal(vm.hero.revealRadius, 250);
+  assert.equal(vm.hero.revealSoftness, 0);
+  assert.equal(vm.hero.revealBehavior, 'smooth');
   assert.equal(vm.projects[0].links.liveDemo, '');
   assert.equal(vm.projects[0].links.github, '');
   assert.equal(vm.certifications[0].verificationUrl, '');
