@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { FaMoon, FaSun, FaBars, FaTimes } from 'react-icons/fa';
@@ -7,6 +8,10 @@ import { useTheme } from '../../hooks/useTheme';
 import { DocumentViewerModal } from '../ui/DocumentViewerModal';
 import { SpiderIcon } from '../ui/SpiderManElements';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import {
+  ADMIN_LOGIN_GATE_STATE,
+  unlockAdminLoginGate,
+} from '../../utils/adminLoginGate';
 import { smoothScrollTo } from '../../utils/scrollTo';
 
 function isExternalHref(href = '') {
@@ -14,7 +19,8 @@ function isExternalHref(href = '') {
 }
 
 export const Navbar = () => {
-  const { data, previewOffsetTop } = usePortfolioData();
+  const navigate = useNavigate();
+  const { data, isPreview, previewOffsetTop } = usePortfolioData();
   const { settings, navigation, hero } = data;
   const isSpiderMan = isSpiderManPreset(settings?.colorPreset);
 
@@ -22,6 +28,7 @@ export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
+  const brandTapTimestampsRef = useRef([]);
   const { theme, toggleTheme } = useTheme();
 
   const navLinks = useMemo(
@@ -107,6 +114,22 @@ export const Navbar = () => {
     smoothScrollTo(e, targetHref);
   };
 
+  const handleBrandClick = (e) => {
+    smoothScrollTo(e, '#');
+    if (isPreview) return;
+
+    const now = Date.now();
+    const recent = brandTapTimestampsRef.current.filter((ts) => now - ts <= 1800);
+    recent.push(now);
+    if (recent.length >= 5) {
+      brandTapTimestampsRef.current = [];
+      unlockAdminLoginGate();
+      navigate('/admin/login', { state: ADMIN_LOGIN_GATE_STATE });
+      return;
+    }
+    brandTapTimestampsRef.current = recent;
+  };
+
   return (
     <>
       <header
@@ -121,7 +144,7 @@ export const Navbar = () => {
           {/* Minimalist Wordmark */}
           <button
             type="button"
-            onClick={(e) => smoothScrollTo(e, '#')}
+            onClick={handleBrandClick}
             className="flex items-center gap-2.5 text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary rounded"
           >
             {settings?.logoUrl ? (

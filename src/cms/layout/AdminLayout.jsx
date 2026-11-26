@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { clearAdminLoginGate } from '../../utils/adminLoginGate';
 import { useAuth } from '../hooks/useAuth';
 import { AdminSidebar } from './AdminSidebar';
 import { AdminTopbar } from './AdminTopbar';
@@ -11,8 +12,9 @@ export function AdminLayout() {
 
   const handleLogout = async () => {
     setIsMobileNavOpen(false);
+    clearAdminLoginGate();
     await signOut();
-    navigate('/admin/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   return (

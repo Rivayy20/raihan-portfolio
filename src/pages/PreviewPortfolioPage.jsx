@@ -10,6 +10,7 @@ import {
   FaSyncAlt,
 } from 'react-icons/fa';
 import { QUERY_KEYS } from '../lib/queryClient';
+import { clearAdminLoginGate } from '../utils/adminLoginGate';
 import { PortfolioDataContext } from '../context/PortfolioDataContext';
 import { AdminLoadingScreen } from '../cms/components/AdminLoadingScreen';
 import { AuthProvider } from '../cms/context/AuthProvider';
@@ -31,8 +32,9 @@ function PreviewBanner({
   const { adminProfile, signOut } = useAuth();
 
   const handleLogout = async () => {
+    clearAdminLoginGate();
     await signOut();
-    navigate('/admin/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   return (

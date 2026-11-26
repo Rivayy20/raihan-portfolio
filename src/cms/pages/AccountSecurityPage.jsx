@@ -9,6 +9,7 @@ import {
   FaSignOutAlt,
   FaUserShield,
 } from 'react-icons/fa';
+import { clearAdminLoginGate } from '../../utils/adminLoginGate';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -79,8 +80,9 @@ export function AccountSecurityPage() {
   const handleConfirmLogout = async () => {
     setIsLoggingOut(true);
     try {
+      clearAdminLoginGate();
       await signOut();
-      navigate('/admin/login', { replace: true });
+      navigate('/', { replace: true });
     } finally {
       setIsLoggingOut(false);
       setIsLogoutModalOpen(false);
