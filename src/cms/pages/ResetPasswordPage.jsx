@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { z } from 'zod';
 import {
   FaArrowLeft,
@@ -13,6 +13,22 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { useAdminNoIndex } from '../hooks/useAdminNoIndex';
 import { AdminLoadingScreen } from '../components/AdminLoadingScreen';
+import {
+  ADMIN_LOGIN_GATE_STATE,
+  unlockAdminLoginGate,
+} from '../../utils/adminLoginGate';
+
+function hasRecoveryUrlParams(location) {
+  const search = String(location?.search || '');
+  const hash = String(location?.hash || '');
+  return (
+    search.includes('code=') ||
+    search.includes('type=recovery') ||
+    search.includes('token_hash=') ||
+    hash.includes('type=recovery') ||
+    hash.includes('access_token=')
+  );
+}
 
 const resetPasswordSchema = z
   .object({
@@ -42,6 +58,7 @@ function extractFieldErrors(issues) {
 export function ResetPasswordPage() {
   useAdminNoIndex();
 
+  const location = useLocation();
   const { status, session, isRecoveryMode, updatePassword, signOut } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -51,11 +68,20 @@ export function ResetPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const hasValidRecoverySession = Boolean(session?.user || isRecoveryMode);
+  const hasRecoveryParams = hasRecoveryUrlParams(location);
+
+  if (!isSuccess && !hasValidRecoverySession && !hasRecoveryParams) {
+    return <Navigate to="/" replace />;
+  }
+
   if (status === 'loading' || status === 'verifying') {
     return <AdminLoadingScreen message="Memvalidasi tautan pemulihan..." />;
   }
 
-  const hasValidRecoverySession = Boolean(session?.user || isRecoveryMode);
+  if (!isSuccess && !hasValidRecoverySession) {
+    return <Navigate to="/" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,6 +131,8 @@ export function ResetPasswordPage() {
             </div>
             <Link
               to="/admin/login"
+              state={ADMIN_LOGIN_GATE_STATE}
+              onClick={unlockAdminLoginGate}
               className="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-xl bg-primary hover:bg-[#f25858] text-white font-semibold text-sm transition-colors"
             >
               Lanjut ke Halaman Login

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import {
@@ -14,6 +14,19 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { useAdminNoIndex } from '../hooks/useAdminNoIndex';
 import { AdminLoadingScreen } from '../components/AdminLoadingScreen';
+import {
+  clearAdminLoginGate,
+  hasAdminLoginGate,
+} from '../../utils/adminLoginGate';
+
+function hasStoredAdminSession() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return Boolean(window.localStorage.getItem('razh-cms-auth'));
+  } catch {
+    return false;
+  }
+}
 
 const loginSchema = z.object({
   email: z.string().trim().min(1, 'Email wajib diisi.').email('Format email tidak valid.'),
@@ -74,6 +87,17 @@ export function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const safeTarget = getSafeRedirectTarget(location.state);
+  const gateOpen = hasAdminLoginGate(location.state);
+
+  useEffect(() => {
+    if (isAdmin) {
+      clearAdminLoginGate();
+    }
+  }, [isAdmin]);
+
+  if (!gateOpen && !isAdmin && !hasStoredAdminSession()) {
+    return <Navigate to="/" replace />;
+  }
 
   if (status === 'loading' || status === 'verifying') {
     return <AdminLoadingScreen message="Memeriksa sesi administrator..." />;
@@ -81,6 +105,10 @@ export function LoginPage() {
 
   if (isAdmin) {
     return <Navigate to={safeTarget} replace />;
+  }
+
+  if (!gateOpen) {
+    return <Navigate to="/" replace />;
   }
 
   const displayedError = submitError || authError || '';
@@ -112,6 +140,7 @@ export function LoginPage() {
         setSubmitError(error);
         return;
       }
+      clearAdminLoginGate();
       navigate(safeTarget, { replace: true });
     } finally {
       setIsSubmitting(false);
@@ -150,6 +179,7 @@ export function LoginPage() {
         <div className="mb-6">
           <Link
             to="/"
+            onClick={clearAdminLoginGate}
             className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-primary transition-colors"
           >
             <FaArrowLeft className="text-xs" /> Kembali ke Portfolio Publik

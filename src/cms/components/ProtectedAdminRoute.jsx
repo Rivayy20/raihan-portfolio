@@ -1,10 +1,9 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { FaExclamationTriangle, FaRedo, FaSignOutAlt } from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
 import { AdminLoadingScreen } from './AdminLoadingScreen';
 
 export function ProtectedAdminRoute({ children }) {
-  const location = useLocation();
   const { status, isAdmin, isConfigured, authError, retryVerification, signOut } = useAuth();
 
   if (!isConfigured) {
@@ -62,7 +61,7 @@ export function ProtectedAdminRoute({ children }) {
   }
 
   if (!isAdmin) {
-    return <Navigate to="/admin/login" state={{ from: location }} replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children ?? <Outlet />;

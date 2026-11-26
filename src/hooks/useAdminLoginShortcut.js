@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  ADMIN_LOGIN_GATE_STATE,
+  unlockAdminLoginGate,
+} from '../utils/adminLoginGate';
 
 /**
  * Global keyboard shortcut (`Ctrl + .` / `Cmd + .`) to open `/admin/login`
@@ -38,7 +42,8 @@ export function useAdminLoginShortcut(enabled = true) {
 
       if (hasModifier && !e.altKey && !e.shiftKey && isPeriod) {
         e.preventDefault();
-        navigate('/admin/login');
+        unlockAdminLoginGate();
+        navigate('/admin/login', { state: ADMIN_LOGIN_GATE_STATE });
       }
     };
 
