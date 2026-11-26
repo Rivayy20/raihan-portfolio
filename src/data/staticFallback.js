@@ -476,4 +476,6 @@ export const STATIC_PORTFOLIO_DATA = {
     structuredDataJobTitle: 'Information Systems Student & Developer',
     structuredDataExtra: {},
   },
+  translations: {},
+  translationMeta: {},
 };

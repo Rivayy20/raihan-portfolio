@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { FaChevronUp } from 'react-icons/fa';
 import { isSpiderManPreset } from '../../constants/colorPresets';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
+import { useLanguage } from '../../hooks/useLanguage';
 import { smoothScrollTo } from '../../utils/scrollTo';
 import { SpiderIcon, WebSplatAnchor } from './SpiderManElements';
 
@@ -27,6 +28,7 @@ export const BackToTop = () => {
   const timersRef = useRef([]);
   const reduceMotion = useReducedMotion();
   const portfolioCtx = usePortfolioData();
+  const { t } = useLanguage();
   const isSpiderMan = isSpiderManPreset(portfolioCtx?.data?.settings?.colorPreset);
 
   const clearZipTimers = () => {
@@ -109,7 +111,7 @@ export const BackToTop = () => {
             className={`fixed bottom-6 right-5 md:bottom-8 md:right-8 z-40 w-11 h-11 rounded-full bg-surface/90 backdrop-blur-md border shadow-sm flex flex-col items-center justify-center text-ink hover:border-primary hover:text-primary hover:-translate-y-0.5 transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
               isSpiderMan ? 'border-primary/35' : 'border-border-strong'
             }`}
-            aria-label="Back to Top"
+            aria-label={t('common.backToTop', 'Back to Top')}
           >
             {isSpiderMan ? (
               <>

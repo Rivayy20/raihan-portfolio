@@ -13,9 +13,11 @@ import { Footer } from '../components/layout/Footer';
 import { SeoHead } from '../components/seo/SeoHead';
 import { PortfolioDataContext } from '../context/PortfolioDataContext';
 import { useTheme } from '../hooks/useTheme';
+import { useLanguage } from '../hooks/useLanguage';
 import { useAdminLoginShortcut } from '../hooks/useAdminLoginShortcut';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import { usePublicPortfolio } from '../hooks/usePublicPortfolio';
+import { applyPortfolioTranslations } from '../utils/i18n';
 import { savePublicThemeSnapshot } from '../utils/themeTokens';
 
 const DEFAULT_SECTION_KEYS = ['hero', 'about', 'expertise', 'projects', 'contact'];
@@ -91,7 +93,7 @@ function PublicLoadingSkeleton() {
 
   return (
     <div
-      className="min-h-screen bg-canvas text-ink overflow-x-hidden"
+      className="min-h-screen bg-canvas text-ink overflow-x-clip"
       aria-busy="true"
       aria-label="Loading portfolio"
     >
@@ -278,17 +280,23 @@ export function PublicPortfolioPage() {
 
   const introEnabled = data?.settings?.themeConfig?.effects?.loadingIntro !== false;
   const introReady = introPhase === 'done' || !introEnabled;
+  const { locale } = useLanguage();
+
+  const localizedData = useMemo(
+    () => (data ? applyPortfolioTranslations(data, locale) : null),
+    [data, locale]
+  );
 
   const contextValue = useMemo(() => {
-    if (!data) return null;
+    if (!localizedData) return null;
     return {
-      data,
+      data: localizedData,
       isPreview: false,
       previewMode: 'published',
       previewOffsetTop: 0,
       introReady,
     };
-  }, [data, introReady]);
+  }, [localizedData, introReady]);
 
   const showIntroOverlay = introPhase === 'loading' && introEnabled;
 

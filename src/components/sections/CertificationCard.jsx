@@ -11,23 +11,28 @@ import {
 } from 'react-icons/fa';
 import { DocumentViewerModal } from '../ui/DocumentViewerModal';
 import { getCertificationCardColor } from '../../constants/colorPresets';
+import { useLanguage } from '../../hooks/useLanguage';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 const VERIFICATION_STATUS_META = {
   verified: {
     dotClass: 'text-emerald-600 dark:text-emerald-400',
+    labelKey: 'about.certVerified',
     label: 'Verified Credential',
   },
   in_progress: {
     dotClass: 'text-amber-600 dark:text-amber-400',
+    labelKey: 'about.certInProgress',
     label: 'In Progress',
   },
   expired: {
     dotClass: 'text-red-600 dark:text-red-400',
+    labelKey: 'about.certExpired',
     label: 'Expired',
   },
   unverified: {
     dotClass: 'text-muted',
+    labelKey: 'about.certUnverified',
     label: 'Unverified',
   },
 };
@@ -48,6 +53,7 @@ export const CertificationCard = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const reduceMotion = useReducedMotion();
+  const { t } = useLanguage();
 
   const cardColorClass = color || getCertificationCardColor(colorPreset);
   const statusMeta =
@@ -99,7 +105,7 @@ export const CertificationCard = ({
             </h4>
             <p className="font-body text-xs text-muted inline-flex items-center gap-1.5">
               <FaCheckCircle aria-hidden="true" className={statusMeta.dotClass} />
-              <span>{statusMeta.label}</span>
+              <span>{t(statusMeta.labelKey, statusMeta.label)}</span>
             </p>
           </div>
         </div>
@@ -107,7 +113,11 @@ export const CertificationCard = ({
         <div className="mt-5">
           {/* Footer Action Row */}
           <div className="pt-3.5 border-t border-border-subtle flex items-center justify-between text-xs font-medium text-muted group-hover:text-primary transition-colors duration-300">
-            <span>{isExpanded ? 'Hide Details' : 'View Credential'}</span>
+            <span>
+              {isExpanded
+                ? t('about.hideCredential', 'Hide Details')
+                : t('about.viewCredential', 'View Credential')}
+            </span>
             {isExpanded ? (
               <FaChevronDown
                 aria-hidden="true"
@@ -136,7 +146,7 @@ export const CertificationCard = ({
                 <div className="pt-4 mt-3.5 border-t border-border-subtle space-y-3 text-sm">
                   <div>
                     <p className="font-body text-[11px] font-medium uppercase tracking-wider text-muted">
-                      Credential Name
+                      {t('about.credentialName', 'Credential Name')}
                     </p>
                     <p className="font-body font-medium text-ink mt-0.5">
                       {credentialName || title}
@@ -146,7 +156,7 @@ export const CertificationCard = ({
                   {id && (
                     <div>
                       <p className="font-body text-[11px] font-medium uppercase tracking-wider text-muted">
-                        Credential ID
+                        {t('about.credentialId', 'Credential ID')}
                       </p>
                       <p className="font-mono text-xs text-ink/90 mt-0.5 break-all">
                         {id}
@@ -165,7 +175,8 @@ export const CertificationCard = ({
                           }}
                           className="inline-flex items-center justify-center gap-2 rounded-full bg-ink text-canvas hover:bg-primary hover:text-[#171719] px-4 py-2 text-xs font-medium transition-colors cursor-pointer"
                         >
-                          <FaFilePdf aria-hidden="true" /> View Certificate
+                          <FaFilePdf aria-hidden="true" />{' '}
+                          {t('about.viewCertificate', 'View Certificate')}
                         </button>
                       )}
                       {verificationUrl && (
@@ -180,7 +191,7 @@ export const CertificationCard = ({
                             aria-hidden="true"
                             className="text-[10px] transition-transform duration-200 group-hover/link:translate-x-0.5"
                           />{' '}
-                          Verify
+                          {t('about.verify', 'Verify')}
                         </a>
                       )}
                     </div>

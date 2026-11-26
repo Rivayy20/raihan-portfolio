@@ -148,6 +148,7 @@ export async function fetchPreviewPortfolioData({ mode = 'draft' } = {}) {
     footerRes,
     seoRes,
     mediaAssetsRes,
+    translationsRes,
   ] = await Promise.all([
     client.from('site_settings').select('*').eq('id', 1).maybeSingle(),
     client.from('site_sections').select('*'),
@@ -169,6 +170,9 @@ export async function fetchPreviewPortfolioData({ mode = 'draft' } = {}) {
     client
       .from('media_assets')
       .select('id, bucket_id, storage_path, public_url, alt_text, is_public'),
+    client
+      .from('portfolio_translations')
+      .select('locale, source_locale, translations, publication_status, published_at, updated_at'),
   ]);
 
   const queryPairs = [
@@ -218,6 +222,7 @@ export async function fetchPreviewPortfolioData({ mode = 'draft' } = {}) {
     social_links: socialLinksRes.data || [],
     footer_settings: footerRes.data,
     seo_settings: seoRes.data,
+    portfolio_translations: translationsRes?.error ? [] : translationsRes?.data || [],
   };
 
   const referencedIds = collectReferencedMediaIds(raw);

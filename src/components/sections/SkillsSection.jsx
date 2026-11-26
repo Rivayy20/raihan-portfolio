@@ -6,6 +6,7 @@ import { getSkillIconComponent } from '../../constants/iconRegistry';
 import { getSkillCategoryColor } from '../../constants/colorPresets';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
 import { useTheme } from '../../hooks/useTheme';
+import { useLanguage } from '../../hooks/useLanguage';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 import { SpiderIcon } from '../ui/SpiderManElements';
 
@@ -104,6 +105,7 @@ const CategoryMarqueeCard = ({
   onSelectSkill,
 }) => {
   const [hoveredSkill, setHoveredSkill] = useState(null);
+  const { t } = useLanguage();
 
   const categoryTint = getSkillCategoryColor(category.colorPreset);
 
@@ -146,13 +148,17 @@ const CategoryMarqueeCard = ({
 
   const tierSummary = useMemo(() => {
     const parts = [];
-    if ((category.primary || []).length > 0) parts.push('Primary Stack');
-    if ((category.supporting || []).length > 0) parts.push('Supporting');
+    if ((category.primary || []).length > 0) {
+      parts.push(t('expertise.primaryStack', 'Primary Stack'));
+    }
+    if ((category.supporting || []).length > 0) {
+      parts.push(t('expertise.supporting', 'Supporting'));
+    }
     if ((category.exploring || []).length > 0) {
       parts.push(category.learningLabel || 'Exploring');
     }
     return parts.join(' · ');
-  }, [category]);
+  }, [category, t]);
 
   const itemVariants = {
     hidden: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 14 },
@@ -183,7 +189,7 @@ const CategoryMarqueeCard = ({
             {category.category}
           </h3>
           <span className="font-body text-xs text-muted shrink-0">
-            {skills.length} skills
+            {skills.length} {t('expertise.skillsUnit', 'skills')}
           </span>
         </div>
 
@@ -255,13 +261,16 @@ const CategoryMarqueeCard = ({
               inspectedSkill.projects.length > 0 ? (
                 <span>
                   {' '}
-                  · Applied in{' '}
+                  · {t('expertise.appliedIn', 'Applied in')}{' '}
                   <span className="text-ink/85">
                     {inspectedSkill.projects.join(', ')}
                   </span>
                 </span>
               ) : (
-                <span> · Core stack & ongoing learning</span>
+                <span>
+                  {' '}
+                  · {t('expertise.coreStackNote', 'Core stack & ongoing learning')}
+                </span>
               )}
             </p>
           ) : (
@@ -285,6 +294,7 @@ const WebSkillNetworkCard = ({
   isSpiderMan = false,
 }) => {
   const [hoveredSkill, setHoveredSkill] = useState(null);
+  const { t } = useLanguage();
   const arenaRef = useRef(null);
   const hubRef = useRef(null);
   const nodeElsRef = useRef(new Map());
@@ -503,7 +513,7 @@ const WebSkillNetworkCard = ({
             </h3>
           </div>
           <span className="font-body text-xs text-muted shrink-0">
-            {skills.length} nodes
+            {skills.length} {t('expertise.nodesUnit', 'nodes')}
           </span>
         </div>
 
@@ -723,13 +733,16 @@ const WebSkillNetworkCard = ({
                 inspectedSkill.projects.length > 0 ? (
                   <span>
                     {' '}
-                    · Applied in{' '}
+                    · {t('expertise.appliedIn', 'Applied in')}{' '}
                     <span className="text-ink/85">
                       {inspectedSkill.projects.join(', ')}
                     </span>
                   </span>
                 ) : (
-                  <span> · Core node &amp; active stack</span>
+                  <span>
+                    {' '}
+                    · {t('expertise.coreNodeNote', 'Core node & active stack')}
+                  </span>
                 )}
               </motion.p>
             ) : (
@@ -741,7 +754,7 @@ const WebSkillNetworkCard = ({
                 transition={{ duration: 0.18, ease: EDITORIAL_EASE }}
                 className="font-body text-[11px] uppercase tracking-[0.16em] text-muted/80 truncate w-full"
               >
-                Hover or select a node to trace connections
+                {t('expertise.hoverHint', 'Hover or select a node to trace connections')}
               </motion.p>
             )}
           </AnimatePresence>
@@ -754,6 +767,7 @@ const WebSkillNetworkCard = ({
 export const SkillsSection = ({ sectionConfig }) => {
   const { data } = usePortfolioData();
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const { expertise } = data;
   const [selectedSkillKey, setSelectedSkillKey] = useState(null);
   const [viewMode, setViewMode] = useState('network');
@@ -791,7 +805,7 @@ export const SkillsSection = ({ sectionConfig }) => {
   return (
     <Section
       id="expertise"
-      eyebrow="02 / Expertise"
+      eyebrow={t('expertise.eyebrow', '02 / Expertise')}
       title={sectionConfig?.title || 'Core Expertise'}
       subtitle={
         sectionConfig?.subtitle ||
@@ -811,7 +825,7 @@ export const SkillsSection = ({ sectionConfig }) => {
                   : 'text-muted hover:text-ink'
               }`}
             >
-              Web Network
+              {t('expertise.webNetworkTab', 'Web Network')}
             </button>
             <button
               type="button"
@@ -822,7 +836,7 @@ export const SkillsSection = ({ sectionConfig }) => {
                   : 'text-muted hover:text-ink'
               }`}
             >
-              Marquee
+              {t('expertise.marqueeTab', 'Marquee')}
             </button>
           </div>
         </div>

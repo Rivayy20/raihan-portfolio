@@ -332,8 +332,8 @@ export const HeroSection = () => {
 
       {webBackgroundEnabled && (
         <motion.div
-          key={replayOnScroll ? (heroActive ? 'hero-web-in' : 'hero-web-out') : 'hero-web-once'}
           aria-hidden="true"
+          key={replayOnScroll ? (heroActive ? 'hero-web-in' : 'hero-web-out') : 'hero-web-once'}
           style={!reduceMotion ? { x: bgParallaxX, y: bgParallaxY } : undefined}
           className="pointer-events-none absolute inset-0 -z-20"
         >

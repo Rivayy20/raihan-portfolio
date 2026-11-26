@@ -57,6 +57,15 @@ export function writeCachedPublicPortfolio(data) {
   }
 }
 
+export function clearCachedPublicPortfolio() {
+  if (typeof window === 'undefined') return;
+  try {
+    sessionStorage.removeItem(PUBLIC_CACHE_KEY);
+  } catch {
+    // Ignore storage access errors
+  }
+}
+
 function buildPublicMediaLookup(mediaRows = []) {
   const lookup = {};
   for (const asset of mediaRows) {
@@ -174,6 +183,7 @@ export async function fetchPublicPortfolioData() {
       footerSettings,
       seoSettings,
       mediaAssets,
+      portfolioTranslations,
     ] = await Promise.all([
       fetchPublishedSiteSettings(),
       fetchVisibleCollection('site_sections'),
@@ -202,6 +212,11 @@ export async function fetchPublicPortfolioData() {
         columns: PUBLIC_COLUMNS.media_assets,
         filters: ['is_public=eq.true'],
       }),
+      fetchPublicRest({
+        table: 'portfolio_translations',
+        columns: PUBLIC_COLUMNS.portfolio_translations,
+        filters: ['publication_status=eq.published'],
+      }).catch(() => []),
     ]);
 
     const raw = {
@@ -222,6 +237,7 @@ export async function fetchPublicPortfolioData() {
       social_links: socialLinks || [],
       footer_settings: footerSettings,
       seo_settings: seoSettings,
+      portfolio_translations: portfolioTranslations || [],
     };
 
     const mediaLookup = buildPublicMediaLookup(mediaAssets || []);

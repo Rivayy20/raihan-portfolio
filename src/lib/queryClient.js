@@ -41,4 +41,5 @@ export const QUERY_KEYS = {
   cmsMedia: ['cms', 'media'],
   cmsRevisions: ['cms', 'revisions'],
   cmsPreview: ['cms', 'preview'],
+  cmsTranslations: ['cms', 'translations'],
 };

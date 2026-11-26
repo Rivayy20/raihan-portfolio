@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
@@ -7,7 +7,8 @@ import { SpiderIcon } from '../ui/SpiderManElements';
 import { getProjectPanelColor, isSpiderManPreset } from '../../constants/colorPresets';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
 import { useTheme } from '../../hooks/useTheme';
-import { smoothScrollTo } from '../../utils/scrollTo';
+import { useLanguage } from '../../hooks/useLanguage';
+import { scrollToElement, smoothScrollTo } from '../../utils/scrollTo';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 import {
   FaExternalLinkAlt,
@@ -76,32 +77,70 @@ function normalizeGalleryImage(img, projectTitle, idx) {
 export const ProjectsSection = ({ sectionConfig }) => {
   const { data } = usePortfolioData();
   const { resolvedTheme } = useTheme();
-  const projects = data.projects || [];
+  const { t } = useLanguage();
+  const allProjects = useMemo(() => data.projects || [], [data.projects]);
   const isSpiderMan =
     resolvedTheme?.isSpiderMan || isSpiderManPreset(data?.settings?.colorPreset);
   const projectHoverEnabled = resolvedTheme?.config?.effects?.projectHover !== false;
   const viewportOnce = resolvedTheme?.config?.animation?.replayOnScroll === false;
   const reduceMotion = useReducedMotion();
 
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [[page, direction], setPage] = useState([0, 0]);
   const [activeImageByProject, setActiveImageByProject] = useState({});
+  const showcaseRef = useRef(null);
   const [lightboxData, setLightboxData] = useState({
     project: null,
     activeIndex: 0,
     isOpen: false,
   });
 
+  const categories = useMemo(() => {
+    const seen = new Map();
+    for (const item of allProjects) {
+      const cat = String(item?.category || '').trim();
+      if (!cat) continue;
+      seen.set(cat, (seen.get(cat) || 0) + 1);
+    }
+    return Array.from(seen.entries()).map(([name, count]) => ({ name, count }));
+  }, [allProjects]);
+
+  const showCategoryFilter = allProjects.length > 4 && categories.length > 1;
+  const activeCategory =
+    showCategoryFilter &&
+    selectedCategory !== 'all' &&
+    categories.some((c) => c.name === selectedCategory)
+      ? selectedCategory
+      : 'all';
+
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === 'all') return allProjects;
+    return allProjects.filter(
+      (item) => String(item?.category || '').trim() === activeCategory
+    );
+  }, [allProjects, activeCategory]);
+
   const openLightbox = (selectedProject, index) => {
     setLightboxData({ project: selectedProject, activeIndex: index, isOpen: true });
   };
 
-  const paginate = (newDirection) => {
-    if (projects.length <= 1) return;
+  const scrollToShowcaseTop = () => {
+    if (typeof window === 'undefined') return;
+    window.requestAnimationFrame(() => {
+      scrollToElement(showcaseRef.current, { duration: 0.65 });
+    });
+  };
+
+  const paginate = (newDirection, { scrollTop = false } = {}) => {
+    if (filteredProjects.length <= 1) return;
     setPage(([prevPage]) => [prevPage + newDirection, newDirection]);
+    if (scrollTop) {
+      scrollToShowcaseTop();
+    }
   };
 
   useEffect(() => {
-    if (projects.length <= 1 || lightboxData.isOpen) return undefined;
+    if (filteredProjects.length <= 1 || lightboxData.isOpen) return undefined;
 
     const handleKeyDown = (e) => {
       const target = e.target;
@@ -124,7 +163,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [projects.length, lightboxData.isOpen]);
+  }, [filteredProjects.length, lightboxData.isOpen]);
 
   const title = sectionConfig?.title || 'Featured Projects';
   const subtitle =
@@ -183,7 +222,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
     },
   });
 
-  if (projects.length === 0) {
+  if (allProjects.length === 0) {
     return (
       <section id="projects" className="py-20 sm:py-28 md:py-32 scroll-mt-24">
         <div className="flex flex-col gap-12 sm:gap-14">
@@ -200,7 +239,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
               ) : (
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
               )}
-              03 / Selected Work
+              {t('projects.eyebrow', '03 / Selected Work')}
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.03em] leading-[1.08] text-ink">
               {title}
@@ -214,7 +253,10 @@ export const ProjectsSection = ({ sectionConfig }) => {
 
           <Card className="p-10 text-center">
             <p className="font-body text-base text-muted">
-              Projects are currently being updated. Check back soon.
+              {t(
+                'projects.emptyNotice',
+                'Projects are currently being updated. Check back soon.'
+              )}
             </p>
           </Card>
         </div>
@@ -222,8 +264,11 @@ export const ProjectsSection = ({ sectionConfig }) => {
     );
   }
 
-  const carouselIndex = ((page % projects.length) + projects.length) % projects.length;
-  const project = projects[carouselIndex];
+  const carouselIndex =
+    ((page % filteredProjects.length) + filteredProjects.length) %
+    filteredProjects.length;
+  const project = filteredProjects[carouselIndex];
+  const useCompactProgress = filteredProjects.length > 6;
   const projectKey = project.id || project.title || String(carouselIndex);
   const projectBackdrop = getProjectPanelColor(project.colorPreset);
   const projectImages = (project.images || []).map((img, idx) =>
@@ -270,7 +315,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
             ) : (
               <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
             )}
-            03 / Selected Work
+            {t('projects.eyebrow', '03 / Selected Work')}
           </motion.span>
 
           <motion.h2
@@ -290,9 +335,55 @@ export const ProjectsSection = ({ sectionConfig }) => {
           )}
         </motion.div>
 
-        <div className="flex flex-col gap-5">
-          {/* Top Navigation Bar & Tabular Project Counter */}
-          {projects.length > 1 && (
+        <div ref={showcaseRef} className="relative flex flex-col gap-5 scroll-mt-24">
+          {/* Automatic Category Filter Strip (activates when > 4 projects span multiple categories) */}
+          {showCategoryFilter && (
+            <div
+              role="group"
+              aria-label="Filter projects by category"
+              className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setPage([0, 0]);
+                }}
+                aria-pressed={activeCategory === 'all'}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full border font-body text-xs font-medium transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                  activeCategory === 'all'
+                    ? 'bg-primary border-primary text-(--color-on-primary) shadow-xs'
+                    : 'bg-surface border-border-subtle text-muted hover:text-ink hover:border-border-strong'
+                }`}
+              >
+                {t('projects.allCategories', 'All')} ({allProjects.length})
+              </button>
+              {categories.map((cat) => {
+                const isSelected = activeCategory === cat.name;
+                return (
+                  <button
+                    key={cat.name}
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategory(cat.name);
+                      setPage([0, 0]);
+                    }}
+                    aria-pressed={isSelected}
+                    className={`shrink-0 px-3.5 py-1.5 rounded-full border font-body text-xs font-medium transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                      isSelected
+                        ? 'bg-primary border-primary text-(--color-on-primary) shadow-xs'
+                        : 'bg-surface border-border-subtle text-muted hover:text-ink hover:border-border-strong'
+                    }`}
+                  >
+                    {cat.name} ({cat.count})
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Top Navigation Bar & Tabular Project Counter (Arrows shown on Desktop) */}
+          {filteredProjects.length > 1 && (
             <motion.div
               variants={revealBlock(0.28)}
               initial={reduceMotion ? false : 'hidden'}
@@ -301,11 +392,11 @@ export const ProjectsSection = ({ sectionConfig }) => {
               className="flex items-center justify-between gap-4"
             >
               <div className="inline-flex items-center gap-2 font-heading text-xs sm:text-sm font-medium tracking-[0.18em] text-muted tabular-nums">
-                <span>PROJECT</span>
+                <span>{t('projects.projectLabel', 'PROJECT')}</span>
                 <span className="inline-flex items-center justify-center min-w-6 overflow-hidden">
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.span
-                      key={carouselIndex}
+                      key={`${activeCategory}-${carouselIndex}`}
                       initial={reduceMotion ? false : { y: 8, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       exit={reduceMotion ? undefined : { y: -8, opacity: 0 }}
@@ -316,14 +407,14 @@ export const ProjectsSection = ({ sectionConfig }) => {
                     </motion.span>
                   </AnimatePresence>
                 </span>
-                <span>/ {String(projects.length).padStart(2, '0')}</span>
+                <span>/ {String(filteredProjects.length).padStart(2, '0')}</span>
               </div>
 
-              <div className="flex items-center gap-2.5">
+              <div className="hidden lg:flex items-center gap-2.5">
                 <button
                   type="button"
                   onClick={() => paginate(-1)}
-                  aria-label="Previous Project"
+                  aria-label={t('projects.previousProject', 'Previous Project')}
                   className="group w-10 h-10 rounded-full border border-border-subtle bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-surface-subtle hover:border-primary/60 transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
                   <FaArrowLeft
@@ -334,7 +425,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
                 <button
                   type="button"
                   onClick={() => paginate(1)}
-                  aria-label="Next Project"
+                  aria-label={t('projects.nextProject', 'Next Project')}
                   className="group w-10 h-10 rounded-full border border-border-subtle bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-surface-subtle hover:border-primary/60 transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
                   <FaArrowRight
@@ -356,17 +447,17 @@ export const ProjectsSection = ({ sectionConfig }) => {
           >
             <AnimatePresence mode="popLayout" custom={direction} initial={false}>
               <motion.div
-                key={page}
+                key={`${activeCategory}-${page}`}
                 custom={direction}
                 variants={reduceMotion ? undefined : carouselVariants}
                 initial={reduceMotion ? false : 'enter'}
                 animate="center"
                 exit={reduceMotion ? undefined : 'exit'}
-                drag={projects.length > 1 && !reduceMotion ? 'x' : false}
+                drag={filteredProjects.length > 1 && !reduceMotion ? 'x' : false}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.4}
                 onDragEnd={(e, { offset, velocity }) => {
-                  if (projects.length <= 1) return;
+                  if (filteredProjects.length <= 1) return;
                   const swipe = swipePower(offset.x, velocity.x);
                   if (swipe < -swipeConfidenceThreshold) {
                     paginate(1);
@@ -394,7 +485,9 @@ export const ProjectsSection = ({ sectionConfig }) => {
                     {projectImages.length === 0 ? (
                       <div className="aspect-16/10 rounded-xl bg-surface/75 border border-border-subtle flex flex-col items-center justify-center p-6 text-center text-muted">
                         <FaImages aria-hidden="true" className="text-3xl mb-2 opacity-50" />
-                        <p className="text-sm font-medium">Preview coming soon</p>
+                        <p className="text-sm font-medium">
+                          {t('projects.previewComingSoon', 'Preview coming soon')}
+                        </p>
                       </div>
                     ) : (
                       <>
@@ -433,7 +526,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
                           {/* Subtle View Preview Pill on Hover */}
                           <span className="pointer-events-none absolute bottom-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-[#171719]/82 text-[#F6F3EE] backdrop-blur-md px-3 py-1.5 text-[11px] font-medium opacity-0 translate-y-1 group-hover/preview:opacity-100 group-hover/preview:translate-y-0 transition-all duration-200">
                             <FaExpandAlt aria-hidden="true" className="text-[10px]" />
-                            <span>View Preview</span>
+                            <span>{t('projects.viewPreview', 'View Preview')}</span>
                           </span>
                         </button>
 
@@ -523,7 +616,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
                         {project.problem && (
                           <div>
                             <h4 className="font-body text-[11px] font-medium uppercase tracking-[0.16em] text-muted mb-1">
-                              Challenge
+                              {t('projects.challenge', 'Challenge')}
                             </h4>
                             <p className="font-body text-sm text-ink/85 leading-relaxed">
                               {project.problem}
@@ -534,7 +627,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
                         {project.solution && (
                           <div>
                             <h4 className="font-body text-[11px] font-medium uppercase tracking-[0.16em] text-muted mb-1">
-                              Solution
+                              {t('projects.solution', 'Solution')}
                             </h4>
                             <p className="font-body text-sm text-ink/85 leading-relaxed">
                               {project.solution}
@@ -545,7 +638,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
                         {outcomeList.length > 0 && (
                           <div>
                             <h4 className="font-body text-[11px] font-medium uppercase tracking-[0.16em] text-muted mb-1.5">
-                              Key Outcomes
+                              {t('projects.keyOutcomes', 'Key Outcomes')}
                             </h4>
                             <ul className="space-y-1">
                               {outcomeList.map((item, idx) => (
@@ -569,7 +662,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
                       {project.tech && project.tech.length > 0 && (
                         <motion.div variants={infoItemVariants} className="pt-1">
                           <h4 className="font-body text-[11px] font-medium uppercase tracking-[0.16em] text-muted mb-2">
-                            Technologies Used
+                            {t('projects.technologiesUsed', 'Technologies Used')}
                           </h4>
                           <div className="flex flex-wrap gap-1.5">
                             {project.tech.map((tech, i) => (
@@ -603,7 +696,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
                             }
                             className="group inline-flex items-center justify-center gap-2 rounded-full bg-ink text-canvas hover:bg-primary hover:text-[#171719] hover:-translate-y-0.5 px-6 py-2.5 text-xs sm:text-sm font-medium transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                           >
-                            <span>Live Demo</span>
+                            <span>{t('projects.liveDemo', 'Live Demo')}</span>
                             <FaExternalLinkAlt
                               aria-hidden="true"
                               className="text-[11px] transition-transform duration-200 group-hover:translate-x-0.5"
@@ -618,7 +711,7 @@ export const ProjectsSection = ({ sectionConfig }) => {
                             className="inline-flex items-center justify-center gap-2 rounded-full border border-border-strong px-6 py-2.5 text-xs sm:text-sm font-medium text-ink hover:bg-surface-subtle hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                           >
                             <FaGithub aria-hidden="true" />
-                            <span>Source Code</span>
+                            <span>{t('projects.sourceCode', 'Source Code')}</span>
                           </a>
                         )}
                       </motion.div>
@@ -629,51 +722,107 @@ export const ProjectsSection = ({ sectionConfig }) => {
             </AnimatePresence>
           </motion.div>
 
-          {/* Minimalist Horizontal Segmented Progress Indicator */}
-          {projects.length > 1 && (
+          {/* Bottom Navigation Bar (Mobile Prev/Next Thumb-Zone) & Adaptive Progress Indicator */}
+          {filteredProjects.length > 1 && (
             <motion.div
               variants={revealBlock(0.44)}
               initial={reduceMotion ? false : 'hidden'}
               whileInView="visible"
               viewport={{ once: viewportOnce, amount: 0.2 }}
-              className="flex items-center justify-center pt-1"
+              className="flex items-center justify-between lg:justify-center gap-3.5 pt-2"
             >
-              <div
-                className="flex items-center gap-2 w-full max-w-xs"
-                role="group"
-                aria-label="Project progress"
+              <button
+                type="button"
+                onClick={() => paginate(-1, { scrollTop: true })}
+                aria-label={t('projects.previousProject', 'Previous Project')}
+                className="lg:hidden group w-11 h-11 shrink-0 rounded-full border border-border-subtle bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-surface-subtle hover:border-primary/60 active:scale-95 transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
-                {projects.map((item, idx) => {
-                  const isCurrent = idx === carouselIndex;
-                  return (
-                    <button
-                      type="button"
-                      key={item.id || idx}
-                      onClick={() => {
-                        if (idx === carouselIndex) return;
-                        const newDirection = idx > carouselIndex ? 1 : -1;
-                        setPage([idx, newDirection]);
+                <FaArrowLeft
+                  aria-hidden="true"
+                  className="text-xs transition-transform duration-200 group-hover:-translate-x-0.5"
+                />
+              </button>
+
+              {useCompactProgress ? (
+                <div
+                  className="flex-1 lg:flex-none flex items-center gap-3 lg:w-full max-w-xs"
+                  role="progressbar"
+                  aria-label="Project progress"
+                  aria-valuemin={1}
+                  aria-valuemax={filteredProjects.length}
+                  aria-valuenow={carouselIndex + 1}
+                >
+                  <span className="font-heading text-[11px] font-semibold tracking-[0.14em] text-muted tabular-nums shrink-0">
+                    {String(carouselIndex + 1).padStart(2, '0')} /{' '}
+                    {String(filteredProjects.length).padStart(2, '0')}
+                  </span>
+                  <div className="relative flex-1 h-1.5 rounded-full bg-border-subtle overflow-hidden">
+                    <motion.span
+                      initial={false}
+                      animate={{
+                        scaleX: (carouselIndex + 1) / filteredProjects.length,
                       }}
-                      aria-label={`Go to project ${idx + 1}: ${item.title}`}
-                      aria-current={isCurrent ? 'step' : undefined}
-                      className="relative flex-1 py-2 cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded"
-                    >
-                      <span className="relative block h-1 w-full rounded-full bg-border-subtle group-hover:bg-border-strong transition-colors overflow-hidden">
-                        {isCurrent && (
-                          <motion.span
-                            layoutId="projects-active-progress"
-                            transition={{
-                              duration: reduceMotion ? 0 : 0.45,
-                              ease: EDITORIAL_EASE,
-                            }}
-                            className="absolute inset-0 rounded-full bg-primary"
-                          />
-                        )}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+                      transition={{
+                        duration: reduceMotion ? 0 : 0.4,
+                        ease: EDITORIAL_EASE,
+                      }}
+                      className="absolute inset-0 origin-left rounded-full bg-primary"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="flex-1 lg:flex-none flex items-center gap-2 lg:w-full max-w-xs"
+                  role="group"
+                  aria-label="Project progress"
+                >
+                  {filteredProjects.map((item, idx) => {
+                    const isCurrent = idx === carouselIndex;
+                    return (
+                      <button
+                        type="button"
+                        key={item.id || idx}
+                        onClick={() => {
+                          if (idx === carouselIndex) return;
+                          const newDirection = idx > carouselIndex ? 1 : -1;
+                          setPage([idx, newDirection]);
+                          if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                            scrollToShowcaseTop();
+                          }
+                        }}
+                        aria-label={`Go to project ${idx + 1}: ${item.title}`}
+                        aria-current={isCurrent ? 'step' : undefined}
+                        className="relative flex-1 py-2 cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded"
+                      >
+                        <span className="relative block h-1 w-full rounded-full bg-border-subtle group-hover:bg-border-strong transition-colors overflow-hidden">
+                          {isCurrent && (
+                            <motion.span
+                              layoutId="projects-active-progress"
+                              transition={{
+                                duration: reduceMotion ? 0 : 0.45,
+                                ease: EDITORIAL_EASE,
+                              }}
+                              className="absolute inset-0 rounded-full bg-primary"
+                            />
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => paginate(1, { scrollTop: true })}
+                aria-label={t('projects.nextProject', 'Next Project')}
+                className="lg:hidden group w-11 h-11 shrink-0 rounded-full border border-border-subtle bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-surface-subtle hover:border-primary/60 active:scale-95 transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              >
+                <FaArrowRight
+                  aria-hidden="true"
+                  className="text-xs transition-transform duration-200 group-hover:translate-x-0.5"
+                />
+              </button>
             </motion.div>
           )}
         </div>

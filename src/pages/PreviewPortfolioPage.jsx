@@ -17,7 +17,9 @@ import { AuthProvider } from '../cms/context/AuthProvider';
 import { ProtectedAdminRoute } from '../cms/components/ProtectedAdminRoute';
 import { useAuth } from '../cms/hooks/useAuth';
 import { useAdminNoIndex } from '../cms/hooks/useAdminNoIndex';
+import { useLanguage } from '../hooks/useLanguage';
 import { fetchPreviewPortfolioData } from '../cms/services/previewPortfolioService';
+import { applyPortfolioTranslations } from '../utils/i18n';
 import { PortfolioPresentation } from './PublicPortfolioPage';
 
 function PreviewBanner({
@@ -152,16 +154,21 @@ function PreviewShell() {
   });
 
   const mappedData = previewQuery.data?.data;
+  const { locale } = useLanguage();
+  const localizedData = useMemo(
+    () => (mappedData ? applyPortfolioTranslations(mappedData, locale) : null),
+    [mappedData, locale]
+  );
 
   const contextValue = useMemo(() => {
-    if (!mappedData) return null;
+    if (!localizedData) return null;
     return {
-      data: mappedData,
+      data: localizedData,
       isPreview: true,
       previewMode,
       previewOffsetTop: bannerHeight,
     };
-  }, [mappedData, previewMode, bannerHeight]);
+  }, [localizedData, previewMode, bannerHeight]);
 
   return (
     <div>

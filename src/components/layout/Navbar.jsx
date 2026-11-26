@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { FaMoon, FaSun, FaBars, FaTimes } from 'react-icons/fa';
 import { isSpiderManPreset } from '../../constants/colorPresets';
 import { useTheme } from '../../hooks/useTheme';
+import { useLanguage } from '../../hooks/useLanguage';
 import { DocumentViewerModal } from '../ui/DocumentViewerModal';
 import { SpiderIcon } from '../ui/SpiderManElements';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
@@ -16,6 +17,43 @@ import { smoothScrollTo } from '../../utils/scrollTo';
 
 function isExternalHref(href = '') {
   return /^https?:\/\//i.test(String(href).trim());
+}
+
+function LanguageToggle({ locale, setLocale, t, className = '' }) {
+  return (
+    <div
+      role="group"
+      aria-label={t('common.switchLanguage', 'Switch Language')}
+      className={`items-center p-0.5 rounded-full border border-border-subtle bg-surface/65 backdrop-blur-sm ${className}`}
+    >
+      <button
+        type="button"
+        onClick={() => setLocale('en')}
+        aria-pressed={locale === 'en'}
+        aria-label={t('common.switchToEnglish', 'Switch to English')}
+        className={`px-2.5 py-1 rounded-full font-body text-[11px] font-semibold tracking-wider transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+          locale === 'en'
+            ? 'bg-primary text-(--color-on-primary) shadow-xs'
+            : 'text-muted hover:text-ink'
+        }`}
+      >
+        EN
+      </button>
+      <button
+        type="button"
+        onClick={() => setLocale('id')}
+        aria-pressed={locale === 'id'}
+        aria-label={t('common.switchToIndonesian', 'Switch to Indonesian')}
+        className={`px-2.5 py-1 rounded-full font-body text-[11px] font-semibold tracking-wider transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+          locale === 'id'
+            ? 'bg-primary text-(--color-on-primary) shadow-xs'
+            : 'text-muted hover:text-ink'
+        }`}
+      >
+        ID
+      </button>
+    </div>
+  );
 }
 
 export const Navbar = () => {
@@ -30,6 +68,7 @@ export const Navbar = () => {
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
   const brandTapTimestampsRef = useRef([]);
   const { theme, toggleTheme } = useTheme();
+  const { locale, setLocale, t } = useLanguage();
 
   const navLinks = useMemo(
     () =>
@@ -48,6 +87,7 @@ export const Navbar = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 24);
     };
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -134,10 +174,10 @@ export const Navbar = () => {
     <>
       <header
         style={{ top: previewOffsetTop || 0 }}
-        className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed left-0 right-0 z-50 border-b transition-colors duration-300 ${
           scrolled
-            ? 'editorial-glass border-b border-border-subtle'
-            : 'bg-transparent'
+            ? 'editorial-glass border-border-subtle'
+            : 'bg-transparent border-transparent'
         }`}
       >
         <div className="max-w-6xl xl:max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 h-16 md:h-20 flex items-center justify-between gap-4">
@@ -202,13 +242,21 @@ export const Navbar = () => {
           </nav>
 
           {/* Right Utility Actions */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Bilingual EN / ID Switcher (Desktop topbar; moved into drawer on mobile) */}
+            <LanguageToggle
+              locale={locale}
+              setLocale={setLocale}
+              t={t}
+              className="hidden lg:inline-flex"
+            />
+
             {settings?.showThemeToggle !== false && (
               <button
                 type="button"
                 onClick={toggleTheme}
                 className="w-9 h-9 rounded-full border border-border-subtle bg-surface/60 hover:bg-surface hover:border-border-strong flex items-center justify-center text-muted hover:text-ink transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                aria-label="Toggle Dark Mode"
+                aria-label={t('common.toggleDarkMode', 'Toggle Dark Mode')}
               >
                 {theme === 'dark' ? (
                   <FaSun aria-hidden="true" className="text-xs text-accent" />
@@ -219,13 +267,15 @@ export const Navbar = () => {
             )}
 
             {settings?.showNavbarCta !== false && settings?.navbarCtaLabel && (
-              <Button
-                variant="primary"
-                className="hidden lg:inline-flex py-2 px-5 text-xs tracking-wider"
-                onClick={handleCtaClick}
-              >
-                {settings.navbarCtaLabel}
-              </Button>
+              <div className="hidden lg:block shrink-0">
+                <Button
+                  variant="primary"
+                  className="py-2 px-5 text-xs tracking-wider whitespace-nowrap"
+                  onClick={handleCtaClick}
+                >
+                  {settings.navbarCtaLabel}
+                </Button>
+              </div>
             )}
 
             {/* Mobile Menu Toggle */}
@@ -233,7 +283,11 @@ export const Navbar = () => {
               type="button"
               className="lg:hidden w-9 h-9 rounded-full border border-border-subtle bg-surface/70 flex items-center justify-center text-ink hover:border-border-strong transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              aria-label={isMobileMenuOpen ? 'Close Menu' : 'Open Menu'}
+              aria-label={
+                isMobileMenuOpen
+                  ? t('common.closeMenu', 'Close Menu')
+                  : t('common.openMenu', 'Open Menu')
+              }
               aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? (
@@ -246,80 +300,106 @@ export const Navbar = () => {
         </div>
       </header>
 
-      {/* Clean Frosted Mobile Drawer */}
+      {/* Clean Frosted Mobile Drawer & Backdrop */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.2 }}
-            style={{ top: 68 + (previewOffsetTop || 0) }}
-            className="fixed inset-x-4 z-40 lg:hidden"
-          >
-            <nav
-              aria-label="Mobile Navigation"
-              className="editorial-glass border border-border-subtle rounded-2xl p-5 shadow-xl flex flex-col gap-1"
-            >
-              {navLinks.map((link) => {
-                const isActive = activeSection === link.sectionId;
-                const external = isExternalHref(link.href);
-                return (
-                  <a
-                    key={link.id || link.label}
-                    href={link.href}
-                    target={external ? '_blank' : undefined}
-                    rel={external ? 'noopener noreferrer' : undefined}
-                    onClick={(e) => {
-                      setIsMobileMenuOpen(false);
-                      handleLinkClick(e, link.href);
-                    }}
-                    className={`flex items-center justify-between min-h-11 px-3 rounded-xl font-heading text-base font-medium transition-colors ${
-                      isActive
-                        ? 'bg-primary/12 text-ink'
-                        : 'text-muted hover:text-ink hover:bg-surface-subtle/60'
-                    }`}
-                  >
-                    <span>{link.label}</span>
-                    {isActive && (
-                      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                    )}
-                  </a>
-                );
-              })}
+          <>
+            <motion.div
+              key="mobile-nav-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              aria-hidden="true"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 z-30 lg:hidden bg-black/20 backdrop-blur-[1px]"
+            />
 
-              {(settings?.showNavbarCta !== false ||
-                (settings?.showMobileCvBtn !== false && hero?.cvUrl)) && (
-                <div className="flex flex-col gap-2.5 mt-3 pt-4 border-t border-border-subtle">
-                  {settings?.showNavbarCta !== false && settings?.navbarCtaLabel && (
-                    <Button
-                      variant="primary"
-                      className="w-full py-3 text-sm"
+            <motion.div
+              key="mobile-nav-drawer"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+              style={{ top: 68 + (previewOffsetTop || 0) }}
+              className="fixed inset-x-4 z-40 lg:hidden"
+            >
+              <nav
+                aria-label="Mobile Navigation"
+                className="editorial-glass border border-border-subtle rounded-2xl p-5 shadow-xl flex flex-col gap-1"
+              >
+                {navLinks.map((link) => {
+                  const isActive = activeSection === link.sectionId;
+                  const external = isExternalHref(link.href);
+                  return (
+                    <a
+                      key={link.id || link.label}
+                      href={link.href}
+                      target={external ? '_blank' : undefined}
+                      rel={external ? 'noopener noreferrer' : undefined}
                       onClick={(e) => {
                         setIsMobileMenuOpen(false);
-                        handleCtaClick(e);
+                        handleLinkClick(e, link.href);
                       }}
+                      className={`flex items-center justify-between min-h-11 px-3 rounded-xl font-heading text-base font-medium transition-colors ${
+                        isActive
+                          ? 'bg-primary/12 text-ink'
+                          : 'text-muted hover:text-ink hover:bg-surface-subtle/60'
+                      }`}
                     >
-                      {settings.navbarCtaLabel}
-                    </Button>
-                  )}
+                      <span>{link.label}</span>
+                      {isActive && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                      )}
+                    </a>
+                  );
+                })}
 
-                  {settings?.showMobileCvBtn !== false && hero?.cvUrl && (
-                    <Button
-                      variant="white"
-                      className="w-full py-3 text-sm"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        setIsCVModalOpen(true);
-                      }}
-                    >
-                      {hero?.secondaryCtaText || 'View CV'}
-                    </Button>
-                  )}
+                <div className="flex items-center justify-between mt-3 pt-3.5 border-t border-border-subtle px-1">
+                  <span className="font-body text-xs font-medium uppercase tracking-[0.14em] text-muted">
+                    {t('common.language', 'Language')}
+                  </span>
+                  <LanguageToggle
+                    locale={locale}
+                    setLocale={setLocale}
+                    t={t}
+                    className="inline-flex"
+                  />
                 </div>
-              )}
-            </nav>
-          </motion.div>
+
+                {(settings?.showNavbarCta !== false ||
+                  (settings?.showMobileCvBtn !== false && hero?.cvUrl)) && (
+                  <div className="flex flex-col gap-2.5 mt-3 pt-3.5 border-t border-border-subtle">
+                    {settings?.showNavbarCta !== false && settings?.navbarCtaLabel && (
+                      <Button
+                        variant="primary"
+                        className="w-full py-3 text-sm"
+                        onClick={(e) => {
+                          setIsMobileMenuOpen(false);
+                          handleCtaClick(e);
+                        }}
+                      >
+                        {settings.navbarCtaLabel}
+                      </Button>
+                    )}
+
+                    {settings?.showMobileCvBtn !== false && hero?.cvUrl && (
+                      <Button
+                        variant="white"
+                        className="w-full py-3 text-sm"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          setIsCVModalOpen(true);
+                        }}
+                      >
+                        {hero?.secondaryCtaText || 'View CV'}
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </nav>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 

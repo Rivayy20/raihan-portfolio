@@ -6,6 +6,7 @@ import { Chevron, Collapse } from '../ui/Collapse';
 import { OrgLogo } from '../ui/OrgLogo';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
 import { useTheme } from '../../hooks/useTheme';
+import { useLanguage } from '../../hooks/useLanguage';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 const FOCUS_RING =
@@ -13,26 +14,32 @@ const FOCUS_RING =
 
 const TYPE_LABELS = {
   internship: {
+    labelKey: 'about.badgeInternship',
     label: 'Internship',
     badgeClass: 'bg-secondary/15 text-ink border-secondary/35',
   },
   academic: {
+    labelKey: 'about.badgeAcademic',
     label: 'Academic',
     badgeClass: 'bg-surface-subtle text-muted border-border-subtle',
   },
   organization: {
+    labelKey: 'about.badgeOrganization',
     label: 'Organization',
     badgeClass: 'bg-surface-subtle text-muted border-border-subtle',
   },
   full_time: {
+    labelKey: 'about.badgeFullTime',
     label: 'Full-Time',
     badgeClass: 'bg-primary/15 text-ink border-primary/35',
   },
   part_time: {
+    labelKey: 'about.badgePartTime',
     label: 'Part-Time',
     badgeClass: 'bg-primary/15 text-ink border-primary/35',
   },
   freelance: {
+    labelKey: 'about.badgeFreelance',
     label: 'Freelance',
     badgeClass: 'bg-accent/20 text-ink border-accent/40',
   },
@@ -41,6 +48,7 @@ const TYPE_LABELS = {
 const getBadge = ({ status, isCurrent, type }) => {
   if (status === 'current' || isCurrent) {
     return {
+      labelKey: 'about.badgeCurrent',
       label: 'Current',
       badgeClass: 'bg-primary/15 text-ink border-primary/35',
       isCurrentDot: true,
@@ -109,6 +117,7 @@ const DetailSection = ({ title, text, facts, items, chips, note }) => (
 );
 
 const ExperienceDetails = ({ experience }) => {
+  const { t } = useLanguage();
   const hasCustomSections = (experience.sections || []).length > 0;
 
   return (
@@ -121,18 +130,21 @@ const ExperienceDetails = ({ experience }) => {
         <>
           {(experience.detailedDescription || experience.summary) && (
             <DetailSection
-              title="Overview"
+              title={t('about.overview', 'Overview')}
               text={experience.detailedDescription || experience.summary}
             />
           )}
           {experience.responsibilities?.length > 0 && (
             <DetailSection
-              title="Responsibilities"
+              title={t('about.responsibilities', 'Responsibilities')}
               items={experience.responsibilities}
             />
           )}
           {experience.relevantSkills?.length > 0 && (
-            <DetailSection title="Relevant Skills" chips={experience.relevantSkills} />
+            <DetailSection
+              title={t('about.relevantSkills', 'Relevant Skills')}
+              chips={experience.relevantSkills}
+            />
           )}
         </>
       )}
@@ -150,6 +162,7 @@ const ExperienceItem = ({
 }) => {
   const detailsId = useId();
   const reduceMotion = useReducedMotion();
+  const { t } = useLanguage();
   const {
     position,
     organization,
@@ -248,7 +261,7 @@ const ExperienceItem = ({
                     {badge.isCurrentDot && (
                       <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                     )}
-                    {badge.label}
+                    {t(badge.labelKey, badge.label)}
                   </span>
                 )}
               </div>
@@ -278,7 +291,11 @@ const ExperienceItem = ({
             aria-controls={detailsId}
             className={`shrink-0 inline-flex items-center justify-center gap-2 rounded-full border border-border-strong bg-transparent hover:bg-primary/10 hover:border-primary/45 px-4 py-2 font-body text-xs font-medium text-ink cursor-pointer transition-all duration-300 ${FOCUS_RING}`}
           >
-            <span>{isOpen ? 'Hide Details' : 'View Details'}</span>
+            <span>
+              {isOpen
+                ? t('about.hideDetails', 'Hide Details')
+                : t('about.viewDetails', 'View Details')}
+            </span>
             <Chevron isOpen={isOpen} />
           </button>
         </div>

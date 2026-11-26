@@ -13,6 +13,7 @@ Run each file in `supabase/migrations/` sequentially in the **Supabase Dashboard
 8. `0008_hero_image_alignment.sql` — Adds Hero per-layer framing & alignment columns (`profile_image_scale`, `profile_image_offset_x`, `profile_image_offset_y`, `reveal_overlay_scale`, `reveal_overlay_offset_x`, `reveal_overlay_offset_y`) with range constraints and anonymous column-level SELECT grant on `public.profile`.
 9. `0009_spiderman_theme.sql` — Extends `public.site_settings.color_preset` CHECK constraint to support `'spider_man'` alongside `'razh_cyan'`, `'electric_amber'`, and `'cobalt_mint'`.
 10. `0010_centralized_theme_config.sql` — Adds `theme_config JSONB` column (`'{}'::jsonb` default, object check constraint) and anonymous column-level SELECT grant on `public.site_settings`.
+11. `0011_portfolio_translations.sql` — Creates `public.portfolio_translations` with RLS, column-level anon SELECT grants for published translations, and full admin write access for bilingual CMS auto-translation.
 
 ## 2. Supabase Authentication Dashboard Configuration
 1. **Disable Public Sign-Up**:

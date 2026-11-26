@@ -17,6 +17,7 @@ import { getSocialLinkColor, isSpiderManPreset } from '../../constants/colorPres
 import { getSocialIconComponent } from '../../utils/socialIcons';
 import { usePortfolioData } from '../../hooks/usePortfolioData';
 import { useTheme } from '../../hooks/useTheme';
+import { useLanguage } from '../../hooks/useLanguage';
 import { EDITORIAL_EASE } from '../../utils/motionVariants';
 
 function renderAccentHeading(text = "LET'S\nTALK.") {
@@ -37,6 +38,7 @@ function renderAccentHeading(text = "LET'S\nTALK.") {
 export const ContactSection = () => {
   const { data } = usePortfolioData();
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const { contact, socialLinks, hero, settings } = data;
   const reduceMotion = useReducedMotion();
   const isSpiderMan =
@@ -119,26 +121,35 @@ export const ContactSection = () => {
     const trimmedMessage = formData.message.trim();
 
     if (!trimmedName || !trimmedEmail || !trimmedMessage) {
-      setErrorMessage('Please fill all required fields.');
+      setErrorMessage(t('contact.errorRequired', 'Please fill all required fields.'));
       setStatus('error');
       return;
     }
 
     if (trimmedName.length > 120) {
-      setErrorMessage('Name must be 120 characters or fewer.');
+      setErrorMessage(
+        t('contact.errorNameLength', 'Name must be 120 characters or fewer.')
+      );
       setStatus('error');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (trimmedEmail.length > 254 || !emailRegex.test(trimmedEmail)) {
-      setErrorMessage('Please enter a valid email address.');
+      setErrorMessage(
+        t('contact.errorEmail', 'Please enter a valid email address.')
+      );
       setStatus('error');
       return;
     }
 
     if (trimmedMessage.length > 3000) {
-      setErrorMessage('Message must be 3000 characters or fewer.');
+      setErrorMessage(
+        t(
+          'contact.errorMessageLength',
+          'Message must be 3000 characters or fewer.'
+        )
+      );
       setStatus('error');
       return;
     }
@@ -147,7 +158,12 @@ export const ContactSection = () => {
       lastSubmittedAtRef.current > 0 &&
       Date.now() - lastSubmittedAtRef.current < 15000
     ) {
-      setErrorMessage('Please wait a few seconds before sending another message.');
+      setErrorMessage(
+        t(
+          'contact.errorCooldown',
+          'Please wait a few seconds before sending another message.'
+        )
+      );
       setStatus('error');
       return;
     }
@@ -155,7 +171,10 @@ export const ContactSection = () => {
     const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim();
     if (!accessKey) {
       setErrorMessage(
-        'Contact form is temporarily unavailable. Please reach out via direct email.'
+        t(
+          'contact.errorUnavailable',
+          'Contact form is temporarily unavailable. Please reach out via direct email.'
+        )
       );
       setStatus('error');
       return;
@@ -191,12 +210,21 @@ export const ContactSection = () => {
       } else {
         setStatus('error');
         setErrorMessage(
-          resData.message || 'Failed to send message. Please try again later.'
+          resData.message ||
+            t(
+              'contact.errorGeneric',
+              'Failed to send message. Please try again later.'
+            )
         );
       }
     } catch {
       setStatus('error');
-      setErrorMessage('Failed to send message. Please try again later.');
+      setErrorMessage(
+        t(
+          'contact.errorGeneric',
+          'Failed to send message. Please try again later.'
+        )
+      );
     }
   };
 
@@ -302,7 +330,7 @@ export const ContactSection = () => {
             ) : (
               <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
             )}
-            04 / Contact
+            {t('contact.eyebrow', '04 / Contact')}
           </span>
         </motion.div>
 
@@ -433,7 +461,7 @@ export const ContactSection = () => {
                       </span>
                       <span className="min-w-0">
                         <span className="block font-body text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
-                          Direct Email
+                          {t('contact.directEmail', 'Direct Email')}
                         </span>
                         <span className="block font-body text-sm font-medium text-ink group-hover:text-primary transition-colors truncate">
                           {contact.email}
@@ -466,7 +494,7 @@ export const ContactSection = () => {
                             className="inline-flex items-center gap-1.5"
                           >
                             <FaCheck aria-hidden="true" className="text-[10px]" />
-                            <span>Copied!</span>
+                            <span>{t('contact.copied', 'Copied!')}</span>
                           </motion.span>
                         ) : (
                           <motion.span
@@ -478,7 +506,7 @@ export const ContactSection = () => {
                             className="inline-flex items-center gap-1.5"
                           >
                             <FaRegCopy aria-hidden="true" className="text-[11px]" />
-                            <span>Copy</span>
+                            <span>{t('contact.copy', 'Copy')}</span>
                           </motion.span>
                         )}
                       </AnimatePresence>
@@ -545,7 +573,10 @@ export const ContactSection = () => {
                       {contact?.formHeading || 'Send a Message'}
                     </h3>
                     <p className="font-body text-sm text-muted mt-1">
-                      Fill out the form below and I&apos;ll get back to you soon.
+                      {t(
+                        'contact.formSubheading',
+                        "Fill out the form below and I'll get back to you soon."
+                      )}
                     </p>
                   </motion.div>
 
@@ -567,8 +598,8 @@ export const ContactSection = () => {
                   >
                     <Input
                       name="name"
-                      label="Your Name"
-                      placeholder="John Doe"
+                      label={t('contact.nameLabel', 'Your Name')}
+                      placeholder={t('contact.namePlaceholder', 'John Doe')}
                       value={formData.name}
                       onChange={handleChange}
                       maxLength={120}
@@ -578,9 +609,9 @@ export const ContactSection = () => {
 
                     <Input
                       name="email"
-                      label="Email Address"
+                      label={t('contact.emailLabel', 'Email Address')}
                       type="email"
-                      placeholder="john@example.com"
+                      placeholder={t('contact.emailPlaceholder', 'john@example.com')}
                       value={formData.email}
                       onChange={handleChange}
                       maxLength={254}
@@ -598,8 +629,11 @@ export const ContactSection = () => {
                     <Input
                       as="textarea"
                       name="message"
-                      label="Message"
-                      placeholder="Tell me about your project or idea..."
+                      label={t('contact.messageLabel', 'Message')}
+                      placeholder={t(
+                        'contact.messagePlaceholder',
+                        'Tell me about your project or idea...'
+                      )}
                       rows={5}
                       value={formData.message}
                       onChange={handleChange}
@@ -650,7 +684,12 @@ export const ContactSection = () => {
                         {contactInteractionEnabled && (
                           <SpiderIcon className="w-4 h-4 text-primary shrink-0" />
                         )}
-                        <span>Message sent successfully! Thank you for reaching out.</span>
+                        <span>
+                          {t(
+                            'contact.successMsg',
+                            'Message sent successfully! Thank you for reaching out.'
+                          )}
+                        </span>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -680,7 +719,7 @@ export const ContactSection = () => {
                               aria-hidden="true"
                               className="text-xs animate-spin"
                             />
-                            <span>Sending Message...</span>
+                            <span>{t('contact.sending', 'Sending Message...')}</span>
                           </>
                         ) : (
                           <>
